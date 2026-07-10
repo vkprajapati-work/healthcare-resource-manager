@@ -81,6 +81,14 @@ export const mapErrorToHttpResponse = (error: unknown): { statusCode: number; er
     return { statusCode: 413, error: new PayloadTooLargeError('Payload too large') };
   }
 
+  if (isMulterFileSizeError(error)) {
+    return { statusCode: 413, error: new PayloadTooLargeError('Payload too large') };
+  }
+
+  if (isMulterError(error)) {
+    return { statusCode: 400, error: new BadRequestError('Invalid file upload') };
+  }
+
   if (isUnauthorizedError(error)) {
     return { statusCode: 401, error: new AuthenticationError('Authentication required') };
   }
@@ -128,6 +136,16 @@ const isRateLimitError = (error: unknown): boolean => {
 const isPayloadTooLargeError = (error: unknown): boolean => {
   const candidate = error as ErrorLike;
   return candidate?.statusCode === 413 || candidate?.status === 413;
+};
+
+const isMulterFileSizeError = (error: unknown): boolean => {
+  const candidate = error as ErrorLike;
+  return candidate?.name === 'MulterError' && candidate?.code === 'LIMIT_FILE_SIZE';
+};
+
+const isMulterError = (error: unknown): boolean => {
+  const candidate = error as ErrorLike;
+  return candidate?.name === 'MulterError';
 };
 
 const isUnauthorizedError = (error: unknown): boolean => {

@@ -20,6 +20,16 @@ const envSchema = z.object({
     .default(15 * 60 * 1000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
   REQUEST_BODY_SIZE_LIMIT: z.string().trim().min(1).default('10mb'),
+  MAX_UPLOAD_SIZE_BYTES: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(5 * 1024 * 1024),
+  LOCAL_STORAGE_ROOT: z.string().trim().min(1).default('uploads'),
+  FILE_PUBLIC_BASE_URL: z.string().trim().min(1).default('/uploads'),
+  FILE_STORAGE_PROVIDER: z.literal('LOCAL').default('LOCAL'),
+  ALLOWED_IMAGE_MIME_TYPES: z.string().trim().min(1).default('image/jpeg,image/png,image/webp'),
+  ALLOWED_DOCUMENT_MIME_TYPES: z.string().trim().min(1).default('application/pdf'),
   COOKIE_SECURE: z.coerce.boolean().default(false),
   COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),
   COOKIE_MAX_AGE: z.coerce

@@ -1,12 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env.js';
-import {
-  AppError,
-  AuthenticationError,
-  NotFoundError,
-  ValidationError,
-} from '../../errors/app-error.js';
+import { AuthenticationError, NotFoundError } from '../../errors/app-error.js';
 import { AuthRepository } from './auth.repository.js';
 import type { AuthUserPayload, LoginInput, RefreshTokenInput } from './auth.types.js';
 
