@@ -25,6 +25,9 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(5 * 1024 * 1024),
+  DOCTOR_MAX_UPLOAD_FILES: z.coerce.number().int().positive().default(11),
+  DRIVER_MAX_UPLOAD_FILES: z.coerce.number().int().positive().default(11),
+  VEHICLE_MAX_UPLOAD_FILES: z.coerce.number().int().positive().default(20),
   LOCAL_STORAGE_ROOT: z.string().trim().min(1).default('uploads'),
   FILE_PUBLIC_BASE_URL: z.string().trim().min(1).default('/uploads'),
   FILE_STORAGE_PROVIDER: z.literal('LOCAL').default('LOCAL'),

@@ -7,7 +7,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
     fileSize: env.MAX_UPLOAD_SIZE_BYTES,
-    files: env.DOCTOR_MAX_UPLOAD_FILES,
+    files: env.VEHICLE_MAX_UPLOAD_FILES,
   },
   fileFilter: (_req, file, callback) => {
     const allowedMimeTypes = getAllowedUploadMimeTypes();
@@ -21,7 +21,7 @@ const upload = multer({
   },
 });
 
-export const uploadDoctorFormFiles = upload.fields([
-  { name: 'profileImage', maxCount: 1 },
+export const uploadVehicleFormFiles = upload.fields([
+  { name: 'photos', maxCount: 10 },
   { name: 'documents', maxCount: 10 },
 ]);
