@@ -102,7 +102,9 @@ apps/backend/src/
 └── server.ts                   # Entry point: connect DB, seed admin, start HTTP server
 ```
 
-A per-module `<module>.repository.ts` sits between service and model (dependency direction stays downward: `service → repository → model`); this is a deviation from the original minimal plan, adopted for every module, and is now the standard pattern for new modules. The error base class is `AppError` (constructor: `message, statusCode, code, details?, isOperational?`), not `ApiError` — subclasses (`ValidationError`, `NotFoundError`, `ConflictError`, `AuthenticationError`, `AuthorizationError`, etc.) bake in the correct status + code, so application code should throw a subclass rather than constructing `AppError` directly.
+A per-module `<module>.repository.ts` sits between service and model (dependency direction stays downward: `service → repository → model`); this is a deviation from the original minimal plan, adopted for every module, and is now the standard pattern for new modules. The error base class is `AppError` (constructor: `message, statusCode, code, details?, isOperational?`), not `ApiError` — subclasses (`ValidationError`, `NotFoundError`, `ConflictError`, `AuthenticationError`, `AuthorizationError`, `FeatureDisabledError`, `PasswordChangeRequiredError`, etc.) bake in the correct status + code, so application code should throw a subclass rather than constructing `AppError` directly.
+
+`resources` above is the illustrative layout every module follows. The real `modules/` directory today also has `auth` (JWT cookie sessions, roles, provisioned logins), `doctors`, `drivers`, `vehicles` (richer domain records with uploaded documents), `files` (upload/download, ownership-scoped), `health`, and `seed` (dev-only mock-data generator). See [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) §8a for how `resources` relates to `doctors`/`vehicles`.
 
 ### Layer responsibilities
 
@@ -138,7 +140,7 @@ UI re-renders ◀── cache ◀── Express route
 1. Request hits Express → global middlewares (JSON parsing, CORS, logging).
 2. Router matches `/api/v1/...` and runs `validateRequest` (Zod) on `body` / `query` / `params`.
 3. Controller receives **typed, validated** input and calls the service.
-4. Service executes business logic against the model, throws `ApiError` on domain failures.
+4. Service executes business logic against the model, throws an `AppError` subclass on domain failures.
 5. Controller returns the success envelope; any thrown error falls through to the **central error middleware**, which maps it to the error envelope (see [API_GUIDELINES.md](API_GUIDELINES.md)).
 
 ## 7. Folder Conventions
