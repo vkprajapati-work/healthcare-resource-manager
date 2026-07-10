@@ -4,10 +4,10 @@ import { logger } from '../config/logger.js';
 import { mapErrorToHttpResponse } from '../errors/error-mapper.js';
 import { createErrorResponse } from '../shared/api-response.js';
 
-const buildRequestContext = (req: Request) => ({
-  requestId: req.id,
+const getRequestContext = (req: Request) => ({
   method: req.method,
   path: req.originalUrl || req.url,
+  requestId: req.get('x-request-id') ?? undefined,
   userId: req.user?.id,
 });
 
@@ -18,11 +18,10 @@ export const errorHandler: ErrorRequestHandler = (
   _next: NextFunction,
 ): void => {
   const { statusCode, error: normalizedError } = mapErrorToHttpResponse(error);
-  const requestContext = buildRequestContext(req);
 
   if (normalizedError.isOperational) {
     logger.warn('Application error', {
-      ...requestContext,
+      ...getRequestContext(req),
       statusCode,
       errorName: normalizedError.name,
       errorCode: normalizedError.code,
@@ -30,7 +29,7 @@ export const errorHandler: ErrorRequestHandler = (
     });
   } else {
     logger.error('Unhandled application error', {
-      ...requestContext,
+      ...getRequestContext(req),
       statusCode,
       errorName: normalizedError.name,
       errorCode: normalizedError.code,
@@ -39,18 +38,19 @@ export const errorHandler: ErrorRequestHandler = (
     });
   }
 
-  const response = createErrorResponse(
-    normalizedError.message,
-    normalizedError.details,
-    normalizedError.code,
-    req.id,
-  );
+  const responsePayload = {
+    success: false,
+    message: normalizedError.message,
+    error: {
+      code: normalizedError.code,
+      details: env.NODE_ENV !== 'production' ? normalizedError.details : [],
+    },
+  };
 
   if (env.NODE_ENV !== 'production' && error instanceof Error) {
     res.status(statusCode).json({
-      ...response,
-      error: {
-        ...response.error,
+      ...responsePayload,
+      debug: {
         name: error.name,
         message: error.message,
         stack: error.stack?.split('\n').slice(0, 10) ?? [],
@@ -62,5 +62,5 @@ export const errorHandler: ErrorRequestHandler = (
     return;
   }
 
-  res.status(statusCode).json(response);
+  res.status(statusCode).json(createErrorResponse(normalizedError.message, []));
 };

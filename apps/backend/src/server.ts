@@ -4,29 +4,60 @@ import { connectToDatabase, disconnectFromDatabase } from './database/mongoose.j
 import { createApp } from './app.js';
 import { seedDefaultAdmin } from './modules/auth/auth.seed.js';
 
-const startServer = async (): Promise<void> => {
-  const app = createApp();
+let server:
+  | ReturnType<typeof createApp extends never ? never : typeof import('http').createServer>
+  | undefined;
+let isShuttingDown = false;
 
-  const server = app.listen(env.PORT, () => {
-    logger.info('Server started', { port: env.PORT, environment: env.NODE_ENV });
-  });
+const shutdown = async (exitCode = 0): Promise<void> => {
+  if (isShuttingDown) {
+    return;
+  }
 
-  const shutdown = async (): Promise<void> => {
-    logger.info('Shutdown signal received');
+  isShuttingDown = true;
+  logger.info('Graceful shutdown initiated');
 
+  if (server) {
     server.close(async () => {
       await disconnectFromDatabase();
       logger.info('Server shut down gracefully');
-      process.exit(0);
+      process.exit(exitCode);
     });
-  };
+
+    setTimeout(() => {
+      logger.error('Graceful shutdown timed out, forcing exit');
+      process.exit(1);
+    }, 10000);
+    return;
+  }
+
+  await disconnectFromDatabase();
+  process.exit(exitCode);
+};
+
+const startServer = async (): Promise<void> => {
+  const app = createApp();
+
+  server = app.listen(env.PORT, () => {
+    logger.info('Server started', { port: env.PORT, environment: env.NODE_ENV });
+  });
 
   process.on('SIGTERM', () => {
-    void shutdown();
+    void shutdown(0);
   });
 
   process.on('SIGINT', () => {
-    void shutdown();
+    void shutdown(0);
+  });
+
+  process.on('uncaughtException', (error: Error) => {
+    logger.error('Uncaught exception', { error });
+    void shutdown(1);
+  });
+
+  process.on('unhandledRejection', (reason: unknown) => {
+    logger.error('Unhandled rejection', { reason });
+    void shutdown(1);
   });
 
   await connectToDatabase();
@@ -35,5 +66,5 @@ const startServer = async (): Promise<void> => {
 
 void startServer().catch((error: unknown) => {
   logger.error('Failed to start server', { error });
-  process.exit(1);
+  void shutdown(1);
 });

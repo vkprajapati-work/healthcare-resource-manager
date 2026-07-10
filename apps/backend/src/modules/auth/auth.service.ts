@@ -1,7 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env.js';
-import { AppError } from '../../shared/errors.js';
+import {
+  AppError,
+  AuthenticationError,
+  NotFoundError,
+  ValidationError,
+} from '../../errors/app-error.js';
 import { AuthRepository } from './auth.repository.js';
 import type { AuthUserPayload, LoginInput, RefreshTokenInput } from './auth.types.js';
 
@@ -14,13 +19,13 @@ export class AuthService {
     const user = await this.authRepository.findByEmail(input.email);
 
     if (!user || !user.isActive) {
-      throw new AppError('Invalid credentials', 401);
+      throw new AuthenticationError('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(input.password, user.password);
 
     if (!isPasswordValid) {
-      throw new AppError('Invalid credentials', 401);
+      throw new AuthenticationError('Invalid credentials');
     }
 
     await this.authRepository.updateLastLogin(String(user._id));
@@ -66,17 +71,28 @@ export class AuthService {
     const token = input.refreshToken;
 
     if (!token) {
-      throw new AppError('Invalid refresh token', 401);
+      throw new AuthenticationError('Refresh token is required');
     }
 
-    const payload = jwt.verify(token, env.REFRESH_TOKEN_SECRET) as AuthUserPayload & {
-      iat?: number;
-      exp?: number;
-    };
+    let payload: AuthUserPayload & { iat?: number; exp?: number };
+
+    try {
+      payload = jwt.verify(token, env.REFRESH_TOKEN_SECRET) as AuthUserPayload & {
+        iat?: number;
+        exp?: number;
+      };
+    } catch (error) {
+      if (error instanceof Error && error.name === 'TokenExpiredError') {
+        throw new AuthenticationError('Refresh token has expired');
+      }
+
+      throw new AuthenticationError('Invalid refresh token');
+    }
+
     const user = await this.authRepository.findById(payload.id);
 
     if (!user || !user.isActive) {
-      throw new AppError('Invalid refresh token', 401);
+      throw new AuthenticationError('Invalid refresh token');
     }
 
     const accessToken = this.signToken(
@@ -98,7 +114,7 @@ export class AuthService {
     const user = await this.authRepository.findById(userId);
 
     if (!user || !user.isActive) {
-      throw new AppError('User not found', 404);
+      throw new NotFoundError('User not found');
     }
 
     return {
