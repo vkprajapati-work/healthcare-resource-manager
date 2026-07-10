@@ -1,51 +1,77 @@
-# Find Nearby Ambulances and Doctors - JOIN Coding Challenge - Frontend (React) Backend (Node JS)
-<img src="illustration.jpeg" width="100%" alt="Find Near By Ambulances or Doctors">
+# Healthcare Resource Manager
 
-## Context
+A monorepo for the Healthcare Resource Manager application — a platform for managing healthcare resources such as ambulances and doctors.
 
-Accident cases are increasing more nowadays. So this app needs to display the list of all nearby ambulance services and doctors based on location with one click.
+## Repository Structure
 
+```text
+healthcare-resource-manager/
+│
+├── apps/
+│   ├── frontend/        # React 18 + Vite + TypeScript SPA (to be implemented)
+│   └── backend/         # Node.js + Express + TypeScript API (to be implemented)
+│
+├── package.json         # Root workspace manifest and scripts
+├── pnpm-workspace.yaml  # pnpm workspace definition
+├── turbo.json           # Turborepo task pipeline
+├── .gitignore
+├── .editorconfig
+├── .prettierrc
+├── .prettierignore
+├── README.md
+└── LICENSE
+```
 
-## Product Requirements
+Shared packages (e.g. common types, validation schemas) can be introduced later under a `packages/` directory when the need arises.
 
-- [ ] I want to add, edit, update and delete the ambulances and doctors .
-- [ ] I want to see a list of ambulances and doctors.
-- [ ] I want to see the first 10 records by default, with the ability to paginate (10 records per page).
-- [ ] I want to see a total ambulances and doctors in the app.
-- [ ] For each record I want to see:
-  - [ ] Title
-  - [ ] Description
-  - [ ] Location
-  - [ ] Image of the ambulance or doctor, if available
-- [ ] I want to see a loading state until the list is available.
-- [ ] I want to see an error state if the list is unavailable.
-- [ ] I want to see an empty state if there are no results.
+## Tech Stack
 
-## Your Mission
+| Area     | Technology                                                                                                           |
+| -------- | -------------------------------------------------------------------------------------------------------------------- |
+| Monorepo | pnpm Workspaces, Turborepo                                                                                           |
+| Frontend | React 18, TypeScript, Vite, React Router v6, TanStack Query v5, Axios, Tailwind CSS, shadcn/ui, React Hook Form, Zod |
+| Backend  | Node.js, Express.js, TypeScript, MongoDB, Mongoose                                                                   |
 
-Create a React application that satisfies all must-have requirements above, plus any nice-to-have requirements you wish to include. Please keep your creative juices flowing for designs.
+## Prerequisites
 
-For that, you’ll need to make requests to your nodeJS API to get JSON content and print it on view.
+- **Node.js** >= 20
+- **pnpm** >= 9 (`corepack enable` or `npm i -g pnpm`)
 
-You can use a in-memory JSON file for your CRUD operations or use SQLite to make the CRUD operations simple to match the use case.
+## Getting Started
 
-You can use any boilerplate/approach you prefer (nextjs, create react app, ...), but try to keep it simple. We encourage you to use your favorite tools and packages to build a solid React application.
+```bash
+# Install all workspace dependencies
+pnpm install
+```
 
-You can assume that you do not have to support legacy browsers. Feel free to use modern features such as fetch or flexbox.
+## Scripts
 
-Once you are done with the above requirements, please share your source code via github for review with a proper README. Perhaps also mention if there is some seed data involved to get started. We don't expect you to deploy your application but it in case you do you will receive extra brownie points.
+All scripts run from the repository root and are orchestrated across workspaces by Turborepo.
 
-## Tech Requirements
-Front End 
-- React
-- Tests: Jest + React Testing Library
-- Code Linter
-- Use of functional components
-- **Typescript is a must**
-- CSSinJS is a plus: styled-components, styled-system, ...
+| Script              | Description                                |
+| ------------------- | ------------------------------------------ |
+| `pnpm dev`          | Start all apps in development mode         |
+| `pnpm build`        | Build all apps (dependency-aware, cached)  |
+| `pnpm lint`         | Lint all apps                              |
+| `pnpm typecheck`    | Type-check all apps                        |
+| `pnpm format`       | Format the entire repository with Prettier |
+| `pnpm format:check` | Verify formatting without writing changes  |
+| `pnpm clean`        | Remove build artifacts across apps         |
 
-Back End
-- Node Js
-- Code Linter
-- Tests: Jest
-- Typescript is a plus
+To run a script for a single app:
+
+```bash
+pnpm --filter frontend dev
+pnpm --filter backend dev
+```
+
+## Workspace Conventions
+
+- Each app under `apps/` is a self-contained workspace with its own `package.json`, and must implement the shared task names (`dev`, `build`, `lint`, `typecheck`) so Turborepo can orchestrate them.
+- Strict TypeScript is required in every workspace.
+- Code style is enforced repo-wide via Prettier and EditorConfig.
+- Environment variables live in per-app `.env` files (never committed); provide a committed `.env.example` documenting required variables.
+
+## License
+
+[MIT](LICENSE)

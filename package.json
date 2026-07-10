@@ -1,0 +1,26 @@
+{
+  "name": "healthcare-resource-manager",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo for the Healthcare Resource Manager application",
+  "author": "Gurpreet Chhabra",
+  "license": "MIT",
+  "packageManager": "pnpm@9.3.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml,css}\"",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.2",
+    "turbo": "^2.0.6"
+  }
+}
