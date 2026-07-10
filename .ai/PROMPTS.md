@@ -1,6 +1,6 @@
 # Reusable Prompts
 
-> Copy-paste prompts for common development tasks in this repository. Replace `<placeholders>` before use. Each prompt assumes Claude has loaded [CLAUDE.md](../CLAUDE.md) and will follow [AI_RULES.md](AI_RULES.md) and [AI_WORKFLOW.md](AI_WORKFLOW.md).
+> Copy-paste prompts for common development tasks in this repository. Replace `<placeholders>` before use. Each prompt assumes Claude has loaded [CLAUDE.md](../CLAUDE.md) and will follow [docs/PROJECT_RULES.md](../docs/PROJECT_RULES.md) and [AI_WORKFLOW.md](AI_WORKFLOW.md).
 
 ## Create a feature
 

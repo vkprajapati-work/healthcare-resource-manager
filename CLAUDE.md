@@ -20,10 +20,10 @@ Rationale for every choice: [docs/TECH_STACK.md](docs/TECH_STACK.md).
 ## Repository structure
 
 ```text
-apps/frontend    React SPA — feature-based: src/features/<feature>/{api,components,hooks,schemas,types,index.ts}
-apps/backend     Express API — domain modules: src/modules/<module>/ layered routes → controller → service → model
+apps/frontend    React SPA — feature-based: src/features/<feature>/{api,components,hooks,schemas,types,index.ts} — not started
+apps/backend     Express API — domain modules: src/modules/<module>/ layered routes → controller → service → model — built
 docs/            Living documentation (canonical; keep in sync with code in the same PR)
-.ai/             AI guidance: context, rules, workflow, prompts, Definition of Done
+.ai/             AI guidance: workflow, reusable prompts, Definition of Done
 .claude/skills/  Project skills (see below)
 ```
 
@@ -62,13 +62,26 @@ Semantic HTML first; every input labelled with errors announced via `aria-descri
 - New files go exactly where [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) prescribes — never invent parallel structure. Before creating any file, check a similar one doesn't already exist.
 - **No new dependency without justification** recorded in [docs/TECH_STACK.md](docs/TECH_STACK.md) in the same PR. Prefer the platform and existing dependencies. No global state library, no CSS-in-JS, no Next.js (documented decisions).
 
+## Development philosophy
+
+- **Feature-oriented:** new work starts as a feature/domain module, not as scattered files.
+- **Schemas first:** Zod schemas define data shapes; types derive from them (`z.infer`).
+- **KISS + rule of three:** the simplest design that satisfies the docs; abstract on the third occurrence, never the first.
+- **Reuse before build:** search for existing components/hooks/utilities before writing new ones.
+- **Production-ready by default:** validated inputs, handled errors, all three UI states, accessible markup — in the first implementation, not a follow-up.
+- **Docs are law:** if code must diverge from `docs/`, the doc is updated in the same PR.
+
+## Long-term vision
+
+The `type` discriminator (`'ambulance' | 'doctor'`) is designed to extend to new resource types (hospitals, pharmacies) without structural change. `location` can evolve from a string to GeoJSON for true proximity search. The API is versioned (`/api/v1`) so breaking changes ship as `/api/v2` with a deprecation window. The monorepo accommodates shared packages and additional apps (e.g. an admin panel) without restructuring.
+
 ## Definition of Done
 
 A task is done only when every item in [.ai/CHECKLIST.md](.ai/CHECKLIST.md) passes — typecheck, lint, formatting, tests, loading/error/empty states, validation, accessibility, no duplication, docs updated. Run the `/verify` skill; report results honestly.
 
 ## How Claude should work in this repo
 
-Full workflow: [.ai/AI_WORKFLOW.md](.ai/AI_WORKFLOW.md). Mandatory rules: [.ai/AI_RULES.md](.ai/AI_RULES.md) and [docs/PROJECT_RULES.md](docs/PROJECT_RULES.md).
+Full workflow: [.ai/AI_WORKFLOW.md](.ai/AI_WORKFLOW.md). Mandatory rules: [docs/PROJECT_RULES.md](docs/PROJECT_RULES.md).
 
 - **Before any change — review first:** read the relevant guideline doc, then the existing code you're touching; search for existing components/hooks/utilities/types to reuse before writing anything new.
 - **Feature implementation:** use `/new-frontend-feature` or `/new-backend-module`; schemas first, then data layer, then UI/controllers; states (loading/error/empty) are part of the feature, not a follow-up; tests accompany the code.

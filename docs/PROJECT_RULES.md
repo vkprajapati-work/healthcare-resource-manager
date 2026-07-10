@@ -25,7 +25,7 @@
 11. **Do not create unnecessary abstractions.** Apply the rule of three: abstract on the third occurrence, not the first. KISS beats cleverness.
 12. **Keep components small and focused** — one responsibility, roughly one screen of code.
 13. **Ensure all code is production-ready**: validated inputs, handled errors, loading/error/empty states, accessible markup, no debug logging, no dead code, no TODOs without a linked issue.
-14. **Maintain consistent naming and folder structure** exactly as defined in [CODING_STANDARDS.md](CODING_STANDARDS.md) — do not introduce parallel conventions.
+14. **Maintain consistent naming and folder structure** exactly as defined in [CODING_STANDARDS.md](CODING_STANDARDS.md) §1 (kebab-case folders, `PascalCase` components, `use*` hooks, `*Schema` Zod schemas, `is/has` booleans) — do not introduce parallel conventions.
 
 ## Boundaries & Contracts
 
@@ -49,3 +49,5 @@
 - Follow the file/folder placement rules exactly — do not invent new structure.
 - When a requirement is ambiguous, prefer the simplest solution consistent with these docs, and state the assumption.
 - Never scaffold features, packages, or dependencies that were not asked for.
+- Run the `/verify` skill (typecheck, lint, format, tests) and walk [.ai/CHECKLIST.md](../.ai/CHECKLIST.md)'s Definition of Done before declaring any task complete.
+- Report results honestly: state exactly which checks ran and their outcomes — never present partially verified or skipped work as done.
