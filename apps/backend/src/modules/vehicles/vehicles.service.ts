@@ -1,12 +1,15 @@
 import { AuthorizationError, ConflictError, NotFoundError } from '../../shared/errors.js';
 import { BadRequestError } from '../../shared/errors.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
 import { UserRole } from '../auth/auth.types.js';
 import { DocumentFileCategory, FileCategory } from '../files/files.types.js';
 import { FilesService } from '../files/files.service.js';
 import type { FileDto, IFileDocument } from '../files/files.types.js';
 import { DriversRepository } from '../drivers/drivers.repository.js';
+import type { IDriverDocument } from '../drivers/drivers.types.js';
 import { VehiclesRepository } from './vehicles.repository.js';
 import type {
+  AssignedDriverSummary,
   IVehicleDocument,
   UpdateVehicleInput,
   VehicleAccessContext,
@@ -31,19 +34,14 @@ export class VehiclesService {
   ): Promise<{ vehicles: VehicleDto[]; meta: VehicleListMeta }> {
     this.assertCanReadVehicles(context);
 
-    const [vehicles, total] = await Promise.all([
+    const [vehicles, totalItems] = await Promise.all([
       this.vehiclesRepository.findMany(query),
       this.vehiclesRepository.countMany(query),
     ]);
 
     return {
       vehicles: vehicles.map((vehicle) => this.toDto(vehicle)),
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        totalPages: Math.ceil(total / query.limit),
-      },
+      meta: buildPaginationMeta({ page: query.page, limit: query.limit }, totalItems),
     };
   }
 
@@ -96,7 +94,10 @@ export class VehiclesService {
     });
 
     if (vehicleInput.assignedDriver) {
-      await this.driversRepository.setAssignedVehicle(vehicleInput.assignedDriver, String(vehicle._id));
+      await this.driversRepository.setAssignedVehicle(
+        vehicleInput.assignedDriver,
+        String(vehicle._id),
+      );
     }
 
     return this.toDto(await this.findExistingVehicle(String(vehicle._id)));
@@ -355,9 +356,9 @@ export class VehiclesService {
       updatedAt: vehicle.updatedAt.toISOString(),
     };
 
-    const assignedDriverId = this.getRefId(vehicle.assignedDriver);
-    if (assignedDriverId) {
-      dto.assignedDriver = assignedDriverId;
+    const assignedDriverSummary = this.mapAssignedDriver(vehicle.assignedDriver);
+    if (assignedDriverSummary) {
+      dto.assignedDriver = assignedDriverSummary;
     }
 
     if (vehicle.lastServiceDate) {
@@ -376,9 +377,9 @@ export class VehiclesService {
       return [];
     }
 
-    return files.filter((file): file is IFileDocument => this.isPopulatedFile(file)).map((file) =>
-      this.mapFile(file),
-    );
+    return files
+      .filter((file): file is IFileDocument => this.isPopulatedFile(file))
+      .map((file) => this.mapFile(file));
   }
 
   private mapFile(file: IFileDocument): FileDto {
@@ -410,6 +411,32 @@ export class VehiclesService {
 
   private isPopulatedFile(file: unknown): file is IFileDocument {
     return typeof file === 'object' && file !== null && 'fileUrl' in file;
+  }
+
+  private isPopulatedDriver(value: unknown): value is IDriverDocument {
+    return typeof value === 'object' && value !== null && 'firstName' in value;
+  }
+
+  private mapAssignedDriver(value: unknown): AssignedDriverSummary | undefined {
+    if (!this.isPopulatedDriver(value)) {
+      return undefined;
+    }
+
+    const summary: AssignedDriverSummary = {
+      id: String(value._id),
+      firstName: value.firstName,
+      lastName: value.lastName,
+      phoneNumber: value.phoneNumber,
+      employeeId: value.employeeId,
+      availabilityStatus: value.availabilityStatus,
+      isActive: value.isActive,
+    };
+
+    if (value.profileImage && this.isPopulatedFile(value.profileImage)) {
+      summary.profileImage = this.mapFile(value.profileImage);
+    }
+
+    return summary;
   }
 
   private getRefId(value: unknown): string | undefined {

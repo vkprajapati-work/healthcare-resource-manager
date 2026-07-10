@@ -5,7 +5,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**'],
+    ignores: ['dist/**', 'node_modules/**', 'uploads/**', 'coverage/**'],
   },
   js.configs.recommended,
   {
@@ -27,6 +27,7 @@ export default [
     },
     rules: {
       ...tseslint.configs.recommended.rules,
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'no-console': 'error',
       'no-undef': 'off',

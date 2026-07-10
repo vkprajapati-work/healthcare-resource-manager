@@ -23,6 +23,9 @@ pnpm-debug.log*
 # Test coverage
 coverage/
 
+# Local file uploads (runtime data, not source)
+apps/backend/uploads/
+
 # Editor & OS
 .DS_Store
 Thumbs.db

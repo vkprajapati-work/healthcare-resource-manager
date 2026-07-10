@@ -12,16 +12,26 @@
 
 ### Endpoint map (resources module)
 
-| Method   | Path                    | Purpose                                | Success |
-| -------- | ----------------------- | -------------------------------------- | ------- |
-| `GET`    | `/api/v1/resources`     | List resources (paginated, filterable) | `200`   |
-| `GET`    | `/api/v1/resources/:id` | Get one resource                       | `200`   |
-| `POST`   | `/api/v1/resources`     | Create a resource                      | `201`   |
-| `PATCH`  | `/api/v1/resources/:id` | Partially update a resource            | `200`   |
-| `DELETE` | `/api/v1/resources/:id` | Delete a resource                      | `200`   |
-| `GET`    | `/api/v1/health`        | Liveness check                         | `200`   |
+| Method   | Path                    | Purpose                                                 | Auth   | Success |
+| -------- | ----------------------- | ------------------------------------------------------- | ------ | ------- |
+| `GET`    | `/api/v1/resources`     | List resources (paginated, filterable)                  | Public | `200`   |
+| `GET`    | `/api/v1/resources/:id` | Get one resource                                        | Public | `200`   |
+| `POST`   | `/api/v1/resources`     | Create a resource — **temporarily disabled**, see below | ADMIN  | `403`   |
+| `PATCH`  | `/api/v1/resources/:id` | Partially update a resource                             | ADMIN  | `200`   |
+| `DELETE` | `/api/v1/resources/:id` | Delete a resource                                       | ADMIN  | `200`   |
+| `GET`    | `/api/v1/health`        | Liveness check                                          | Public | `200`   |
 
 `PATCH` is the standard update verb (partial updates). Do not add `PUT` unless full-replace semantics are truly needed.
+
+**`POST /resources` is temporarily restricted.** It returns `403 { code: "FEATURE_DISABLED" }` for every caller, including ADMIN — direct creation of simple resource entries is disabled for now in favor of creating rich records through `POST /doctors` / `POST /vehicles`, which the list above already bridges in read-only. The route, auth gate, and validation are all still wired up underneath; removing the guard in `resources.routes.ts` (`blockResourceCreation`) is a one-line revert if direct creation needs to come back.
+
+Reads are public (matching the "find nearby ambulances/doctors with one click" requirement); mutations require authentication and the `ADMIN` role so anonymous clients can never create, edit, or delete records. See the `auth` module for login/session endpoints.
+
+**`GET /resources` and `GET /resources/:id` bridge in the `doctors` and `vehicles` collections** (read-only) — a doctor or vehicle created through their own rich CRUD API shows up here too, mapped into the same `{type, title, description, location, imageUrl}` shape, and counted in `meta.counts`. Writing through `/resources` still only touches the native `resources` collection; editing a bridged doctor/vehicle's details requires their own `PATCH /doctors/:id` / `/vehicles/:id`. See [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) §8a for the full design and its scale limits.
+
+### Beyond resources
+
+The backend also has `auth` (JWT login/roles), `doctors`, `drivers`, `vehicles`, and `files` modules — a richer domain platform with their own full CRUD APIs and much larger schemas (license numbers, vehicle capacity/insurance, uploaded documents, provisioned logins). `resources` bridges in doctors/vehicles for reading (above); `drivers` is not bridged (a driver isn't an "ambulance or doctor"). This document's contract (envelopes, pagination, error codes) applies uniformly across all modules; only the `resources` endpoint map above is fully specified here.
 
 ## 2. Response Format (success envelope)
 

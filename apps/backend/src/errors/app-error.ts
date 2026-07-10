@@ -13,7 +13,7 @@ export class AppError extends Error {
   constructor(
     message: string,
     statusCode = 500,
-    code = 'INTERNAL_SERVER_ERROR',
+    code = 'INTERNAL_ERROR',
     details: ErrorDetail[] = [],
     isOperational = true,
   ) {
@@ -75,8 +75,15 @@ export class BadRequestError extends AppError {
 
 export class InternalServerError extends AppError {
   constructor(message = 'Internal server error') {
-    super(message, 500, 'INTERNAL_SERVER_ERROR');
+    super(message, 500, 'INTERNAL_ERROR');
     this.name = 'InternalServerError';
+  }
+}
+
+export class PasswordChangeRequiredError extends AppError {
+  constructor(message = 'Password change required before continuing') {
+    super(message, 403, 'PASSWORD_CHANGE_REQUIRED');
+    this.name = 'PasswordChangeRequiredError';
   }
 }
 
@@ -91,5 +98,12 @@ export class PayloadTooLargeError extends AppError {
   constructor(message = 'Payload too large') {
     super(message, 413, 'PAYLOAD_TOO_LARGE');
     this.name = 'PayloadTooLargeError';
+  }
+}
+
+export class FeatureDisabledError extends AppError {
+  constructor(message = 'This feature is temporarily disabled') {
+    super(message, 403, 'FEATURE_DISABLED');
+    this.name = 'FeatureDisabledError';
   }
 }

@@ -1,4 +1,5 @@
-import type { Types } from 'mongoose';
+import type { Document, Types } from 'mongoose';
+import type { DriverAvailabilityStatus } from '../drivers/drivers.types.js';
 import type { DocumentFileCategory, FileDto } from '../files/files.types.js';
 
 export const VehicleType = {
@@ -32,7 +33,9 @@ export type VehicleSortBy =
   | 'manufactureYear'
   | 'nextServiceDate';
 
-export interface IVehicleDocument {
+// `model` here is the vehicle's make/model field, which collides with Mongoose's
+// Document.model() method - omit that member rather than dropping Document entirely.
+export interface IVehicleDocument extends Omit<Document, 'model'> {
   _id: Types.ObjectId;
   registrationNumber: string;
   vehicleNumber: string;
@@ -58,6 +61,17 @@ export interface IVehicleDocument {
   updatedAt: Date;
 }
 
+export interface AssignedDriverSummary {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  employeeId: string;
+  availabilityStatus: DriverAvailabilityStatus;
+  isActive: boolean;
+  profileImage?: FileDto;
+}
+
 export interface VehicleDto {
   id: string;
   registrationNumber: string;
@@ -69,7 +83,7 @@ export interface VehicleDto {
   color: string;
   seatingCapacity: number;
   patientCapacity: number;
-  assignedDriver?: string;
+  assignedDriver?: AssignedDriverSummary;
   photos: FileDto[];
   documents: FileDto[];
   insuranceExpiry: string;
@@ -96,9 +110,9 @@ export interface VehicleListQuery {
 }
 
 export interface VehicleListMeta {
-  total: number;
   page: number;
   limit: number;
+  totalItems: number;
   totalPages: number;
 }
 

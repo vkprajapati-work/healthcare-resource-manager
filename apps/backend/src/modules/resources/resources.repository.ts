@@ -1,6 +1,12 @@
 import type { FilterQuery, UpdateQuery } from 'mongoose';
+import { DoctorModel } from '../doctors/doctors.model.js';
+import type { IDoctorDocument } from '../doctors/doctors.types.js';
+import { VehicleModel } from '../vehicles/vehicles.model.js';
+import type { IVehicleDocument } from '../vehicles/vehicles.types.js';
 import { ResourceModel } from './resources.model.js';
 import { ResourceType, type IResourceDocument, type ResourceListQuery } from './resources.types.js';
+
+type ResourceFilter = Pick<ResourceListQuery, 'type' | 'search'>;
 
 export class ResourcesRepository {
   public async create(input: Partial<IResourceDocument>): Promise<IResourceDocument> {
@@ -12,19 +18,16 @@ export class ResourcesRepository {
     return ResourceModel.findById(id).lean<IResourceDocument>().exec();
   }
 
-  public async findMany(query: ResourceListQuery): Promise<IResourceDocument[]> {
-    const filter = this.buildFilter(query);
-
-    return ResourceModel.find(filter)
+  /**
+   * All native resources matching the filter, unpaginated - the service merges this with
+   * doctors/vehicles (see below) and paginates the combined set, so pagination can't be
+   * pushed down to a single collection's query.
+   */
+  public async findAllMatching(query: ResourceFilter): Promise<IResourceDocument[]> {
+    return ResourceModel.find(this.buildFilter(query))
       .sort({ createdAt: -1 })
-      .skip((query.page - 1) * query.limit)
-      .limit(query.limit)
       .lean<IResourceDocument[]>()
       .exec();
-  }
-
-  public async countMany(query: ResourceListQuery): Promise<number> {
-    return ResourceModel.countDocuments(this.buildFilter(query)).exec();
   }
 
   public async countByType(): Promise<Record<ResourceType, number>> {
@@ -52,7 +55,51 @@ export class ResourcesRepository {
     return ResourceModel.findByIdAndDelete(id).lean<IResourceDocument>().exec();
   }
 
-  private buildFilter(query: ResourceListQuery): FilterQuery<IResourceDocument> {
+  /**
+   * Bridges the `doctors` module into the unified resources list (read-only - see
+   * PROJECT_CONTEXT.md §8a). Only active, non-deleted doctors are included; `resources` is the
+   * public browsing view, not the admin management view `/doctors` already provides.
+   */
+  public async findMatchingDoctors(search?: string): Promise<IDoctorDocument[]> {
+    return DoctorModel.find(this.buildDoctorFilter(search))
+      .populate('profileImage')
+      .lean<IDoctorDocument[]>()
+      .exec();
+  }
+
+  public async countMatchingDoctors(): Promise<number> {
+    return DoctorModel.countDocuments(this.buildDoctorFilter()).exec();
+  }
+
+  public async findDoctorById(id: string): Promise<IDoctorDocument | null> {
+    return DoctorModel.findOne({ _id: id, isActive: true, deletedAt: { $exists: false } })
+      .populate('profileImage')
+      .lean<IDoctorDocument>()
+      .exec();
+  }
+
+  /** Bridges the `vehicles` module into the unified resources list as ambulances (read-only). */
+  public async findMatchingVehicles(search?: string): Promise<IVehicleDocument[]> {
+    return VehicleModel.find(this.buildVehicleFilter(search))
+      .populate('photos')
+      .populate('assignedDriver')
+      .lean<IVehicleDocument[]>()
+      .exec();
+  }
+
+  public async countMatchingVehicles(): Promise<number> {
+    return VehicleModel.countDocuments(this.buildVehicleFilter()).exec();
+  }
+
+  public async findVehicleById(id: string): Promise<IVehicleDocument | null> {
+    return VehicleModel.findOne({ _id: id, isActive: true, deletedAt: { $exists: false } })
+      .populate('photos')
+      .populate('assignedDriver')
+      .lean<IVehicleDocument>()
+      .exec();
+  }
+
+  private buildFilter(query: ResourceFilter): FilterQuery<IResourceDocument> {
     const filter: FilterQuery<IResourceDocument> = {};
 
     if (query.type) {
@@ -61,6 +108,26 @@ export class ResourcesRepository {
 
     if (query.search) {
       filter.$text = { $search: query.search };
+    }
+
+    return filter;
+  }
+
+  private buildDoctorFilter(search?: string): FilterQuery<IDoctorDocument> {
+    const filter: FilterQuery<IDoctorDocument> = { isActive: true, deletedAt: { $exists: false } };
+
+    if (search) {
+      filter.$text = { $search: search };
+    }
+
+    return filter;
+  }
+
+  private buildVehicleFilter(search?: string): FilterQuery<IVehicleDocument> {
+    const filter: FilterQuery<IVehicleDocument> = { isActive: true, deletedAt: { $exists: false } };
+
+    if (search) {
+      filter.$text = { $search: search };
     }
 
     return filter;

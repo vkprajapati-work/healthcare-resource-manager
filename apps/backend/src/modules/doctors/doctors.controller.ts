@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createSuccessResponse } from '../../shared/api-response.js';
+import { createPaginatedResponse, createSuccessResponse } from '../../shared/api-response.js';
 import { DoctorsService } from './doctors.service.js';
 import type {
   DoctorAccessContext,
@@ -21,7 +21,7 @@ export const listDoctors = async (req: Request, res: Response): Promise<void> =>
     req.query as unknown as DoctorListQuery,
     getAccessContext(req),
   );
-  res.status(200).json({ success: true, data: doctors, meta });
+  res.status(200).json(createPaginatedResponse(doctors, { ...meta }));
 };
 
 export const getDoctor = async (req: Request, res: Response): Promise<void> => {

@@ -10,7 +10,7 @@ Never write code against an imagined codebase. First:
 - **Search for reusable components** — `apps/frontend/src/components/ui/` and `components/common/` before building anything visual.
 - **Search for existing hooks** — `apps/frontend/src/hooks/` (shared) and the feature's `hooks/` directory.
 - **Search for utilities** — `apps/frontend/src/lib/`, `apps/backend/src/utils/`.
-- **Search for shared types and schemas** — the feature/module's `schemas/` and `types/` directories (and `packages/shared` if it exists by then).
+- **Search for shared types and schemas** — the frontend feature's `schemas/` and `types/` directories, or the backend module's `<module>.validation.ts` and `<module>.types.ts` files (and `packages/shared` if it exists by then).
 
 Only after this search may new code be written — and it must reuse what was found.
 
@@ -18,7 +18,7 @@ Only after this search may new code be written — and it must reuse what was fo
 
 - **Verify a similar file doesn't already exist** (Glob/Grep by name and by content). Extending an existing file that owns the concern beats creating a near-duplicate.
 - Confirm the target path is exactly where [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) prescribes; if no prescribed location fits, raise it rather than inventing structure.
-- Use the scaffolding skills for module-shaped work: `/new-frontend-feature`, `/new-backend-module`, `/new-shared-package`.
+- Use the scaffolding skills for module-shaped work: `/new-frontend-feature`, `/new-backend-module` — and `/new-shared-package` only once the extraction trigger in [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) §9 is met (do not use it preemptively).
 
 ## 3. Before adding dependencies
 

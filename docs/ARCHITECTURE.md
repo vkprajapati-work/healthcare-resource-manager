@@ -82,20 +82,27 @@ Each domain module is self-contained; layers within a module have strict respons
 
 ```text
 apps/backend/src/
-├── config/                     # env parsing (validated), db connection
+├── config/                     # env.ts (validated), logger.ts
+├── database/                   # mongoose.ts — connect/disconnect
+├── bootstrap/                  # app assembly: security, parsers, routes, error handlers
+├── errors/                     # app-error.ts (AppError + subclasses), error-mapper.ts
+├── shared/                     # errors.ts (re-exports), api-response.ts (envelopes)
 ├── modules/
 │   └── resources/
 │       ├── resources.routes.ts       # HTTP routes → controller mapping
 │       ├── resources.controller.ts   # HTTP layer: req/res, status codes — no business logic
 │       ├── resources.service.ts      # Business logic — no HTTP, no direct res/req
+│       ├── resources.repository.ts   # Mongoose queries (data access, isolated from business logic)
 │       ├── resources.model.ts        # Mongoose schema + model
 │       ├── resources.validation.ts   # Zod schemas for body/query/params
 │       └── resources.types.ts        # DTOs and module types
-├── middlewares/                # errorHandler, notFound, validateRequest
-├── utils/                      # ApiError, response helpers, asyncHandler
+├── middlewares/                # errorHandler, notFound, validateRequest, authenticate, authorize
+├── utils/                      # response/pagination helpers, asyncHandler, password generator
 ├── app.ts                      # Express app assembly (middlewares, routes)
-└── server.ts                   # Entry point: connect DB, start HTTP server
+└── server.ts                   # Entry point: connect DB, seed admin, start HTTP server
 ```
+
+A per-module `<module>.repository.ts` sits between service and model (dependency direction stays downward: `service → repository → model`); this is a deviation from the original minimal plan, adopted for every module, and is now the standard pattern for new modules. The error base class is `AppError` (constructor: `message, statusCode, code, details?, isOperational?`), not `ApiError` — subclasses (`ValidationError`, `NotFoundError`, `ConflictError`, `AuthenticationError`, `AuthorizationError`, etc.) bake in the correct status + code, so application code should throw a subclass rather than constructing `AppError` directly.
 
 ### Layer responsibilities
 

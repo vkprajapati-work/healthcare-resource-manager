@@ -1,4 +1,5 @@
 import { AuthorizationError, ConflictError, NotFoundError } from '../../shared/errors.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
 import { AuthService } from '../auth/auth.service.js';
 import { UserRole } from '../auth/auth.types.js';
 import { DocumentFileCategory, ImageFileCategory } from '../files/files.types.js';
@@ -32,19 +33,14 @@ export class DoctorsService {
   ): Promise<{ doctors: DoctorDto[]; meta: DoctorListMeta }> {
     this.assertAdmin(context);
 
-    const [doctors, total] = await Promise.all([
+    const [doctors, totalItems] = await Promise.all([
       this.doctorsRepository.findMany(query),
       this.doctorsRepository.countMany(query),
     ]);
 
     return {
       doctors: doctors.map((doctor) => this.toDto(doctor)),
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        totalPages: Math.ceil(total / query.limit),
-      },
+      meta: buildPaginationMeta(query, totalItems),
     };
   }
 
@@ -66,18 +62,6 @@ export class DoctorsService {
     return this.toDto(doctor);
   }
 
-  public async create(
-    input: CreateDoctorInput,
-    context: DoctorAccessContext,
-  ): Promise<DoctorCreateResult> {
-    this.assertAdmin(context);
-    await this.assertUniqueFields(input);
-
-    const { input: provisionedInput, login } = await this.withProvisionedUser(input);
-    const doctor = await this.doctorsRepository.create(provisionedInput);
-    return this.buildCreateResult(this.toDto(doctor), login);
-  }
-
   public async createFromForm(
     input: DoctorFormInput,
     files: DoctorUploadedFiles | undefined,
@@ -96,32 +80,6 @@ export class DoctorsService {
     });
 
     return this.buildCreateResult(this.toDto(doctor), login);
-  }
-
-  public async update(
-    id: string,
-    input: UpdateDoctorInput,
-    context: DoctorAccessContext,
-  ): Promise<DoctorDto> {
-    const doctor = await this.findExistingDoctor(id);
-    this.assertCanAccessDoctor(doctor, context);
-
-    if (context.role !== UserRole.ADMIN) {
-      this.rejectDoctorManagedFields(input);
-    }
-
-    await this.assertUniqueFields(input, id);
-
-    const updatedDoctor = await this.doctorsRepository.updateById(
-      id,
-      input,
-    );
-
-    if (!updatedDoctor) {
-      throw new NotFoundError('Doctor profile not found');
-    }
-
-    return this.toDto(updatedDoctor);
   }
 
   public async updateFromForm(
@@ -379,9 +337,9 @@ export class DoctorsService {
       return [];
     }
 
-    return files.filter((file): file is IFileDocument => this.isPopulatedFile(file)).map((file) =>
-      this.mapFile(file),
-    );
+    return files
+      .filter((file): file is IFileDocument => this.isPopulatedFile(file))
+      .map((file) => this.mapFile(file));
   }
 
   private mapFile(file: IFileDocument): FileDto {

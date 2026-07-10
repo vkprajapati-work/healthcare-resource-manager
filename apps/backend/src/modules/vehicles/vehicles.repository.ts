@@ -79,10 +79,7 @@ export class VehiclesRepository {
     return this.existsByField('vehicleNumber', vehicleNumber.toUpperCase(), excludeId);
   }
 
-  public async updateById(
-    id: string,
-    input: UpdateVehicleInput,
-  ): Promise<IVehicleDocument | null> {
+  public async updateById(id: string, input: UpdateVehicleInput): Promise<IVehicleDocument | null> {
     await VehicleModel.findOneAndUpdate({ _id: id, deletedAt: { $exists: false } }, input, {
       runValidators: true,
     }).exec();

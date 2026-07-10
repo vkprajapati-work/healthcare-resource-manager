@@ -67,10 +67,7 @@ export class DriversRepository {
     return this.existsByField('licenseNumber', licenseNumber, excludeId);
   }
 
-  public async updateById(
-    id: string,
-    input: UpdateDriverInput,
-  ): Promise<IDriverDocument | null> {
+  public async updateById(id: string, input: UpdateDriverInput): Promise<IDriverDocument | null> {
     await DriverModel.findOneAndUpdate({ _id: id, deletedAt: { $exists: false } }, input, {
       runValidators: true,
     }).exec();

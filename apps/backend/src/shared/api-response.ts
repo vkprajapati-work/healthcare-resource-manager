@@ -3,6 +3,20 @@ export interface ApiSuccessResponse<T> {
   data: T;
 }
 
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface ApiPaginatedResponse<
+  T,
+  M extends PaginationMeta = PaginationMeta,
+> extends ApiSuccessResponse<T> {
+  meta: M;
+}
+
 export interface ErrorDetail {
   field?: string;
   message: string;
@@ -10,13 +24,11 @@ export interface ErrorDetail {
 
 export interface ApiErrorResponse {
   success: false;
-  message: string;
-  errors: ErrorDetail[];
-  error?: {
+  error: {
     code: string;
-    details: ErrorDetail[];
+    message: string;
+    details?: ErrorDetail[];
   };
-  requestId?: string | undefined;
 }
 
 export const createSuccessResponse = <T>(data: T): ApiSuccessResponse<T> => ({
@@ -24,18 +36,24 @@ export const createSuccessResponse = <T>(data: T): ApiSuccessResponse<T> => ({
   data,
 });
 
+export const createPaginatedResponse = <T, M extends PaginationMeta>(
+  data: T,
+  meta: M,
+): ApiPaginatedResponse<T, M> => ({
+  success: true,
+  data,
+  meta,
+});
+
 export const createErrorResponse = (
   message: string,
-  errors: ErrorDetail[] = [],
-  code = 'INTERNAL_SERVER_ERROR',
-  requestId?: string,
+  code: string,
+  details: ErrorDetail[] = [],
 ): ApiErrorResponse => ({
   success: false,
-  message,
-  errors,
   error: {
     code,
-    details: errors,
+    message,
+    ...(details.length > 0 ? { details } : {}),
   },
-  requestId,
 });

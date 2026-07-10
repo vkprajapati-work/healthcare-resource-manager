@@ -19,22 +19,36 @@
 
 ## Backend
 
-| Technology         | Role               | Why                                                                                                                                                                                                          |
-| ------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Node.js (≥ 20)** | Runtime            | Required by [requirement.md](../requirement.md); one language (TypeScript) across the stack.                                                                                                                 |
-| **Express.js**     | HTTP framework     | Minimal, unopinionated, huge ecosystem; the layered module architecture (routes → controller → service) supplies the structure Express doesn't impose.                                                       |
-| **TypeScript**     | Language           | Same rationale as frontend; shared conventions in [CODING_STANDARDS.md](CODING_STANDARDS.md).                                                                                                                |
-| **MongoDB**        | Database           | Document model fits the flexible `resource` entity (ambulance/doctor with optional image); native geo-indexes support future "nearby" queries; effortless pagination with `skip`/`limit` + `countDocuments`. |
-| **Mongoose**       | ODM                | Schema enforcement on top of MongoDB, lifecycle hooks, query typing, and index management in code.                                                                                                           |
-| **Zod** (backend)  | Request validation | Validates `body`/`query`/`params` at the boundary before controllers run; same library as frontend keeps mental model uniform.                                                                               |
+| Technology                 | Role                      | Why                                                                                                                                                                                                          |
+| -------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Node.js (≥ 20)**         | Runtime                   | Required by [requirement.md](../requirement.md); one language (TypeScript) across the stack.                                                                                                                 |
+| **Express.js**             | HTTP framework            | Minimal, unopinionated, huge ecosystem; the layered module architecture (routes → controller → service) supplies the structure Express doesn't impose.                                                       |
+| **TypeScript**             | Language                  | Same rationale as frontend; shared conventions in [CODING_STANDARDS.md](CODING_STANDARDS.md).                                                                                                                |
+| **MongoDB**                | Database                  | Document model fits the flexible `resource` entity (ambulance/doctor with optional image); native geo-indexes support future "nearby" queries; effortless pagination with `skip`/`limit` + `countDocuments`. |
+| **Mongoose**               | ODM                       | Schema enforcement on top of MongoDB, lifecycle hooks, query typing, and index management in code.                                                                                                           |
+| **Zod** (backend)          | Request validation        | Validates `body`/`query`/`params` at the boundary before controllers run; same library as frontend keeps mental model uniform.                                                                               |
+| **jsonwebtoken**           | Auth tokens               | Signs/verifies short-lived access + refresh JWTs for the `auth` module.                                                                                                                                      |
+| **bcrypt**                 | Password hashing          | Industry-standard adaptive hashing (cost factor 12) for stored credentials; passwords are never stored or logged in plaintext.                                                                               |
+| **cookie-parser**          | Cookie parsing            | Reads the `httpOnly` access/refresh token cookies set by the auth module.                                                                                                                                    |
+| **helmet**                 | Security headers          | Sets standard hardening headers (CSP, `X-Content-Type-Options: nosniff`, etc.) on every response.                                                                                                            |
+| **cors**                   | CORS policy               | Restricts cross-origin access to the configured `CLIENT_URL`, with credentials support for cookie-based auth.                                                                                                |
+| **express-rate-limit**     | Rate limiting             | Bounds request volume per IP to blunt brute-force and scraping attempts.                                                                                                                                     |
+| **express-mongo-sanitize** | NoSQL injection guard     | Strips `$`/`.`-prefixed keys from `req.body`/`req.query`/`req.params` before they reach Mongoose queries.                                                                                                    |
+| **hpp**                    | Parameter pollution guard | Collapses duplicate query-string keys to prevent HTTP parameter pollution.                                                                                                                                   |
+| **compression**            | Response compression      | Gzip/Brotli compression for JSON responses.                                                                                                                                                                  |
+| **multer**                 | Multipart uploads         | Parses `multipart/form-data` uploads (profile photos, licenses, vehicle documents) into memory before validation and storage.                                                                                |
+| **winston**                | Structured logging        | JSON request/error logging with level control via `LOG_LEVEL`; no `console.*` in application code.                                                                                                           |
+
+The backend has grown beyond the original `resources`-only scope to include `auth`, `doctors`, `drivers`, `vehicles`, and `files` modules — see the "Known Architecture Debt" note in [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for why this isn't yet reconciled with the documented `resources` contract.
 
 ## Testing
 
-| Technology                | Role                     | Why                                                                                                                |
-| ------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **Jest**                  | Test runner (both apps)  | Explicitly required by [requirement.md](../requirement.md); mature, batteries-included.                            |
-| **React Testing Library** | Frontend component tests | Tests behavior from the user's perspective (queries by role/label), which aligns with the accessibility standards. |
-| **Supertest**             | Backend API tests        | Exercises the real Express app over HTTP without opening a port; ideal for envelope/status-code contract tests.    |
+| Technology                | Role                     | Why                                                                                                                   |
+| ------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| **Jest**                  | Test runner (both apps)  | Explicitly required by [requirement.md](../requirement.md); mature, batteries-included.                               |
+| **React Testing Library** | Frontend component tests | Tests behavior from the user's perspective (queries by role/label), which aligns with the accessibility standards.    |
+| **Supertest**             | Backend API tests        | Exercises the real Express app over HTTP without opening a port; ideal for envelope/status-code contract tests.       |
+| **ts-jest**               | TS/ESM test transform    | Runs Jest directly against TypeScript + NodeNext ESM without a separate build step; full type-checking on test files. |
 
 ## Tooling
 
@@ -60,3 +74,4 @@
 - **Next.js** — no SSR/SEO requirement; a Vite SPA is simpler ("keep it simple" per the requirements).
 - **CSS-in-JS (styled-components)** — the requirement lists it as a "plus", but Tailwind + shadcn/ui was chosen for lower runtime cost and faster composition; this is a deliberate, documented trade-off.
 - **SQLite / in-memory JSON** — the requirement allows them for simplicity, but MongoDB + Mongoose was chosen as the production-ready path with room for geo queries.
+- **xss-clean** — deprecated and unmaintained; removed. `helmet`'s CSP plus disciplined output encoding covers the same concern without a dead dependency.

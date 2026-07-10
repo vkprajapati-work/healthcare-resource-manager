@@ -2,7 +2,7 @@
 
 Full-stack app for managing healthcare resources (ambulances and doctors): React 18 SPA + Express REST API + MongoDB, organized as a pnpm + Turborepo monorepo.
 
-**Current state:** `apps/frontend` and `apps/backend` are empty placeholders (`.gitkeep` only). No application code exists yet.
+**Current state:** `apps/frontend` is an empty placeholder (`.gitkeep` only). `apps/backend` has a working, tested Express + Mongoose API covering more than `resources`: it also has `auth`, `doctors`, `drivers`, `vehicles`, and `files` modules. `GET /resources` bridges in `doctors`/`vehicles` read-only (mapped into the resource shape, counted in `meta.counts`) — but writes still only touch the native `resources` collection, and `drivers` isn't bridged at all. See [PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md) §8a for the full design.
 
 ## Project overview & business goals
 
@@ -13,7 +13,7 @@ Users must be able to find nearby ambulance services and doctors quickly in emer
 - **Frontend:** React 18, TypeScript, Vite, React Router v6, TanStack Query v5, Axios, Tailwind CSS, shadcn/ui, React Hook Form, Zod
 - **Backend:** Node.js (≥ 20), Express, TypeScript, MongoDB, Mongoose, Zod
 - **Testing:** Jest + React Testing Library (frontend), Jest + Supertest (backend)
-- **Tooling:** pnpm workspaces, Turborepo, ESLint, Prettier, Husky, lint-staged
+- **Tooling:** pnpm workspaces, Turborepo, Prettier — installed today. ESLint, Husky, and lint-staged are part of the target stack, to be added when the apps are scaffolded.
 
 Rationale for every choice: [docs/TECH_STACK.md](docs/TECH_STACK.md).
 
@@ -39,7 +39,7 @@ Full trees and dependency rules: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 - **Coding** ([docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md)): folders `kebab-case`, components `PascalCase.tsx`, other files `kebab-case.ts`, backend files `<module>.<layer>.ts`; Conventional Commits; import ordering external → `@/` alias → relative → types; tests co-located.
 - **TypeScript:** `strict: true` always; **never `any`**, no `@ts-ignore`; derive types from Zod schemas (`z.infer`); union literals over enums; explicit return types on exported functions.
 - **React:** functional components only; business logic in hooks, not JSX; props explicitly typed; components ≤ ~150 lines; composition over prop explosions; state as local as possible; pagination/filter state in the URL.
-- **Express:** validate `body`/`query`/`params` with Zod before controllers run; `asyncHandler` on every route; throw `ApiError(status, code, message)` from services; config only via the validated env module — never `process.env` elsewhere.
+- **Express:** validate `body`/`query`/`params` with Zod before controllers run; `asyncHandler` on every route; throw an `AppError` subclass (`NotFoundError`, `ValidationError`, `AuthorizationError`, etc. — never a bare `AppError`, since its default code is generic) from services; config only via the validated env module — never `process.env` elsewhere.
 
 ## Performance expectations
 
@@ -54,7 +54,7 @@ Semantic HTML first; every input labelled with errors announced via `aria-descri
 - Validate and sanitize **all** input at the boundary (Zod); strip unknown body fields; validate `:id` as ObjectId before it reaches Mongoose.
 - Never commit secrets or `.env` files; document variables in `.env.example`; env is read only through the validated config module.
 - Never leak stack traces or internal error details in production responses — errors go through the central error middleware and the standard envelope.
-- Configure CORS explicitly for known origins (no `*` in production); set standard security headers (helmet) when the backend is scaffolded.
+- Configure CORS explicitly for known origins (no `*` in production); set standard security headers when the backend is scaffolded (record the chosen package in docs/TECH_STACK.md).
 - No `dangerouslySetInnerHTML`; treat all rendered user content as untrusted.
 
 ## File organization & dependency management

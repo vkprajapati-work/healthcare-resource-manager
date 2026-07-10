@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { env } from '../../config/env.js';
 import { AuthenticationError, ConflictError, NotFoundError } from '../../errors/app-error.js';
+import { generateSecurePassword } from '../../utils/password.js';
 import { AuthRepository } from './auth.repository.js';
 import type {
   AuthUserPayload,
@@ -17,7 +18,7 @@ export class AuthService {
   public async login(
     input: LoginInput,
   ): Promise<{ user: AuthUserPayload; accessToken: string; refreshToken: string }> {
-    const user = await this.authRepository.findByEmail(input.email);
+    const user = await this.authRepository.findByEmailWithPassword(input.email);
 
     if (!user || !user.isActive) {
       throw new AuthenticationError('Invalid credentials');
@@ -133,7 +134,7 @@ export class AuthService {
   }
 
   public async changePassword(userId: string, input: ChangePasswordInput): Promise<void> {
-    const user = await this.authRepository.findById(userId);
+    const user = await this.authRepository.findByIdWithPassword(userId);
 
     if (!user || !user.isActive) {
       throw new NotFoundError('User not found');
@@ -158,7 +159,7 @@ export class AuthService {
       throw new ConflictError('User email already exists');
     }
 
-    const defaultPassword = this.buildDefaultPassword(input.firstName, input.email);
+    const defaultPassword = generateSecurePassword();
     const hashedPassword = await bcrypt.hash(defaultPassword, 12);
     const user = await this.authRepository.create({
       firstName: input.firstName,
@@ -174,20 +175,6 @@ export class AuthService {
       id: String(user._id),
       defaultPassword,
     };
-  }
-
-  private buildDefaultPassword(firstName: string, email: string): string {
-    const normalizedName = this.normalizePasswordPart(firstName) || 'user';
-    const emailName = this.normalizePasswordPart(email.split('@')[0] ?? '') || 'account';
-    const displayName = `${normalizedName.charAt(0).toUpperCase()}${normalizedName.slice(1)}`;
-    return `${displayName}@${emailName}#2026`;
-  }
-
-  private normalizePasswordPart(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '');
   }
 
   private signToken(payload: AuthUserPayload, secret: string, expiresIn: string): string {

@@ -1,3 +1,4 @@
+import type { ReadStream } from 'node:fs';
 import type { Document, Types } from 'mongoose';
 import type { AuthUserPayload } from '../auth/auth.types.js';
 
@@ -30,8 +31,7 @@ export const FileCategory = {
 } as const;
 
 export type ImageFileCategory = (typeof ImageFileCategory)[keyof typeof ImageFileCategory];
-export type DocumentFileCategory =
-  (typeof DocumentFileCategory)[keyof typeof DocumentFileCategory];
+export type DocumentFileCategory = (typeof DocumentFileCategory)[keyof typeof DocumentFileCategory];
 export type FileCategory = (typeof FileCategory)[keyof typeof FileCategory];
 
 export const StorageProvider = {
@@ -120,4 +120,5 @@ export interface StorageUploadInput {
 export interface StorageService {
   upload(input: StorageUploadInput): Promise<StoredFile>;
   delete(storageKey: string): Promise<void>;
+  createReadStream(storageKey: string): ReadStream;
 }

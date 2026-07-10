@@ -1,10 +1,11 @@
+import type { ReadStream } from 'node:fs';
 import { env } from '../../config/env.js';
-import { BadRequestError, NotFoundError } from '../../shared/errors.js';
+import { AuthorizationError, BadRequestError, NotFoundError } from '../../shared/errors.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
+import type { AuthUserPayload } from '../auth/auth.types.js';
+import { UserRole } from '../auth/auth.types.js';
 import { FilesRepository } from './files.repository.js';
-import {
-  createStorageService,
-  getAllowedMimeTypesForCategory,
-} from './storage.service.js';
+import { createStorageService, getAllowedMimeTypesForCategory } from './storage.service.js';
 import type {
   FileDto,
   FileListMeta,
@@ -39,30 +40,25 @@ export class FilesService {
     return this.toDto(file);
   }
 
-  public async list(params: FileQueryParams): Promise<{ files: FileDto[]; meta: FileListMeta }> {
+  public async list(
+    params: FileQueryParams,
+    requester: AuthUserPayload,
+  ): Promise<{ files: FileDto[]; meta: FileListMeta }> {
+    const scopedParams = this.scopeToRequester(params, requester);
+
     const [files, totalItems] = await Promise.all([
-      this.filesRepository.findMany(params),
-      this.filesRepository.countMany(params),
+      this.filesRepository.findMany(scopedParams),
+      this.filesRepository.countMany(scopedParams),
     ]);
 
     return {
       files: files.map((file) => this.toDto(file)),
-      meta: {
-        page: params.page,
-        limit: params.limit,
-        totalItems,
-        totalPages: Math.ceil(totalItems / params.limit),
-      },
+      meta: buildPaginationMeta(scopedParams, totalItems),
     };
   }
 
-  public async getById(id: string): Promise<FileDto> {
-    const file = await this.filesRepository.findById(id);
-
-    if (!file) {
-      throw new NotFoundError('File not found');
-    }
-
+  public async getById(id: string, requester: AuthUserPayload): Promise<FileDto> {
+    const file = await this.findOwnedOrThrow(id, requester);
     return this.toDto(file);
   }
 
@@ -76,6 +72,46 @@ export class FilesService {
     await this.storageService.delete(file.storageKey);
 
     return { id };
+  }
+
+  public async getDownloadStream(
+    id: string,
+    requester: AuthUserPayload,
+  ): Promise<{ stream: ReadStream; file: FileDto }> {
+    const file = await this.findOwnedOrThrow(id, requester);
+
+    return {
+      stream: this.storageService.createReadStream(file.storageKey),
+      file: this.toDto(file),
+    };
+  }
+
+  private async findOwnedOrThrow(id: string, requester: AuthUserPayload): Promise<IFileDocument> {
+    const file = await this.filesRepository.findById(id);
+
+    if (!file) {
+      throw new NotFoundError('File not found');
+    }
+
+    this.assertCanAccess(file, requester);
+
+    return file;
+  }
+
+  private assertCanAccess(file: IFileDocument, requester: AuthUserPayload): void {
+    const isOwner = Boolean(file.uploadedBy) && String(file.uploadedBy) === requester.id;
+
+    if (requester.role !== UserRole.ADMIN && !isOwner) {
+      throw new AuthorizationError('You do not have access to this file');
+    }
+  }
+
+  private scopeToRequester(params: FileQueryParams, requester: AuthUserPayload): FileQueryParams {
+    if (requester.role === UserRole.ADMIN) {
+      return params;
+    }
+
+    return { ...params, uploadedBy: requester.id };
   }
 
   private validateFile(input: UploadFileInput): void {

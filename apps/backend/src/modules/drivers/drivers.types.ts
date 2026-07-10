@@ -1,5 +1,6 @@
 import type { Document, Types } from 'mongoose';
 import type { DocumentFileCategory, FileDto } from '../files/files.types.js';
+import type { VehicleStatus, VehicleType } from '../vehicles/vehicles.types.js';
 
 export const DriverGender = {
   MALE: 'MALE',
@@ -60,6 +61,18 @@ export interface IDriverDocument extends Document {
   updatedAt: Date;
 }
 
+export interface AssignedVehicleSummary {
+  id: string;
+  registrationNumber: string;
+  vehicleNumber: string;
+  vehicleType: VehicleType;
+  brand: string;
+  model: string;
+  status: VehicleStatus;
+  isActive: boolean;
+  photos: FileDto[];
+}
+
 export interface DriverDto {
   id: string;
   userId?: string;
@@ -74,7 +87,7 @@ export interface DriverDto {
   licenseNumber: string;
   licenseExpiry: string;
   yearsOfExperience: number;
-  assignedVehicle?: string;
+  assignedVehicle?: AssignedVehicleSummary;
   address: string;
   city: string;
   state: string;
@@ -112,7 +125,7 @@ export interface DriverListQuery {
 }
 
 export interface DriverListMeta {
-  total: number;
+  totalItems: number;
   page: number;
   limit: number;
   totalPages: number;

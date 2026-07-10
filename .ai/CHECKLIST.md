@@ -7,7 +7,7 @@
 - [ ] **TypeScript passes** — `pnpm typecheck`, strict mode, no `any` / `@ts-ignore` introduced
 - [ ] **Lint passes** — `pnpm lint` with zero errors
 - [ ] **Formatting passes** — `pnpm format:check`
-- [ ] **Tests pass** — existing tests unmodified and green; new behavior covered by new tests
+- [ ] **Tests pass** — all tests green; existing tests not weakened or deleted to force a pass; new or changed behavior covered by added/updated tests
 
 ## Code quality
 

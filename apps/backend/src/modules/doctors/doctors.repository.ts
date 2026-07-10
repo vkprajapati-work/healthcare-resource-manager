@@ -26,10 +26,7 @@ export class DoctorsRepository {
       query.deletedAt = { $exists: false };
     }
 
-    return DoctorModel.findOne(query)
-      .populate(populateFiles)
-      .lean<IDoctorDocument>()
-      .exec();
+    return DoctorModel.findOne(query).populate(populateFiles).lean<IDoctorDocument>().exec();
   }
 
   public async findByUserId(userId: string): Promise<IDoctorDocument | null> {
@@ -65,15 +62,10 @@ export class DoctorsRepository {
     return this.existsByField('licenseNumber', licenseNumber, excludeId);
   }
 
-  public async updateById(
-    id: string,
-    input: UpdateDoctorInput,
-  ): Promise<IDoctorDocument | null> {
-    await DoctorModel.findOneAndUpdate(
-      { _id: id, deletedAt: { $exists: false } },
-      input,
-      { runValidators: true },
-    ).exec();
+  public async updateById(id: string, input: UpdateDoctorInput): Promise<IDoctorDocument | null> {
+    await DoctorModel.findOneAndUpdate({ _id: id, deletedAt: { $exists: false } }, input, {
+      runValidators: true,
+    }).exec();
 
     return this.findById(id);
   }

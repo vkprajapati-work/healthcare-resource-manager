@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createSuccessResponse } from '../../shared/api-response.js';
+import { createPaginatedResponse, createSuccessResponse } from '../../shared/api-response.js';
 import { ResourcesService } from './resources.service.js';
 import type {
   CreateResourceInput,
@@ -10,8 +10,10 @@ import type {
 const resourcesService = new ResourcesService();
 
 export const listResources = async (req: Request, res: Response): Promise<void> => {
-  const { resources, meta } = await resourcesService.list(req.query as unknown as ResourceListQuery);
-  res.status(200).json({ success: true, data: resources, meta });
+  const { resources, meta } = await resourcesService.list(
+    req.query as unknown as ResourceListQuery,
+  );
+  res.status(200).json(createPaginatedResponse(resources, meta));
 };
 
 export const getResource = async (req: Request, res: Response): Promise<void> => {
@@ -25,7 +27,10 @@ export const createResource = async (req: Request, res: Response): Promise<void>
 };
 
 export const updateResource = async (req: Request, res: Response): Promise<void> => {
-  const resource = await resourcesService.update(req.params.id as string, req.body as UpdateResourceInput);
+  const resource = await resourcesService.update(
+    req.params.id as string,
+    req.body as UpdateResourceInput,
+  );
   res.status(200).json(createSuccessResponse(resource));
 };
 

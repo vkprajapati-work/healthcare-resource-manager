@@ -42,27 +42,38 @@ const objectIdArraySchema = z.preprocess((value) => {
   return value;
 }, z.array(objectIdSchema).default([]));
 
-const documentCategoriesSchema = z.preprocess((value) => {
-  if (value === '' || typeof value === 'undefined') {
-    return undefined;
-  }
-
-  if (Array.isArray(value)) {
-    return value;
-  }
-
-  if (typeof value === 'string') {
-    const trimmedValue = value.trim();
-
-    if (!trimmedValue) {
+const documentCategoriesSchema = z.preprocess(
+  (value) => {
+    if (value === '' || typeof value === 'undefined') {
       return undefined;
     }
 
-    return trimmedValue.split(',').map((item) => item.trim());
-  }
+    if (Array.isArray(value)) {
+      return value;
+    }
 
-  return value;
-}, z.array(z.nativeEnum(DocumentFileCategory)).optional());
+    if (typeof value === 'string') {
+      const trimmedValue = value.trim();
+
+      if (!trimmedValue) {
+        return undefined;
+      }
+
+      if (trimmedValue.startsWith('[')) {
+        try {
+          return JSON.parse(trimmedValue) as unknown;
+        } catch {
+          return value;
+        }
+      }
+
+      return trimmedValue.split(',').map((item) => item.trim());
+    }
+
+    return value;
+  },
+  z.array(z.nativeEnum(DocumentFileCategory)).optional(),
+);
 
 const optionalDateSchema = z.preprocess((value) => {
   if (value === '') {
@@ -94,12 +105,26 @@ const booleanSchema = z.preprocess((value) => {
 
 const vehicleBodySchema = z
   .object({
-    registrationNumber: z.string().trim().min(1).max(50).transform((value) => value.toUpperCase()),
-    vehicleNumber: z.string().trim().min(1).max(50).transform((value) => value.toUpperCase()),
+    registrationNumber: z
+      .string()
+      .trim()
+      .min(1)
+      .max(50)
+      .transform((value) => value.toUpperCase()),
+    vehicleNumber: z
+      .string()
+      .trim()
+      .min(1)
+      .max(50)
+      .transform((value) => value.toUpperCase()),
     vehicleType: z.nativeEnum(VehicleType),
     brand: z.string().trim().min(1).max(100),
     model: z.string().trim().min(1).max(100),
-    manufactureYear: z.coerce.number().int().min(1990).max(new Date().getFullYear() + 1),
+    manufactureYear: z.coerce
+      .number()
+      .int()
+      .min(1990)
+      .max(new Date().getFullYear() + 1),
     color: z.string().trim().min(1).max(50),
     seatingCapacity: z.coerce.number().int().min(1),
     patientCapacity: z.coerce.number().int().min(1),

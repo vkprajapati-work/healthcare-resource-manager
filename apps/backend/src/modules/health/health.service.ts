@@ -1,5 +1,6 @@
 import process from 'node:process';
 import mongoose from 'mongoose';
+import { env } from '../../config/env.js';
 import type { HealthStatusPayload } from './health.types.js';
 
 export const getHealthStatus = (): HealthStatusPayload => {
@@ -10,7 +11,8 @@ export const getHealthStatus = (): HealthStatusPayload => {
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    environment: process.env.NODE_ENV ?? 'development',
+    environment: env.NODE_ENV,
+    // npm_package_version is supplied by the package manager at runtime, not app config
     version: process.env.npm_package_version ?? '0.1.0',
     application: {
       name: 'healthcare-resource-manager-backend',

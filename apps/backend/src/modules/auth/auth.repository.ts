@@ -6,8 +6,18 @@ export class AuthRepository {
     return UserModel.findOne({ email }).lean<IUserDocument>().exec();
   }
 
+  /** Password hash is `select: false` by default - use only where a comparison is actually needed. */
+  public async findByEmailWithPassword(email: string): Promise<IUserDocument | null> {
+    return UserModel.findOne({ email }).select('+password').lean<IUserDocument>().exec();
+  }
+
   public async findById(id: string): Promise<IUserDocument | null> {
     return UserModel.findById(id).lean<IUserDocument>().exec();
+  }
+
+  /** Password hash is `select: false` by default - use only where a comparison is actually needed. */
+  public async findByIdWithPassword(id: string): Promise<IUserDocument | null> {
+    return UserModel.findById(id).select('+password').lean<IUserDocument>().exec();
   }
 
   public async create(user: Partial<IUserDocument>): Promise<IUserDocument> {

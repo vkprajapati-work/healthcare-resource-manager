@@ -3,7 +3,18 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { AuthRepository } from '../modules/auth/auth.repository.js';
 import type { AuthUserPayload } from '../modules/auth/auth.types.js';
-import { AppError } from '../shared/errors.js';
+import { AuthenticationError, PasswordChangeRequiredError } from '../shared/errors.js';
+
+const MUST_CHANGE_PASSWORD_ALLOWLIST = new Set([
+  '/api/v1/auth/change-password',
+  '/api/v1/auth/logout',
+  '/api/v1/auth/me',
+]);
+
+const isMustChangePasswordExempt = (req: Request): boolean => {
+  const path = req.originalUrl.split('?')[0] ?? '';
+  return MUST_CHANGE_PASSWORD_ALLOWLIST.has(path);
+};
 
 export const authenticate = async (
   req: Request,
@@ -13,7 +24,7 @@ export const authenticate = async (
   const token = req.cookies?.accessToken as string | undefined;
 
   if (!token) {
-    next(new AppError('Authentication required', 401));
+    next(new AuthenticationError('Authentication required'));
     return;
   }
 
@@ -25,7 +36,7 @@ export const authenticate = async (
     const user = await new AuthRepository().findById(payload.id);
 
     if (!user || !user.isActive) {
-      next(new AppError('Authentication required', 401));
+      next(new AuthenticationError('Authentication required'));
       return;
     }
 
@@ -38,8 +49,13 @@ export const authenticate = async (
       mustChangePassword: user.mustChangePassword,
     };
 
+    if (user.mustChangePassword && !isMustChangePasswordExempt(req)) {
+      next(new PasswordChangeRequiredError());
+      return;
+    }
+
     next();
   } catch {
-    next(new AppError('Authentication required', 401));
+    next(new AuthenticationError('Authentication required'));
   }
 };

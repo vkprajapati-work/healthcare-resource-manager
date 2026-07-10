@@ -1,12 +1,15 @@
 import { AuthorizationError, ConflictError, NotFoundError } from '../../shared/errors.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
 import { AuthService } from '../auth/auth.service.js';
 import { UserRole } from '../auth/auth.types.js';
 import { DocumentFileCategory, ImageFileCategory } from '../files/files.types.js';
 import { FilesService } from '../files/files.service.js';
 import type { FileDto, IFileDocument } from '../files/files.types.js';
 import { VehiclesRepository } from '../vehicles/vehicles.repository.js';
+import type { IVehicleDocument } from '../vehicles/vehicles.types.js';
 import { DriversRepository } from './drivers.repository.js';
 import type {
+  AssignedVehicleSummary,
   DriverAccessContext,
   DriverCreateResult,
   DriverDto,
@@ -33,19 +36,14 @@ export class DriversService {
   ): Promise<{ drivers: DriverDto[]; meta: DriverListMeta }> {
     this.assertAdmin(context);
 
-    const [drivers, total] = await Promise.all([
+    const [drivers, totalItems] = await Promise.all([
       this.driversRepository.findMany(query),
       this.driversRepository.countMany(query),
     ]);
 
     return {
       drivers: drivers.map((driver) => this.toDto(driver)),
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        totalPages: Math.ceil(total / query.limit),
-      },
+      meta: buildPaginationMeta({ page: query.page, limit: query.limit }, totalItems),
     };
   }
 
@@ -86,10 +84,16 @@ export class DriversService {
     });
 
     if (driverInput.assignedVehicle) {
-      await this.vehiclesRepository.setAssignedDriver(driverInput.assignedVehicle, String(driver._id));
+      await this.vehiclesRepository.setAssignedDriver(
+        driverInput.assignedVehicle,
+        String(driver._id),
+      );
     }
 
-    return this.buildCreateResult(this.toDto(await this.findExistingDriver(String(driver._id))), login);
+    return this.buildCreateResult(
+      this.toDto(await this.findExistingDriver(String(driver._id))),
+      login,
+    );
   }
 
   public async updateFromForm(
@@ -385,9 +389,9 @@ export class DriversService {
       dto.userId = String(driver.userId);
     }
 
-    const assignedVehicleId = this.getRefId(driver.assignedVehicle);
-    if (assignedVehicleId) {
-      dto.assignedVehicle = assignedVehicleId;
+    const assignedVehicleSummary = this.mapAssignedVehicle(driver.assignedVehicle);
+    if (assignedVehicleSummary) {
+      dto.assignedVehicle = assignedVehicleSummary;
     }
 
     if (driver.profileImage && this.isPopulatedFile(driver.profileImage)) {
@@ -397,14 +401,36 @@ export class DriversService {
     return dto;
   }
 
+  private isPopulatedVehicle(value: unknown): value is IVehicleDocument {
+    return typeof value === 'object' && value !== null && 'registrationNumber' in value;
+  }
+
+  private mapAssignedVehicle(value: unknown): AssignedVehicleSummary | undefined {
+    if (!this.isPopulatedVehicle(value)) {
+      return undefined;
+    }
+
+    return {
+      id: String(value._id),
+      registrationNumber: value.registrationNumber,
+      vehicleNumber: value.vehicleNumber,
+      vehicleType: value.vehicleType,
+      brand: value.brand,
+      model: value.model,
+      status: value.status,
+      isActive: value.isActive,
+      photos: this.mapFiles(value.photos),
+    };
+  }
+
   private mapFiles(files: unknown): FileDto[] {
     if (!Array.isArray(files)) {
       return [];
     }
 
-    return files.filter((file): file is IFileDocument => this.isPopulatedFile(file)).map((file) =>
-      this.mapFile(file),
-    );
+    return files
+      .filter((file): file is IFileDocument => this.isPopulatedFile(file))
+      .map((file) => this.mapFile(file));
   }
 
   private mapFile(file: IFileDocument): FileDto {

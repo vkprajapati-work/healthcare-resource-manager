@@ -112,9 +112,9 @@ export interface DoctorListQuery {
 }
 
 export interface DoctorListMeta {
-  total: number;
   page: number;
   limit: number;
+  totalItems: number;
   totalPages: number;
 }
 

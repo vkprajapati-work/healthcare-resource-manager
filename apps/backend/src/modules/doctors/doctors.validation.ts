@@ -46,35 +46,38 @@ const documentsSchema = z.preprocess((value) => {
   return value;
 }, z.array(objectIdSchema).default([]));
 
-const documentCategoriesSchema = z.preprocess((value) => {
-  if (value === '' || typeof value === 'undefined') {
-    return undefined;
-  }
-
-  if (Array.isArray(value)) {
-    return value;
-  }
-
-  if (typeof value === 'string') {
-    const trimmedValue = value.trim();
-
-    if (!trimmedValue) {
+const documentCategoriesSchema = z.preprocess(
+  (value) => {
+    if (value === '' || typeof value === 'undefined') {
       return undefined;
     }
 
-    if (trimmedValue.startsWith('[')) {
-      try {
-        return JSON.parse(trimmedValue) as unknown;
-      } catch {
-        return value;
-      }
+    if (Array.isArray(value)) {
+      return value;
     }
 
-    return trimmedValue.split(',').map((item) => item.trim());
-  }
+    if (typeof value === 'string') {
+      const trimmedValue = value.trim();
 
-  return value;
-}, z.array(z.nativeEnum(DocumentFileCategory)).optional());
+      if (!trimmedValue) {
+        return undefined;
+      }
+
+      if (trimmedValue.startsWith('[')) {
+        try {
+          return JSON.parse(trimmedValue) as unknown;
+        } catch {
+          return value;
+        }
+      }
+
+      return trimmedValue.split(',').map((item) => item.trim());
+    }
+
+    return value;
+  },
+  z.array(z.nativeEnum(DocumentFileCategory)).optional(),
+);
 
 const optionalNumberSchema = z.preprocess((value) => {
   if (value === '') {

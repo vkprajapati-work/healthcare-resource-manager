@@ -41,22 +41,17 @@ export const errorHandler: ErrorRequestHandler = (
 
   const response = createErrorResponse(
     normalizedError.message,
-    normalizedError.details,
     normalizedError.code,
-    req.id,
+    normalizedError.details,
   );
 
-  if (env.NODE_ENV !== 'production' && error instanceof Error) {
+  if (env.NODE_ENV !== 'production') {
     res.status(statusCode).json({
       ...response,
+      requestId: req.id,
       error: {
         ...response.error,
-        name: error.name,
-        message: error.message,
-        stack: error.stack?.split('\n').slice(0, 10) ?? [],
-        method: req.method,
-        path: req.originalUrl || req.url,
-        timestamp: new Date().toISOString(),
+        stack: normalizedError.stack?.split('\n').slice(0, 10) ?? [],
       },
     });
     return;

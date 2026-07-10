@@ -96,6 +96,16 @@ A `packages/` directory for shared code (types, schemas) will be introduced **on
 - Seed script for demo data.
 - Deployment.
 
+## 8a. Architecture Decision — Resources Bridges Doctors/Vehicles (Read-Only)
+
+The backend has grown beyond the `resources` module described in this document. It also has `auth` (JWT login/roles), `doctors`, `drivers`, `vehicles`, and `files` (upload) modules — a richer domain platform with its own MongoDB collections for doctors and vehicles (license numbers, consultation fees, assigned drivers/vehicles, uploaded ID/license documents).
+
+**Resolved:** `GET /api/v1/resources` (list and get-by-id) now merges three sources into one view — its own native collection, plus a **read-only projection** of the `doctors` and `vehicles` collections. A doctor created via `POST /api/v1/doctors` is mapped to `{type:'doctor', title:"Dr. <name>", description:"<specialization> • <qualification> • <years> yrs experience", location:"<city>, <state>", imageUrl:<profileImage>}` and shows up in `GET /resources` and its counts, without a separate resources entry ever being created. Same for vehicles → `type:'ambulance'`. `meta.counts` (FR-4) now reflects the true total across all three sources, regardless of the current filter.
+
+**What did _not_ change:** `doctors`/`vehicles`/`drivers` remain the source of truth for their own rich data and keep their own full CRUD APIs (`POST/PATCH/DELETE /doctors`, `/vehicles`, `/drivers`) — `resources`'s own write endpoints (`POST/PATCH/DELETE /resources`) still only touch the native `resources` collection, for simple entries that don't need a rich profile. There is no write-side sync: editing a bridged doctor's details still requires `PATCH /doctors/:id`, not `/resources/:id` (a resources-only ID lookup there will 404, since the merge is list/get-only). Drivers are not bridged — a driver isn't an "ambulance or doctor," so it never appears in `/resources`.
+
+**Known scale limit:** all three sources are fetched unpaginated then merged/sorted/paginated in application code, since MongoDB can't natively paginate a union of differently-shaped collections without an aggregation `$unionWith`. Fine at this app's scale (dozens to low hundreds of total records); would need a database-level union to scale further. See `resources.service.ts`'s `list()` for the implementation.
+
 ## 9. Future Scalability Considerations
 
 - **Shared package**: extract shared Zod schemas/DTO types to `packages/shared` once duplication appears.

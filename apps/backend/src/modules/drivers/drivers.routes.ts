@@ -25,7 +25,12 @@ router.use(authenticate);
 router.get('/me', asyncHandler(getOwnDriverProfile));
 router.get('/', validateRequest(listDriversSchema), asyncHandler(listDrivers));
 router.get('/:id', validateRequest(driverIdParamSchema), asyncHandler(getDriver));
-router.post('/', uploadDriverFormFiles, validateRequest(createDriverSchema), asyncHandler(createDriver));
+router.post(
+  '/',
+  uploadDriverFormFiles,
+  validateRequest(createDriverSchema),
+  asyncHandler(createDriver),
+);
 router.patch(
   '/:id',
   uploadDriverFormFiles,

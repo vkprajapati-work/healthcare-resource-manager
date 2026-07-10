@@ -3,11 +3,15 @@ import { z } from 'zod';
 
 dotenv.config();
 
+/** Treats an empty-string env var as "not set" so optional() falls through instead of failing validation. */
+const optionalString = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
+
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(5000),
   MONGODB_URI: z.string().trim().min(1),
-  CLIENT_URL: z.string().trim().url().optional(),
+  CLIENT_URL: optionalString(z.string().trim().url()),
   ACCESS_TOKEN_SECRET: z.string().trim().min(1),
   ACCESS_TOKEN_EXPIRES_IN: z.string().trim().min(1).default('15m'),
   REFRESH_TOKEN_SECRET: z.string().trim().min(1),
@@ -33,7 +37,10 @@ const envSchema = z.object({
   FILE_STORAGE_PROVIDER: z.literal('LOCAL').default('LOCAL'),
   ALLOWED_IMAGE_MIME_TYPES: z.string().trim().min(1).default('image/jpeg,image/png,image/webp'),
   ALLOWED_DOCUMENT_MIME_TYPES: z.string().trim().min(1).default('application/pdf'),
-  COOKIE_SECURE: z.coerce.boolean().default(false),
+  COOKIE_SECURE: z
+    .string()
+    .optional()
+    .transform((value) => value?.trim().toLowerCase() === 'true'),
   COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),
   COOKIE_MAX_AGE: z.coerce
     .number()
@@ -45,8 +52,8 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(7 * 24 * 60 * 60 * 1000),
-  ADMIN_EMAIL: z.string().trim().email().default('admin@healthcare.local'),
-  ADMIN_PASSWORD: z.string().trim().min(1).default('Admin@123'),
+  ADMIN_EMAIL: optionalString(z.string().trim().email()),
+  ADMIN_PASSWORD: optionalString(z.string().trim().min(8)),
   ADMIN_FIRST_NAME: z.string().trim().min(1).default('System'),
   ADMIN_LAST_NAME: z.string().trim().min(1).default('Admin'),
 });

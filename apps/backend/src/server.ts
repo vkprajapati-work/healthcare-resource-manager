@@ -36,12 +36,6 @@ const shutdown = async (exitCode = 0): Promise<void> => {
 };
 
 const startServer = async (): Promise<void> => {
-  const app = createApp();
-
-  server = app.listen(env.PORT, () => {
-    logger.info('Server started', { port: env.PORT, environment: env.NODE_ENV });
-  });
-
   process.on('SIGTERM', () => {
     void shutdown(0);
   });
@@ -62,6 +56,17 @@ const startServer = async (): Promise<void> => {
 
   await connectToDatabase();
   await seedDefaultAdmin();
+
+  const app = createApp();
+
+  server = app.listen(env.PORT, () => {
+    logger.info('Server started', { port: env.PORT, environment: env.NODE_ENV });
+  });
+
+  server.on('error', (error: Error) => {
+    logger.error('Server failed to start', { error });
+    void shutdown(1);
+  });
 };
 
 void startServer().catch((error: unknown) => {

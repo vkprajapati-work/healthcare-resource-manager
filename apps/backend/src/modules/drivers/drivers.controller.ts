@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { createSuccessResponse } from '../../shared/api-response.js';
+import { createPaginatedResponse, createSuccessResponse } from '../../shared/api-response.js';
 import { DriversService } from './drivers.service.js';
 import type {
   DriverAccessContext,
@@ -21,7 +21,7 @@ export const listDrivers = async (req: Request, res: Response): Promise<void> =>
     req.query as unknown as DriverListQuery,
     getAccessContext(req),
   );
-  res.status(200).json({ success: true, data: drivers, meta });
+  res.status(200).json(createPaginatedResponse(drivers, { ...meta }));
 };
 
 export const getDriver = async (req: Request, res: Response): Promise<void> => {
