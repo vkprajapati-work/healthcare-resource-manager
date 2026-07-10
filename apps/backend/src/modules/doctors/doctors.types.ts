@@ -86,6 +86,17 @@ export interface DoctorDto {
   updatedAt: string;
 }
 
+export interface ProvisionedLoginDetails {
+  email: string;
+  defaultPassword: string;
+  mustChangePassword: true;
+}
+
+export interface DoctorCreateResult {
+  doctor: DoctorDto;
+  login?: ProvisionedLoginDetails;
+}
+
 export interface DoctorListQuery {
   page: number;
   limit: number;

@@ -15,6 +15,7 @@ export interface AuthUserPayload {
   role: UserRole;
   firstName: string;
   lastName: string;
+  mustChangePassword: boolean;
 }
 
 export interface LoginInput {
@@ -24,6 +25,18 @@ export interface LoginInput {
 
 export interface RefreshTokenInput {
   refreshToken?: string | undefined;
+}
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ProvisionUserInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: UserRole;
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -38,6 +51,7 @@ export interface IUserDocument extends Document {
   password: string;
   role: UserRole;
   isActive: boolean;
+  mustChangePassword: boolean;
   lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;

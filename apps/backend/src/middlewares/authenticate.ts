@@ -35,6 +35,7 @@ export const authenticate = async (
       role: user.role,
       firstName: user.firstName,
       lastName: user.lastName,
+      mustChangePassword: user.mustChangePassword,
     };
 
     next();

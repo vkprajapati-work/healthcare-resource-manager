@@ -35,12 +35,12 @@ export const getOwnDoctorProfile = async (req: Request, res: Response): Promise<
 };
 
 export const createDoctor = async (req: Request, res: Response): Promise<void> => {
-  const doctor = await doctorsService.createFromForm(
+  const result = await doctorsService.createFromForm(
     req.body as DoctorFormInput,
     req.files as DoctorUploadedFiles | undefined,
     getAccessContext(req),
   );
-  res.status(201).json(createSuccessResponse(doctor));
+  res.status(201).json(createSuccessResponse(result));
 };
 
 export const updateDoctor = async (req: Request, res: Response): Promise<void> => {

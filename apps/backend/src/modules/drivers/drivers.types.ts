@@ -88,6 +88,17 @@ export interface DriverDto {
   updatedAt: string;
 }
 
+export interface ProvisionedLoginDetails {
+  email: string;
+  defaultPassword: string;
+  mustChangePassword: true;
+}
+
+export interface DriverCreateResult {
+  driver: DriverDto;
+  login?: ProvisionedLoginDetails;
+}
+
 export interface DriverListQuery {
   page: number;
   limit: number;

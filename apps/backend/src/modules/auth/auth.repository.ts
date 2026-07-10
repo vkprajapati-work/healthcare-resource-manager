@@ -18,4 +18,11 @@ export class AuthRepository {
   public async updateLastLogin(id: string): Promise<void> {
     await UserModel.findByIdAndUpdate(id, { lastLoginAt: new Date() });
   }
+
+  public async updatePassword(id: string, password: string): Promise<void> {
+    await UserModel.findByIdAndUpdate(id, {
+      password,
+      mustChangePassword: false,
+    });
+  }
 }

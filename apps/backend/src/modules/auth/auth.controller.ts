@@ -4,7 +4,7 @@ import { authenticate } from '../../middlewares/authenticate.js';
 import { authorize } from '../../middlewares/authorize.js';
 import { createErrorResponse, createSuccessResponse } from '../../shared/api-response.js';
 import { AuthService } from './auth.service.js';
-import { loginSchema, refreshSchema } from './auth.validation.js';
+import { changePasswordSchema, loginSchema, refreshSchema } from './auth.validation.js';
 import { setAuthCookies, clearAuthCookies } from '../../utils/cookies.js';
 import type { AuthenticatedRequest } from './auth.types.js';
 
@@ -67,6 +67,27 @@ export const me = async (req: AuthenticatedRequest, res: Response): Promise<void
 
   const user = await authService.me(req.user.id);
   res.status(200).json(createSuccessResponse({ user }));
+};
+
+export const changePassword = async (
+  req: AuthenticatedRequest,
+  res: Response,
+): Promise<void> => {
+  if (!req.user) {
+    res
+      .status(401)
+      .json(createErrorResponse('Authentication required', [], 'AUTHENTICATION_ERROR'));
+    return;
+  }
+
+  const parsed = changePasswordSchema.safeParse(req);
+  if (!parsed.success) {
+    res.status(400).json(buildValidationErrorResponse(parsed.error));
+    return;
+  }
+
+  await authService.changePassword(req.user.id, parsed.data.body);
+  res.status(200).json(createSuccessResponse({ message: 'Password changed successfully' }));
 };
 
 export const protectedRoute = [authenticate, authorize('ADMIN')];

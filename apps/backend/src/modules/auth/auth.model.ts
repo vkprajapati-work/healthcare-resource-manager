@@ -9,6 +9,7 @@ const userSchema = new Schema<IUserDocument>(
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(UserRole), default: UserRole.DOCTOR },
     isActive: { type: Boolean, default: true },
+    mustChangePassword: { type: Boolean, default: false },
     lastLoginAt: { type: Date },
   },
   { timestamps: true },

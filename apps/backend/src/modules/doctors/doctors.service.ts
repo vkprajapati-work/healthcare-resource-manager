@@ -1,4 +1,5 @@
 import { AuthorizationError, ConflictError, NotFoundError } from '../../shared/errors.js';
+import { AuthService } from '../auth/auth.service.js';
 import { UserRole } from '../auth/auth.types.js';
 import { DocumentFileCategory, ImageFileCategory } from '../files/files.types.js';
 import { FilesService } from '../files/files.service.js';
@@ -7,6 +8,7 @@ import { DoctorsRepository } from './doctors.repository.js';
 import type {
   CreateDoctorInput,
   DoctorAccessContext,
+  DoctorCreateResult,
   DoctorDto,
   DoctorFormInput,
   DoctorListMeta,
@@ -21,6 +23,7 @@ export class DoctorsService {
   constructor(
     private readonly doctorsRepository = new DoctorsRepository(),
     private readonly filesService = new FilesService(),
+    private readonly authService = new AuthService(),
   ) {}
 
   public async list(
@@ -63,31 +66,36 @@ export class DoctorsService {
     return this.toDto(doctor);
   }
 
-  public async create(input: CreateDoctorInput, context: DoctorAccessContext): Promise<DoctorDto> {
+  public async create(
+    input: CreateDoctorInput,
+    context: DoctorAccessContext,
+  ): Promise<DoctorCreateResult> {
     this.assertAdmin(context);
     await this.assertUniqueFields(input);
 
-    const doctor = await this.doctorsRepository.create(input);
-    return this.toDto(doctor);
+    const { input: provisionedInput, login } = await this.withProvisionedUser(input);
+    const doctor = await this.doctorsRepository.create(provisionedInput);
+    return this.buildCreateResult(this.toDto(doctor), login);
   }
 
   public async createFromForm(
     input: DoctorFormInput,
     files: DoctorUploadedFiles | undefined,
     context: DoctorAccessContext,
-  ): Promise<DoctorDto> {
+  ): Promise<DoctorCreateResult> {
     const { documentCategories, ...doctorInput } = input;
     this.assertAdmin(context);
     await this.assertUniqueFields(doctorInput);
 
     const mediaFields = await this.uploadFormFiles(files, documentCategories, context.userId);
+    const { input: provisionedDoctorInput, login } = await this.withProvisionedUser(doctorInput);
     const doctor = await this.doctorsRepository.create({
-      ...doctorInput,
+      ...provisionedDoctorInput,
       ...mediaFields,
-      documents: [...doctorInput.documents, ...(mediaFields.documents ?? [])],
+      documents: [...provisionedDoctorInput.documents, ...(mediaFields.documents ?? [])],
     });
 
-    return this.toDto(doctor);
+    return this.buildCreateResult(this.toDto(doctor), login);
   }
 
   public async update(
@@ -171,6 +179,44 @@ export class DoctorsService {
     }
 
     return doctor;
+  }
+
+  private async withProvisionedUser(
+    input: CreateDoctorInput,
+  ): Promise<{ input: CreateDoctorInput; login?: DoctorCreateResult['login'] }> {
+    if (input.userId) {
+      return { input };
+    }
+
+    const user = await this.authService.provisionUser({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      email: input.email,
+      role: UserRole.DOCTOR,
+    });
+
+    return {
+      input: {
+        ...input,
+        userId: user.id,
+      },
+      login: {
+        email: input.email,
+        defaultPassword: user.defaultPassword,
+        mustChangePassword: true,
+      },
+    };
+  }
+
+  private buildCreateResult(
+    doctor: DoctorDto,
+    login: DoctorCreateResult['login'],
+  ): DoctorCreateResult {
+    if (!login) {
+      return { doctor };
+    }
+
+    return { doctor, login };
   }
 
   private async assertUniqueFields(input: UpdateDoctorInput, excludeId?: string): Promise<void> {

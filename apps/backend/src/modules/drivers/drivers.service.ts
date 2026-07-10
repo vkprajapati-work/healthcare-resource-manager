@@ -1,4 +1,5 @@
 import { AuthorizationError, ConflictError, NotFoundError } from '../../shared/errors.js';
+import { AuthService } from '../auth/auth.service.js';
 import { UserRole } from '../auth/auth.types.js';
 import { DocumentFileCategory, ImageFileCategory } from '../files/files.types.js';
 import { FilesService } from '../files/files.service.js';
@@ -7,6 +8,7 @@ import { VehiclesRepository } from '../vehicles/vehicles.repository.js';
 import { DriversRepository } from './drivers.repository.js';
 import type {
   DriverAccessContext,
+  DriverCreateResult,
   DriverDto,
   DriverFormInput,
   DriverListMeta,
@@ -22,6 +24,7 @@ export class DriversService {
     private readonly driversRepository = new DriversRepository(),
     private readonly vehiclesRepository = new VehiclesRepository(),
     private readonly filesService = new FilesService(),
+    private readonly authService = new AuthService(),
   ) {}
 
   public async list(
@@ -68,24 +71,25 @@ export class DriversService {
     input: DriverFormInput,
     files: DriverUploadedFiles | undefined,
     context: DriverAccessContext,
-  ): Promise<DriverDto> {
+  ): Promise<DriverCreateResult> {
     const { documentCategories, ...driverInput } = input;
     this.assertAdmin(context);
     await this.assertUniqueFields(driverInput);
     await this.assertVehicleCanBeAssigned(driverInput.assignedVehicle);
 
     const mediaFields = await this.uploadFormFiles(files, documentCategories, context.userId);
+    const { input: provisionedDriverInput, login } = await this.withProvisionedUser(driverInput);
     const driver = await this.driversRepository.create({
-      ...driverInput,
+      ...provisionedDriverInput,
       ...mediaFields,
-      documents: [...driverInput.documents, ...(mediaFields.documents ?? [])],
+      documents: [...provisionedDriverInput.documents, ...(mediaFields.documents ?? [])],
     });
 
     if (driverInput.assignedVehicle) {
       await this.vehiclesRepository.setAssignedDriver(driverInput.assignedVehicle, String(driver._id));
     }
 
-    return this.toDto((await this.findExistingDriver(String(driver._id))));
+    return this.buildCreateResult(this.toDto(await this.findExistingDriver(String(driver._id))), login);
   }
 
   public async updateFromForm(
@@ -156,6 +160,44 @@ export class DriversService {
     }
 
     return driver;
+  }
+
+  private async withProvisionedUser(
+    input: DriverFormInput,
+  ): Promise<{ input: DriverFormInput; login?: DriverCreateResult['login'] }> {
+    if (input.userId) {
+      return { input };
+    }
+
+    const user = await this.authService.provisionUser({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      email: input.email,
+      role: UserRole.EVOC_DRIVER,
+    });
+
+    return {
+      input: {
+        ...input,
+        userId: user.id,
+      },
+      login: {
+        email: input.email,
+        defaultPassword: user.defaultPassword,
+        mustChangePassword: true,
+      },
+    };
+  }
+
+  private buildCreateResult(
+    driver: DriverDto,
+    login: DriverCreateResult['login'],
+  ): DriverCreateResult {
+    if (!login) {
+      return { driver };
+    }
+
+    return { driver, login };
   }
 
   private async assertUniqueFields(input: UpdateDriverInput, excludeId?: string): Promise<void> {

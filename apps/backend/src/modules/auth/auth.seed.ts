@@ -19,5 +19,6 @@ export const seedDefaultAdmin = async (): Promise<void> => {
     password: hashedPassword,
     role: UserRole.ADMIN,
     isActive: true,
+    mustChangePassword: false,
   });
 };

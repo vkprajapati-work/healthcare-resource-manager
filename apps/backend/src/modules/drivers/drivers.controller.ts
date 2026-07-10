@@ -35,12 +35,12 @@ export const getOwnDriverProfile = async (req: Request, res: Response): Promise<
 };
 
 export const createDriver = async (req: Request, res: Response): Promise<void> => {
-  const driver = await driversService.createFromForm(
+  const result = await driversService.createFromForm(
     req.body as DriverFormInput,
     req.files as DriverUploadedFiles | undefined,
     getAccessContext(req),
   );
-  res.status(201).json(createSuccessResponse(driver));
+  res.status(201).json(createSuccessResponse(result));
 };
 
 export const updateDriver = async (req: Request, res: Response): Promise<void> => {
