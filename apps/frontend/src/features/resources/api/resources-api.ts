@@ -1,15 +1,30 @@
+import { PAGINATION } from '@/config/constants';
 import { apiClient } from '@/lib/api-client';
 
-import type { ResourceCounts, ResourceListMeta } from '../types';
+import type { Resource, ResourceListMeta, ResourceType } from '../types';
 import type { ApiPaginatedResponse } from '@/types/api';
 
 export const resourcesApi = {
-  /** Boilerplate probe: fetch minimal data just for the meta counts (FR-4). */
-  async counts(): Promise<{ counts: ResourceCounts; totalItems: number }> {
-    const { data } = await apiClient.get<ApiPaginatedResponse<unknown[], ResourceListMeta>>(
+  async list(params: {
+    page: number;
+    type?: ResourceType | undefined;
+    search?: string | undefined;
+  }): Promise<{
+    items: Resource[];
+    meta: ResourceListMeta;
+  }> {
+    const search = params.search?.trim();
+    const { data } = await apiClient.get<ApiPaginatedResponse<Resource[], ResourceListMeta>>(
       '/resources',
-      { params: { page: 1, limit: 1 } },
+      {
+        params: {
+          page: params.page,
+          limit: PAGINATION.defaultLimit,
+          ...(params.type ? { type: params.type } : {}),
+          ...(search ? { search } : {}),
+        },
+      },
     );
-    return { counts: data.meta.counts, totalItems: data.meta.totalItems };
+    return { items: data.data, meta: data.meta };
   },
 };

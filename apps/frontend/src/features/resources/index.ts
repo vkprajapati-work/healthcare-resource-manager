@@ -1,2 +1,2 @@
 export { ResourcesPage } from './components/ResourcesPage';
-export type { ResourceCounts, ResourceListMeta } from './types';
+export type { Resource, ResourceCounts, ResourceListMeta, ResourceType } from './types';

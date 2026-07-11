@@ -11,11 +11,14 @@ import type { ApiErrorResponse } from '@/types/api';
  * Shared axios instance — the only HTTP entry point. Cookie-based auth
  * (httpOnly JWTs set by the backend) requires `withCredentials: true`.
  */
+/**
+ * No default Content-Type: axios infers application/json for plain objects
+ * and multipart/form-data (with boundary) for FormData bodies.
+ */
 export const apiClient = axios.create({
   baseURL: env.VITE_API_BASE_URL,
   withCredentials: true,
   timeout: env.VITE_API_TIMEOUT_MS,
-  headers: { 'Content-Type': 'application/json' },
 });
 
 interface RetriableConfig extends InternalAxiosRequestConfig {

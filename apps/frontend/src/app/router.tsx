@@ -6,7 +6,6 @@ import { DashboardLayout } from '@/app/layout/DashboardLayout';
 import { RootLayout } from '@/app/layout/RootLayout';
 import { NotFoundPage } from '@/app/NotFoundPage';
 import { RouteErrorBoundary } from '@/app/RouteErrorBoundary';
-import { ComingSoonPage } from '@/components/common/ComingSoonPage';
 import { Spinner } from '@/components/common/Spinner';
 import { ROUTES } from '@/config/routes';
 import { ProtectedRoute } from '@/features/auth';
@@ -19,6 +18,15 @@ const ResourcesPage = lazy(() =>
 const LoginPage = lazy(() => import('@/features/auth').then((m) => ({ default: m.LoginPage })));
 const AdminDashboardPage = lazy(() =>
   import('@/features/admin').then((m) => ({ default: m.AdminDashboardPage })),
+);
+const DoctorsPage = lazy(() =>
+  import('@/features/doctors').then((m) => ({ default: m.DoctorsPage })),
+);
+const DriversPage = lazy(() =>
+  import('@/features/drivers').then((m) => ({ default: m.DriversPage })),
+);
+const VehiclesPage = lazy(() =>
+  import('@/features/vehicles').then((m) => ({ default: m.VehiclesPage })),
 );
 
 function withSuspense(element: ReactNode): ReactNode {
@@ -49,9 +57,9 @@ export const router = createBrowserRouter([
             element: <DashboardLayout />,
             children: [
               { path: ROUTES.admin.root, element: withSuspense(<AdminDashboardPage />) },
-              { path: ROUTES.admin.doctors, element: <ComingSoonPage title="Doctors" /> },
-              { path: ROUTES.admin.drivers, element: <ComingSoonPage title="Drivers" /> },
-              { path: ROUTES.admin.vehicles, element: <ComingSoonPage title="Vehicles" /> },
+              { path: ROUTES.admin.doctors, element: withSuspense(<DoctorsPage />) },
+              { path: ROUTES.admin.drivers, element: withSuspense(<DriversPage />) },
+              { path: ROUTES.admin.vehicles, element: withSuspense(<VehiclesPage />) },
             ],
           },
         ],
