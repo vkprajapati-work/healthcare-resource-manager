@@ -95,6 +95,13 @@ Full workflow: [.ai/AI_WORKFLOW.md](.ai/AI_WORKFLOW.md). Mandatory rules: [docs/
 - `/new-shared-package` — extract `packages/shared` (only when the trigger in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) §9 is met)
 - `/verify` — run the repo's quality gates after changes
 
+## Project agents (`.claude/agents/`)
+
+- `frontend-engineer` — delegate any `apps/frontend` implementation work (scaffolding, features, components, forms, data fetching) to it; its system prompt carries the full frontend rulebook and API contract.
+- `ui-reviewer` — delegate review of any frontend change to it before committing; it audits against the docs and reports severity-ordered findings with file:line refs.
+
+Skills define *what steps* a task follows; agents are *who* executes or reviews with the right expertise preloaded — use them together (e.g. `frontend-engineer` runs `/new-frontend-feature`).
+
 ## Commands (repo root)
 
 | Command                             | Purpose                                           |
