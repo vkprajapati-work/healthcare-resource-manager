@@ -15,7 +15,7 @@ Run every gate from the repo root. All must pass — fix failures, don't skip ga
 4. **Tests** — `pnpm --filter <app> test` for each app touched by the change.
 5. **Build** — `pnpm build` when the change touches build config, dependencies, or shared code.
 
-> **Current state:** `apps/backend` is built out — gates 2–4 are meaningful there (ESLint flat config, strict `tsc`, and a Jest + Supertest suite covering auth/doctors/drivers/vehicles/resources/files/seed). `apps/frontend` is still an unscaffolded placeholder, so those gates run against zero packages for it until frontend work starts. For backend behavioral changes, also start the server and curl the affected route (e.g. `GET /api/v1/health`, `GET /api/v1/resources`) — see "Beyond the gates" below.
+> **Current state:** both apps are scaffolded and all gates are meaningful. `apps/backend`: ESLint flat config, strict `tsc`, Jest + Supertest suite covering auth/doctors/drivers/vehicles/resources/files/seed. `apps/frontend`: ESLint flat config, strict `tsc`, Jest + RTL (jsdom), plus `pnpm --filter frontend build` (tsc + Vite). For behavioral changes, also exercise the change: start the backend and curl the affected route (e.g. `GET /api/v1/health`, `GET /api/v1/resources`), or run `pnpm --filter frontend dev` and load the affected view — see "Beyond the gates" below.
 
 ## Beyond the gates
 

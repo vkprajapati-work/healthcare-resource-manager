@@ -2,7 +2,7 @@
 
 Full-stack app for managing healthcare resources (ambulances and doctors): React 18 SPA + Express REST API + MongoDB, organized as a pnpm + Turborepo monorepo.
 
-**Current state:** `apps/frontend` is an empty placeholder (`.gitkeep` only). `apps/backend` has a working, tested Express + Mongoose API covering more than `resources`: it also has `auth`, `doctors`, `drivers`, `vehicles`, and `files` modules. `GET /resources` bridges in `doctors`/`vehicles` read-only (mapped into the resource shape, counted in `meta.counts`) — but writes still only touch the native `resources` collection, and `drivers` isn't bridged at all. See [PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md) §8a for the full design.
+**Current state:** `apps/backend` has a working, tested Express + Mongoose API covering more than `resources`: it also has `auth`, `doctors`, `drivers`, `vehicles`, `files`, and `seed` modules. `GET /resources` bridges in `doctors`/`vehicles` read-only (mapped into the resource shape, counted in `meta.counts`) — but writes still only touch the native `resources` collection, and `drivers` isn't bridged at all. See [PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md) §8a for the full design. `apps/frontend` is a production-ready foundation: Vite + React 18 + strict TS + Tailwind; three layouts (public `RootLayout`, `AuthLayout`, admin `DashboardLayout` with sidebar/breadcrumb); cookie-session auth feature (login, `useCurrentUser` with a localStorage session hint so anonymous visitors never call `/auth/me`, silent refresh-token retry in the axios interceptor, `ProtectedRoute` with role guard); route placeholders for `/admin/doctors|drivers|vehicles`; a shared component kit (`ui/`: Button, Input, Label, Card, Skeleton, Table, Dialog; `common/`: FormField, Pagination, SearchInput, ConfirmDialog, FileUploadField, Spinner, ErrorState, EmptyState); global mutation-error toasts (react-hot-toast via MutationCache); `ROUTES`/`PAGINATION` constants; Jest + RTL (9 tests). The paginated resource list and CRUD features are not built yet.
 
 ## Project overview & business goals
 
@@ -13,7 +13,7 @@ Users must be able to find nearby ambulance services and doctors quickly in emer
 - **Frontend:** React 18, TypeScript, Vite, React Router v6, TanStack Query v5, Axios, Tailwind CSS, shadcn/ui, React Hook Form, Zod
 - **Backend:** Node.js (≥ 20), Express, TypeScript, MongoDB, Mongoose, Zod
 - **Testing:** Jest + React Testing Library (frontend), Jest + Supertest (backend)
-- **Tooling:** pnpm workspaces, Turborepo, Prettier — installed today. ESLint, Husky, and lint-staged are part of the target stack, to be added when the apps are scaffolded.
+- **Tooling:** pnpm workspaces, Turborepo, Prettier, ESLint (flat config per app). Husky and lint-staged are part of the target stack, still to be added.
 
 Rationale for every choice: [docs/TECH_STACK.md](docs/TECH_STACK.md).
 
@@ -100,7 +100,7 @@ Full workflow: [.ai/AI_WORKFLOW.md](.ai/AI_WORKFLOW.md). Mandatory rules: [docs/
 - `frontend-engineer` — delegate any `apps/frontend` implementation work (scaffolding, features, components, forms, data fetching) to it; its system prompt carries the full frontend rulebook and API contract.
 - `ui-reviewer` — delegate review of any frontend change to it before committing; it audits against the docs and reports severity-ordered findings with file:line refs.
 
-Skills define *what steps* a task follows; agents are *who* executes or reviews with the right expertise preloaded — use them together (e.g. `frontend-engineer` runs `/new-frontend-feature`).
+Skills define _what steps_ a task follows; agents are _who_ executes or reviews with the right expertise preloaded — use them together (e.g. `frontend-engineer` runs `/new-frontend-feature`).
 
 ## Commands (repo root)
 
