@@ -23,6 +23,11 @@ const guardPubliclyServableUploads = (req: Request, res: Response, next: NextFun
     return;
   }
 
+  // These images are meant to be embedded by the SPA, which runs on a
+  // different origin in dev (and may be a different origin/CDN in prod).
+  // Helmet's default `same-origin` CORP blocks exactly that cross-origin
+  // <img> load, even though the request itself is same-site and harmless.
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
 };
 
