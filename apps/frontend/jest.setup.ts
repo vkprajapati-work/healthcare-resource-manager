@@ -8,3 +8,13 @@ if (typeof URL.createObjectURL !== 'function') {
 if (typeof URL.revokeObjectURL !== 'function') {
   URL.revokeObjectURL = jest.fn();
 }
+
+// jsdom doesn't implement ResizeObserver; Recharts' ResponsiveContainer
+// requires it to measure its container.
+if (typeof globalThis.ResizeObserver !== 'function') {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  };
+}
