@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 
+import { BrandMark } from '@/components/common/BrandMark';
 import { env } from '@/config/env';
 import { ROUTES } from '@/config/routes';
 import { useCurrentUser, useLogout } from '@/features/auth';
@@ -7,8 +8,10 @@ import { cn } from '@/lib/utils';
 
 function navLinkClass({ isActive }: { isActive: boolean }): string {
   return cn(
-    'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-    isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-200',
+    'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
+    isActive
+      ? 'bg-primary-600 text-white shadow-sm shadow-primary-600/30'
+      : 'text-slate-600 hover:bg-slate-100',
   );
 }
 
@@ -18,12 +21,18 @@ export function RootLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
-          <Link to={ROUTES.home} className="text-lg font-semibold tracking-tight">
-            {env.VITE_APP_NAME}
+      <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/75 backdrop-blur-md">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3.5">
+          <Link to={ROUTES.home} className="flex items-center gap-2.5">
+            <BrandMark />
+            <span className="text-lg font-semibold tracking-tight text-slate-900">
+              {env.VITE_APP_NAME}
+            </span>
           </Link>
-          <nav aria-label="Main" className="flex items-center gap-1">
+          <nav
+            aria-label="Main"
+            className="flex items-center gap-1 rounded-full bg-slate-50 p-1 ring-1 ring-slate-100"
+          >
             <NavLink to={ROUTES.home} end className={navLinkClass}>
               Resources
             </NavLink>
@@ -37,7 +46,7 @@ export function RootLayout() {
                 type="button"
                 onClick={() => logout.mutate()}
                 disabled={logout.isPending}
-                className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-200 disabled:opacity-50"
+                className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-white hover:text-red-600 hover:shadow-sm disabled:opacity-50"
               >
                 Sign out
               </button>

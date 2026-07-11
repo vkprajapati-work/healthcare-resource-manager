@@ -4,6 +4,6 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply min-h-screen bg-gradient-to-br from-primary-50 via-slate-50 to-indigo-100 text-slate-900 antialiased;
   }
 }

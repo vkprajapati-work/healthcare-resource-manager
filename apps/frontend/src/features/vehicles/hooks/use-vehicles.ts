@@ -5,10 +5,10 @@ import { vehiclesApi } from '../api/vehicles-api';
 
 import type { VehicleFormInput } from '../schemas/vehicle-form-schema';
 
-export function useVehiclesList(page: number) {
+export function useVehiclesList(params: { page: number; search?: string | undefined }) {
   return useQuery({
-    queryKey: vehicleKeys.list({ page }),
-    queryFn: () => vehiclesApi.list({ page }),
+    queryKey: vehicleKeys.list(params),
+    queryFn: () => vehiclesApi.list(params),
     placeholderData: keepPreviousData,
   });
 }
@@ -24,6 +24,20 @@ export function useVehicleOptions() {
         label: `${vehicle.registrationNumber} — ${vehicle.brand} ${vehicle.model}`,
       })),
     staleTime: 60_000,
+  });
+}
+
+export function useUpdateVehicle() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, input, photos }: { id: string; input: VehicleFormInput; photos: File[] }) =>
+      vehiclesApi.update(id, input, photos),
+    // The form renders failures inline — skip the global error toast.
+    meta: { silenceErrorToast: true },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: vehicleKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['resources'] });
+    },
   });
 }
 

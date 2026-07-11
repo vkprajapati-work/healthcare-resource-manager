@@ -40,7 +40,7 @@ export function FileUploadField({
         multiple={multiple}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="text-sm file:mr-3 file:rounded-md file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700"
+        className="text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-primary-600 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-primary-500"
         onChange={(event) => onFilesChange(Array.from(event.target.files ?? []))}
       />
       {files.length > 0 ? (

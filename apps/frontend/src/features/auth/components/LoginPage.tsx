@@ -6,6 +6,7 @@ import { fieldAria } from '@/components/common/field-aria';
 import { FormField } from '@/components/common/FormField';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { ROUTES } from '@/config/routes';
 import { ApiError } from '@/types/api';
 
@@ -45,33 +46,40 @@ export function LoginPage() {
 
   return (
     <section>
-      <h1 className="mb-6 text-2xl font-semibold">Sign in</h1>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+      <div className="mb-7 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Welcome back</h1>
+        <p className="mt-1.5 text-sm text-slate-500">Sign in to manage healthcare resources.</p>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
         <FormField id="email" label="Email" error={errors.email?.message}>
           <Input
             type="email"
             autoComplete="email"
+            placeholder="you@example.com"
             {...fieldAria('email', { error: Boolean(errors.email) })}
             {...register('email')}
           />
         </FormField>
 
         <FormField id="password" label="Password" error={errors.password?.message}>
-          <Input
-            type="password"
+          <PasswordInput
             autoComplete="current-password"
+            placeholder="••••••••"
             {...fieldAria('password', { error: Boolean(errors.password) })}
             {...register('password')}
           />
         </FormField>
 
         {errors.root ? (
-          <p role="alert" className="text-sm text-red-700">
+          <p
+            role="alert"
+            className="rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-sm font-medium text-red-700"
+          >
             {errors.root.message}
           </p>
         ) : null}
 
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting} className="mt-1">
           {isSubmitting ? 'Signing in…' : 'Sign in'}
         </Button>
       </form>

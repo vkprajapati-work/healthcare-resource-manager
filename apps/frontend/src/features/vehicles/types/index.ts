@@ -30,10 +30,24 @@ export interface Vehicle {
   seatingCapacity: number;
   patientCapacity: number;
   photos: FileRef[];
+  insuranceExpiry: string;
+  fitnessExpiry: string;
+  pollutionExpiry: string;
   status: VehicleStatus;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
+
+export const VEHICLE_STATUS_VARIANTS: Record<
+  VehicleStatus,
+  'success' | 'warning' | 'info' | 'neutral' | 'primary'
+> = {
+  AVAILABLE: 'success',
+  ASSIGNED: 'info',
+  ON_TRIP: 'primary',
+  MAINTENANCE: 'warning',
+  INACTIVE: 'neutral',
+};
 
 export type VehicleListMeta = PaginationMeta;

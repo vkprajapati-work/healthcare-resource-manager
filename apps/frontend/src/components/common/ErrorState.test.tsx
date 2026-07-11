@@ -10,7 +10,7 @@ describe('ErrorState', () => {
 
     expect(screen.getByRole('alert')).toHaveTextContent('Failed to load resources.');
 
-    await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Try again' }));
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 

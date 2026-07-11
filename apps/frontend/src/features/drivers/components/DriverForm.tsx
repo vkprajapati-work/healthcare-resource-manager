@@ -18,6 +18,8 @@ import type { DriverFormInput } from '../schemas/driver-form-schema';
 interface DriverFormProps {
   onSubmit: (input: DriverFormInput, profileImage: File[]) => Promise<void>;
   onCancel: () => void;
+  defaultValues?: DriverFormInput;
+  submitLabel?: string;
 }
 
 interface TextFieldConfig {
@@ -44,7 +46,12 @@ const TEXT_FIELDS: TextFieldConfig[] = [
   { name: 'postalCode', label: 'Postal code' },
 ];
 
-export function DriverForm({ onSubmit, onCancel }: DriverFormProps) {
+export function DriverForm({
+  onSubmit,
+  onCancel,
+  defaultValues,
+  submitLabel = 'Create driver',
+}: DriverFormProps) {
   const [profileImage, setProfileImage] = useState<File[]>([]);
   const vehicleOptions = useVehicleOptions();
   const {
@@ -52,7 +59,10 @@ export function DriverForm({ onSubmit, onCancel }: DriverFormProps) {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<DriverFormInput>({ resolver: zodResolver(driverFormSchema) });
+  } = useForm<DriverFormInput>({
+    resolver: zodResolver(driverFormSchema),
+    ...(defaultValues ? { defaultValues } : {}),
+  });
 
   const submit = async (input: DriverFormInput): Promise<void> => {
     try {
@@ -112,7 +122,7 @@ export function DriverForm({ onSubmit, onCancel }: DriverFormProps) {
 
       <FileUploadField
         id="profileImage"
-        label="Profile image (optional)"
+        label={defaultValues ? 'Replace profile image (optional)' : 'Profile image (optional)'}
         accept="image/jpeg,image/png,image/webp"
         files={profileImage}
         onFilesChange={setProfileImage}
@@ -129,7 +139,7 @@ export function DriverForm({ onSubmit, onCancel }: DriverFormProps) {
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating…' : 'Create driver'}
+          {isSubmitting ? 'Saving…' : submitLabel}
         </Button>
       </div>
     </form>

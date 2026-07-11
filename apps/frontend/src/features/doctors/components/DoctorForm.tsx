@@ -17,6 +17,8 @@ import type { DoctorFormInput } from '../schemas/doctor-form-schema';
 interface DoctorFormProps {
   onSubmit: (input: DoctorFormInput, profileImage: File[]) => Promise<void>;
   onCancel: () => void;
+  defaultValues?: DoctorFormInput;
+  submitLabel?: string;
 }
 
 interface TextFieldConfig {
@@ -43,14 +45,22 @@ const TEXT_FIELDS: TextFieldConfig[] = [
   { name: 'postalCode', label: 'Postal code' },
 ];
 
-export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
+export function DoctorForm({
+  onSubmit,
+  onCancel,
+  defaultValues,
+  submitLabel = 'Create doctor',
+}: DoctorFormProps) {
   const [profileImage, setProfileImage] = useState<File[]>([]);
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<DoctorFormInput>({ resolver: zodResolver(doctorFormSchema) });
+  } = useForm<DoctorFormInput>({
+    resolver: zodResolver(doctorFormSchema),
+    ...(defaultValues ? { defaultValues } : {}),
+  });
 
   const submit = async (input: DoctorFormInput): Promise<void> => {
     try {
@@ -92,7 +102,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
 
       <FileUploadField
         id="profileImage"
-        label="Profile image (optional)"
+        label={defaultValues ? 'Replace profile image (optional)' : 'Profile image (optional)'}
         accept="image/jpeg,image/png,image/webp"
         files={profileImage}
         onFilesChange={setProfileImage}
@@ -109,7 +119,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating…' : 'Create doctor'}
+          {isSubmitting ? 'Saving…' : submitLabel}
         </Button>
       </div>
     </form>

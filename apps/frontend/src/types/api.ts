@@ -39,12 +39,15 @@ export class ApiError extends Error {
   readonly code: string;
   readonly status: number;
   readonly details: ApiErrorDetail[];
+  /** Seconds until a rate-limited (429) request may be retried, when known. */
+  readonly retryAfterSeconds: number | undefined;
 
-  constructor(status: number, body: ApiErrorBody) {
+  constructor(status: number, body: ApiErrorBody, retryAfterSeconds?: number) {
     super(body.message);
     this.name = 'ApiError';
     this.status = status;
     this.code = body.code;
     this.details = body.details ?? [];
+    this.retryAfterSeconds = retryAfterSeconds;
   }
 }

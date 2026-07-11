@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { Doctor } from '../types';
+
 const phoneRegex = /^\+?[1-9]\d{7,14}$/;
 
 /** Mirrors the backend's doctorBodySchema (required fields only). */
@@ -29,3 +31,25 @@ export const doctorFormSchema = z.object({
 });
 
 export type DoctorFormInput = z.infer<typeof doctorFormSchema>;
+
+/** Maps a doctor DTO into form defaults (ISO datetimes → date-input strings). */
+export function doctorToFormDefaults(doctor: Doctor): DoctorFormInput {
+  return {
+    firstName: doctor.firstName,
+    lastName: doctor.lastName,
+    email: doctor.email,
+    phoneNumber: doctor.phoneNumber,
+    gender: doctor.gender,
+    dateOfBirth: doctor.dateOfBirth.slice(0, 10),
+    specialization: doctor.specialization,
+    qualification: doctor.qualification,
+    licenseNumber: doctor.licenseNumber,
+    yearsOfExperience: doctor.yearsOfExperience,
+    department: doctor.department,
+    address: doctor.address,
+    city: doctor.city,
+    state: doctor.state,
+    country: doctor.country,
+    postalCode: doctor.postalCode,
+  };
+}

@@ -5,11 +5,32 @@ import { driversApi } from '../api/drivers-api';
 
 import type { DriverFormInput } from '../schemas/driver-form-schema';
 
-export function useDriversList(page: number) {
+export function useDriversList(params: { page: number; search?: string | undefined }) {
   return useQuery({
-    queryKey: driverKeys.list({ page }),
-    queryFn: () => driversApi.list({ page }),
+    queryKey: driverKeys.list(params),
+    queryFn: () => driversApi.list(params),
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useUpdateDriver() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      input,
+      profileImage,
+    }: {
+      id: string;
+      input: DriverFormInput;
+      profileImage: File[];
+    }) => driversApi.update(id, input, profileImage),
+    // The form renders failures inline — skip the global error toast.
+    meta: { silenceErrorToast: true },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: driverKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+    },
   });
 }
 

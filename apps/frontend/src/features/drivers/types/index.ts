@@ -29,19 +29,34 @@ export interface Driver {
   email: string;
   phoneNumber: string;
   gender: DriverGender;
+  dateOfBirth: string;
   employeeId: string;
+  joiningDate: string;
   licenseNumber: string;
   licenseExpiry: string;
   yearsOfExperience: number;
   assignedVehicle?: AssignedVehicleSummary;
+  address: string;
   city: string;
   state: string;
+  country: string;
+  postalCode: string;
   profileImage?: FileRef;
   availabilityStatus: DriverAvailabilityStatus;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
+
+export const DRIVER_STATUS_VARIANTS: Record<
+  DriverAvailabilityStatus,
+  'success' | 'warning' | 'info' | 'neutral'
+> = {
+  AVAILABLE: 'success',
+  ASSIGNED: 'info',
+  OFF_DUTY: 'neutral',
+  ON_LEAVE: 'warning',
+};
 
 /** One-time login credentials returned when a driver account is provisioned. */
 export interface ProvisionedLogin {

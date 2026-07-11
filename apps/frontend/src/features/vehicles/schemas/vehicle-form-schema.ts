@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { Vehicle } from '../types';
+
 const currentYear = new Date().getFullYear();
 
 /** Mirrors the backend's vehicleBodySchema (required fields only). */
@@ -28,3 +30,21 @@ export const vehicleFormSchema = z.object({
 });
 
 export type VehicleFormInput = z.infer<typeof vehicleFormSchema>;
+
+/** Maps a vehicle DTO into form defaults (ISO datetimes → date-input strings). */
+export function vehicleToFormDefaults(vehicle: Vehicle): VehicleFormInput {
+  return {
+    registrationNumber: vehicle.registrationNumber,
+    vehicleNumber: vehicle.vehicleNumber,
+    vehicleType: vehicle.vehicleType,
+    brand: vehicle.brand,
+    model: vehicle.model,
+    manufactureYear: vehicle.manufactureYear,
+    color: vehicle.color,
+    seatingCapacity: vehicle.seatingCapacity,
+    patientCapacity: vehicle.patientCapacity,
+    insuranceExpiry: vehicle.insuranceExpiry.slice(0, 10),
+    fitnessExpiry: vehicle.fitnessExpiry.slice(0, 10),
+    pollutionExpiry: vehicle.pollutionExpiry.slice(0, 10),
+  };
+}

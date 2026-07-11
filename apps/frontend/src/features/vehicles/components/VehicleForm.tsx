@@ -18,16 +18,26 @@ import type { VehicleFormInput } from '../schemas/vehicle-form-schema';
 interface VehicleFormProps {
   onSubmit: (input: VehicleFormInput, photos: File[]) => Promise<void>;
   onCancel: () => void;
+  defaultValues?: VehicleFormInput;
+  submitLabel?: string;
 }
 
-export function VehicleForm({ onSubmit, onCancel }: VehicleFormProps) {
+export function VehicleForm({
+  onSubmit,
+  onCancel,
+  defaultValues,
+  submitLabel = 'Create vehicle',
+}: VehicleFormProps) {
   const [photos, setPhotos] = useState<File[]>([]);
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<VehicleFormInput>({ resolver: zodResolver(vehicleFormSchema) });
+  } = useForm<VehicleFormInput>({
+    resolver: zodResolver(vehicleFormSchema),
+    ...(defaultValues ? { defaultValues } : {}),
+  });
 
   const submit = async (input: VehicleFormInput): Promise<void> => {
     try {
@@ -144,7 +154,7 @@ export function VehicleForm({ onSubmit, onCancel }: VehicleFormProps) {
 
       <FileUploadField
         id="photos"
-        label="Photos (optional)"
+        label={defaultValues ? 'Add photos (optional)' : 'Photos (optional)'}
         accept="image/jpeg,image/png,image/webp"
         multiple
         files={photos}
@@ -162,7 +172,7 @@ export function VehicleForm({ onSubmit, onCancel }: VehicleFormProps) {
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating…' : 'Create vehicle'}
+          {isSubmitting ? 'Saving…' : submitLabel}
         </Button>
       </div>
     </form>

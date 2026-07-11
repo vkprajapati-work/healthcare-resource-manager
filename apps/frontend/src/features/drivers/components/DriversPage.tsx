@@ -4,37 +4,54 @@ import toast from 'react-hot-toast';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ErrorState } from '@/components/common/ErrorState';
 import { Pagination } from '@/components/common/Pagination';
+import { SearchInput } from '@/components/common/SearchInput';
 import { Spinner } from '@/components/common/Spinner';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-} from '@/components/ui/Table';
+import { useListSearch } from '@/hooks/use-list-search';
 import { usePaginationParams } from '@/hooks/use-pagination-params';
-import { toAbsoluteFileUrl } from '@/lib/file-url';
 
-import { useCreateDriver, useDriversList } from '../hooks/use-drivers';
+import { useCreateDriver, useDriversList, useUpdateDriver } from '../hooks/use-drivers';
+import { driverToFormDefaults } from '../schemas/driver-form-schema';
+import { DriverCard } from './DriverCard';
+import { DriverDetails } from './DriverDetails';
 import { DriverForm } from './DriverForm';
 
-import type { ProvisionedLogin } from '../types';
+import type { Driver, ProvisionedLogin } from '../types';
 
 export function DriversPage() {
   const { page, setPage } = usePaginationParams();
-  const { data, isPending, isError, error, refetch } = useDriversList(page);
+  const { searchInput, setSearchInput, search } = useListSearch();
+  const { data, isPending, isError, error, refetch } = useDriversList({ page, search });
   const createDriver = useCreateDriver();
+  const updateDriver = useUpdateDriver();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [viewing, setViewing] = useState<Driver | null>(null);
+  const [editing, setEditing] = useState<Driver | null>(null);
   const [provisionedLogin, setProvisionedLogin] = useState<ProvisionedLogin | null>(null);
 
   return (
     <section>
-      <div className="mb-6 flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">Drivers</h1>
-        <Button onClick={() => setIsFormOpen(true)}>Add driver</Button>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Drivers</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            {data ? `${data.meta.totalItems} registered` : ' '}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-full sm:w-64">
+            <SearchInput
+              id="driver-search"
+              label="Search drivers"
+              labelHidden
+              value={searchInput}
+              onValueChange={setSearchInput}
+              placeholder="Search driver"
+            />
+          </div>
+          <Button onClick={() => setIsFormOpen(true)}>Add driver</Button>
+        </div>
       </div>
 
       {isPending ? <Spinner label="Loading drivers" /> : null}
@@ -48,58 +65,31 @@ export function DriversPage() {
 
       {data && data.items.length === 0 ? (
         <EmptyState
-          message="No drivers yet."
-          action={<Button onClick={() => setIsFormOpen(true)}>Add the first driver</Button>}
+          message={search ? 'No drivers match your search.' : 'No drivers yet.'}
+          action={
+            search ? (
+              <Button variant="secondary" onClick={() => setSearchInput('')}>
+                Clear search
+              </Button>
+            ) : (
+              <Button onClick={() => setIsFormOpen(true)}>Add the first driver</Button>
+            )
+          }
         />
       ) : null}
 
       {data && data.items.length > 0 ? (
         <>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Profile</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Employee ID</TableHeaderCell>
-                <TableHeaderCell>License</TableHeaderCell>
-                <TableHeaderCell>Vehicle</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.items.map((driver) => (
-                <TableRow key={driver.id}>
-                  <TableCell>
-                    {driver.profileImage ? (
-                      <img
-                        src={toAbsoluteFileUrl(driver.profileImage.fileUrl)}
-                        alt={`${driver.firstName} ${driver.lastName}`}
-                        loading="lazy"
-                        className="size-10 rounded-full object-cover"
-                      />
-                    ) : (
-                      <span
-                        aria-hidden="true"
-                        className="flex size-10 items-center justify-center rounded-full bg-slate-100 text-sm font-medium text-slate-500"
-                      >
-                        {driver.firstName.charAt(0)}
-                        {driver.lastName.charAt(0)}
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {driver.firstName} {driver.lastName}
-                  </TableCell>
-                  <TableCell>{driver.employeeId}</TableCell>
-                  <TableCell>{driver.licenseNumber}</TableCell>
-                  <TableCell>
-                    {driver.assignedVehicle ? driver.assignedVehicle.registrationNumber : '—'}
-                  </TableCell>
-                  <TableCell>{driver.availabilityStatus}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {data.items.map((driver) => (
+              <DriverCard
+                key={driver.id}
+                driver={driver}
+                onView={() => setViewing(driver)}
+                onEdit={() => setEditing(driver)}
+              />
+            ))}
+          </div>
           <Pagination page={page} totalPages={data.meta.totalPages} onPageChange={setPage} />
         </>
       ) : null}
@@ -124,6 +114,36 @@ export function DriversPage() {
       </Dialog>
 
       <Dialog
+        open={viewing !== null}
+        onClose={() => setViewing(null)}
+        title="Driver details"
+        className="max-w-lg"
+      >
+        {viewing ? <DriverDetails driver={viewing} /> : null}
+      </Dialog>
+
+      <Dialog
+        open={editing !== null}
+        onClose={() => setEditing(null)}
+        title="Edit driver"
+        className="max-w-2xl"
+      >
+        {editing ? (
+          <DriverForm
+            key={editing.id}
+            defaultValues={driverToFormDefaults(editing)}
+            submitLabel="Save changes"
+            onCancel={() => setEditing(null)}
+            onSubmit={async (input, profileImage) => {
+              await updateDriver.mutateAsync({ id: editing.id, input, profileImage });
+              toast.success('Driver updated.');
+              setEditing(null);
+            }}
+          />
+        ) : null}
+      </Dialog>
+
+      <Dialog
         open={provisionedLogin !== null}
         onClose={() => setProvisionedLogin(null)}
         title="Login credentials created"
@@ -132,7 +152,7 @@ export function DriversPage() {
           Share these one-time credentials with the driver — the password is only shown now, and
           they must change it on first sign-in.
         </p>
-        <dl className="mb-6 rounded-md bg-slate-50 p-4 text-sm">
+        <dl className="mb-6 rounded-lg bg-slate-50 p-4 text-sm">
           <div className="flex justify-between gap-4">
             <dt className="text-slate-600">Email</dt>
             <dd className="font-mono">{provisionedLogin?.email}</dd>

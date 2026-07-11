@@ -4,35 +4,53 @@ import toast from 'react-hot-toast';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ErrorState } from '@/components/common/ErrorState';
 import { Pagination } from '@/components/common/Pagination';
+import { SearchInput } from '@/components/common/SearchInput';
 import { Spinner } from '@/components/common/Spinner';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-} from '@/components/ui/Table';
+import { useListSearch } from '@/hooks/use-list-search';
 import { usePaginationParams } from '@/hooks/use-pagination-params';
-import { toAbsoluteFileUrl } from '@/lib/file-url';
 
-import { useCreateVehicle, useVehiclesList } from '../hooks/use-vehicles';
-import { VEHICLE_TYPE_LABELS } from '../types';
+import { useCreateVehicle, useUpdateVehicle, useVehiclesList } from '../hooks/use-vehicles';
+import { vehicleToFormDefaults } from '../schemas/vehicle-form-schema';
+import { VehicleCard } from './VehicleCard';
+import { VehicleDetails } from './VehicleDetails';
 import { VehicleForm } from './VehicleForm';
+
+import type { Vehicle } from '../types';
 
 export function VehiclesPage() {
   const { page, setPage } = usePaginationParams();
-  const { data, isPending, isError, error, refetch } = useVehiclesList(page);
+  const { searchInput, setSearchInput, search } = useListSearch();
+  const { data, isPending, isError, error, refetch } = useVehiclesList({ page, search });
   const createVehicle = useCreateVehicle();
+  const updateVehicle = useUpdateVehicle();
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [viewing, setViewing] = useState<Vehicle | null>(null);
+  const [editing, setEditing] = useState<Vehicle | null>(null);
 
   return (
     <section>
-      <div className="mb-6 flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">Vehicles</h1>
-        <Button onClick={() => setIsFormOpen(true)}>Add vehicle</Button>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Vehicles</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            {data ? `${data.meta.totalItems} registered` : ' '}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-full sm:w-64">
+            <SearchInput
+              id="vehicle-search"
+              label="Search vehicles"
+              labelHidden
+              value={searchInput}
+              onValueChange={setSearchInput}
+              placeholder="Search vehicle"
+            />
+          </div>
+          <Button onClick={() => setIsFormOpen(true)}>Add vehicle</Button>
+        </div>
       </div>
 
       {isPending ? <Spinner label="Loading vehicles" /> : null}
@@ -46,54 +64,31 @@ export function VehiclesPage() {
 
       {data && data.items.length === 0 ? (
         <EmptyState
-          message="No vehicles yet."
-          action={<Button onClick={() => setIsFormOpen(true)}>Add the first vehicle</Button>}
+          message={search ? 'No vehicles match your search.' : 'No vehicles yet.'}
+          action={
+            search ? (
+              <Button variant="secondary" onClick={() => setSearchInput('')}>
+                Clear search
+              </Button>
+            ) : (
+              <Button onClick={() => setIsFormOpen(true)}>Add the first vehicle</Button>
+            )
+          }
         />
       ) : null}
 
       {data && data.items.length > 0 ? (
         <>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Photo</TableHeaderCell>
-                <TableHeaderCell>Registration</TableHeaderCell>
-                <TableHeaderCell>Type</TableHeaderCell>
-                <TableHeaderCell>Brand / Model</TableHeaderCell>
-                <TableHeaderCell>Capacity</TableHeaderCell>
-                <TableHeaderCell>Status</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.items.map((vehicle) => (
-                <TableRow key={vehicle.id}>
-                  <TableCell>
-                    {vehicle.photos[0] ? (
-                      <img
-                        src={toAbsoluteFileUrl(vehicle.photos[0].fileUrl)}
-                        alt={`${vehicle.brand} ${vehicle.model}`}
-                        loading="lazy"
-                        className="size-10 rounded-md object-cover"
-                      />
-                    ) : (
-                      <span className="flex size-10 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-400">
-                        —
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-medium">{vehicle.registrationNumber}</TableCell>
-                  <TableCell>{VEHICLE_TYPE_LABELS[vehicle.vehicleType]}</TableCell>
-                  <TableCell>
-                    {vehicle.brand} {vehicle.model}
-                  </TableCell>
-                  <TableCell>
-                    {vehicle.seatingCapacity} seats / {vehicle.patientCapacity} patients
-                  </TableCell>
-                  <TableCell>{vehicle.status}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {data.items.map((vehicle) => (
+              <VehicleCard
+                key={vehicle.id}
+                vehicle={vehicle}
+                onView={() => setViewing(vehicle)}
+                onEdit={() => setEditing(vehicle)}
+              />
+            ))}
+          </div>
           <Pagination page={page} totalPages={data.meta.totalPages} onPageChange={setPage} />
         </>
       ) : null}
@@ -112,6 +107,36 @@ export function VehiclesPage() {
             setIsFormOpen(false);
           }}
         />
+      </Dialog>
+
+      <Dialog
+        open={viewing !== null}
+        onClose={() => setViewing(null)}
+        title="Vehicle details"
+        className="max-w-lg"
+      >
+        {viewing ? <VehicleDetails vehicle={viewing} /> : null}
+      </Dialog>
+
+      <Dialog
+        open={editing !== null}
+        onClose={() => setEditing(null)}
+        title="Edit vehicle"
+        className="max-w-2xl"
+      >
+        {editing ? (
+          <VehicleForm
+            key={editing.id}
+            defaultValues={vehicleToFormDefaults(editing)}
+            submitLabel="Save changes"
+            onCancel={() => setEditing(null)}
+            onSubmit={async (input, photos) => {
+              await updateVehicle.mutateAsync({ id: editing.id, input, photos });
+              toast.success('Vehicle updated.');
+              setEditing(null);
+            }}
+          />
+        ) : null}
       </Dialog>
     </section>
   );

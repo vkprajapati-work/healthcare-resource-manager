@@ -37,17 +37,18 @@ export const router = createBrowserRouter([
   {
     errorElement: <RouteErrorBoundary />,
     children: [
-      // Public area — reads are public per the API contract.
+      // Public area — reads are public per the API contract. Login nests under
+      // the same header/nav chrome so the site frame stays consistent.
       {
         element: <RootLayout />,
         children: [
           { path: ROUTES.home, element: withSuspense(<ResourcesPage />) },
+          {
+            element: <AuthLayout />,
+            children: [{ path: ROUTES.login, element: withSuspense(<LoginPage />) }],
+          },
           { path: '*', element: <NotFoundPage /> },
         ],
-      },
-      {
-        element: <AuthLayout />,
-        children: [{ path: ROUTES.login, element: withSuspense(<LoginPage />) }],
       },
       // Admin area — mutations require an ADMIN session.
       {

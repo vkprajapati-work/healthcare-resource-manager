@@ -1,16 +1,10 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
-import { env } from '@/config/env';
-import { ROUTES } from '@/config/routes';
-
-/** Minimal centered chrome for unauthenticated pages (login, future reset). */
+/** Centered card chrome for unauthenticated pages (login, future reset); nests under RootLayout so the site header stays visible. */
 export function AuthLayout() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4">
-      <Link to={ROUTES.home} className="mb-8 text-xl font-semibold tracking-tight">
-        {env.VITE_APP_NAME}
-      </Link>
-      <main className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-1 flex-col items-center justify-center py-10">
+      <main className="w-full max-w-sm rounded-2xl border border-slate-100 bg-white p-8 shadow-lg shadow-slate-200/50">
         <Outlet />
       </main>
     </div>

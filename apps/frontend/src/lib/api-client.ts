@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { GENERIC_ERROR_MESSAGE } from '@/config/constants';
 import { env } from '@/config/env';
+import { formatRetryWait } from '@/lib/utils';
 import { ApiError } from '@/types/api';
 
 import type { AxiosError, InternalAxiosRequestConfig } from 'axios';
@@ -43,6 +44,18 @@ const refreshSession = (): Promise<void> => {
 
 const toApiError = (error: AxiosError<ApiErrorResponse>): ApiError => {
   const status = error.response?.status ?? 0;
+
+  // The rate limiter replies with plain text (no envelope) plus a
+  // Retry-After header — turn it into a friendly, actionable message.
+  if (status === 429) {
+    const parsed = Number.parseInt(String(error.response?.headers?.['retry-after'] ?? ''), 10);
+    const retryAfterSeconds = Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+    const message = retryAfterSeconds
+      ? `Too many requests — please try again in ${formatRetryWait(retryAfterSeconds)}.`
+      : 'Too many requests — please wait a moment and try again.';
+    return new ApiError(status, { code: 'RATE_LIMITED', message }, retryAfterSeconds);
+  }
+
   const body = error.response?.data?.error;
   if (body) {
     return new ApiError(status, body);

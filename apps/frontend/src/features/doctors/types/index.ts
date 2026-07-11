@@ -17,18 +17,32 @@ export interface Doctor {
   email: string;
   phoneNumber: string;
   gender: Gender;
+  dateOfBirth: string;
   specialization: string;
   qualification: string;
+  licenseNumber: string;
   department: string;
   yearsOfExperience: number;
+  address: string;
   city: string;
   state: string;
+  country: string;
+  postalCode: string;
   profileImage?: FileRef;
   availabilityStatus: DoctorAvailabilityStatus;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
+
+export const DOCTOR_STATUS_VARIANTS: Record<
+  DoctorAvailabilityStatus,
+  'success' | 'warning' | 'danger'
+> = {
+  AVAILABLE: 'success',
+  UNAVAILABLE: 'danger',
+  ON_LEAVE: 'warning',
+};
 
 /** One-time login credentials returned when a doctor/driver account is provisioned. */
 export interface ProvisionedLogin {

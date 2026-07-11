@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { Driver } from '../types';
+
 const phoneRegex = /^\+?[1-9]\d{7,14}$/;
 
 /** Mirrors the backend's driverBodySchema (required fields only). */
@@ -30,3 +32,26 @@ export const driverFormSchema = z.object({
 });
 
 export type DriverFormInput = z.infer<typeof driverFormSchema>;
+
+/** Maps a driver DTO into form defaults (ISO datetimes → date-input strings). */
+export function driverToFormDefaults(driver: Driver): DriverFormInput {
+  return {
+    firstName: driver.firstName,
+    lastName: driver.lastName,
+    email: driver.email,
+    phoneNumber: driver.phoneNumber,
+    gender: driver.gender,
+    dateOfBirth: driver.dateOfBirth.slice(0, 10),
+    employeeId: driver.employeeId,
+    joiningDate: driver.joiningDate.slice(0, 10),
+    licenseNumber: driver.licenseNumber,
+    licenseExpiry: driver.licenseExpiry.slice(0, 10),
+    yearsOfExperience: driver.yearsOfExperience,
+    assignedVehicle: driver.assignedVehicle?.id ?? '',
+    address: driver.address,
+    city: driver.city,
+    state: driver.state,
+    country: driver.country,
+    postalCode: driver.postalCode,
+  };
+}
