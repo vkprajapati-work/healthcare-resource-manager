@@ -30,8 +30,17 @@ export function useVehicleOptions() {
 export function useUpdateVehicle() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, input, photos }: { id: string; input: VehicleFormInput; photos: File[] }) =>
-      vehiclesApi.update(id, input, photos),
+    mutationFn: ({
+      id,
+      input,
+      photos,
+      existingPhotoIds,
+    }: {
+      id: string;
+      input: VehicleFormInput;
+      photos: File[];
+      existingPhotoIds?: string[];
+    }) => vehiclesApi.update(id, input, photos, existingPhotoIds),
     // The form renders failures inline — skip the global error toast.
     meta: { silenceErrorToast: true },
     onSuccess: () => {

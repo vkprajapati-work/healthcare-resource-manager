@@ -32,10 +32,15 @@ export const vehiclesApi = {
     return data.data;
   },
 
-  async update(id: string, input: VehicleFormInput, photos: File[]): Promise<Vehicle> {
+  async update(
+    id: string,
+    input: VehicleFormInput,
+    photos: File[],
+    existingPhotoIds?: string[],
+  ): Promise<Vehicle> {
     const { data } = await apiClient.patch<ApiSuccessResponse<Vehicle>>(
       `/vehicles/${id}`,
-      buildFormData({ ...input }, { photos }),
+      buildFormData({ ...input, photos: existingPhotoIds }, { photos }),
     );
     return data.data;
   },

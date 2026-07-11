@@ -1,4 +1,5 @@
 import { DetailList } from '@/components/common/DetailList';
+import { ImageCarousel } from '@/components/common/ImageCarousel';
 import { Badge } from '@/components/ui/Badge';
 import { toAbsoluteFileUrl } from '@/lib/file-url';
 import { formatEnumLabel } from '@/lib/utils';
@@ -25,18 +26,13 @@ export function VehicleDetails({ vehicle }: VehicleDetailsProps) {
       </div>
 
       {vehicle.photos.length > 0 ? (
-        <ul className="flex flex-wrap gap-2">
-          {vehicle.photos.map((photo) => (
-            <li key={photo.id}>
-              <img
-                src={toAbsoluteFileUrl(photo.fileUrl)}
-                alt={`${vehicle.brand} ${vehicle.model}`}
-                loading="lazy"
-                className="size-20 rounded-lg object-cover ring-1 ring-slate-200"
-              />
-            </li>
-          ))}
-        </ul>
+        <ImageCarousel
+          images={vehicle.photos.map((photo) => ({
+            id: photo.id,
+            url: toAbsoluteFileUrl(photo.fileUrl),
+            alt: `${vehicle.brand} ${vehicle.model}`,
+          }))}
+        />
       ) : null}
 
       <DetailList

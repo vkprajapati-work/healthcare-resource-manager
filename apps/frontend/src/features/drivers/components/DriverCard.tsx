@@ -1,6 +1,9 @@
+import { useState } from 'react';
+
 import { CardActions } from '@/components/common/CardActions';
 import { Badge } from '@/components/ui/Badge';
 import { toAbsoluteFileUrl } from '@/lib/file-url';
+import { isDegenerateImage } from '@/lib/image';
 import { formatEnumLabel } from '@/lib/utils';
 
 import { DRIVER_STATUS_VARIANTS } from '../types';
@@ -14,6 +17,8 @@ interface DriverCardProps {
 }
 
 export function DriverCard({ driver, onView, onEdit }: DriverCardProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   return (
     <article className="relative flex flex-col rounded-2xl border border-slate-100 bg-white shadow-sm ring-1 ring-transparent transition-all hover:-translate-y-1 hover:shadow-lg hover:ring-primary-100">
       <Badge
@@ -24,11 +29,17 @@ export function DriverCard({ driver, onView, onEdit }: DriverCardProps) {
       </Badge>
 
       <div className="flex flex-1 flex-col items-center px-4 pb-5 pt-9 text-center">
-        {driver.profileImage ? (
+        {driver.profileImage && !imageFailed ? (
           <img
             src={toAbsoluteFileUrl(driver.profileImage.fileUrl)}
             alt=""
             loading="lazy"
+            onError={() => setImageFailed(true)}
+            onLoad={(event) => {
+              if (isDegenerateImage(event.currentTarget)) {
+                setImageFailed(true);
+              }
+            }}
             className="size-24 rounded-full object-cover shadow-sm ring-4 ring-primary-50"
           />
         ) : (

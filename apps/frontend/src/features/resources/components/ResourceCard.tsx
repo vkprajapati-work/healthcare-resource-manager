@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Badge } from '@/components/ui/Badge';
 import { toAbsoluteFileUrl } from '@/lib/file-url';
+import { isDegenerateImage } from '@/lib/image';
 
 import type { Resource } from '../types';
 
@@ -28,7 +29,12 @@ export function ResourceCard({ resource }: ResourceCardProps) {
             alt={resource.title}
             loading="lazy"
             onError={() => setImageFailed(true)}
-            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+            onLoad={(event) => {
+              if (isDegenerateImage(event.currentTarget)) {
+                setImageFailed(true);
+              }
+            }}
+            className="size-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <div

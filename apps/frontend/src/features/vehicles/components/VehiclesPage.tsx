@@ -128,10 +128,11 @@ export function VehiclesPage() {
           <VehicleForm
             key={editing.id}
             defaultValues={vehicleToFormDefaults(editing)}
+            existingPhotos={editing.photos}
             submitLabel="Save changes"
             onCancel={() => setEditing(null)}
-            onSubmit={async (input, photos) => {
-              await updateVehicle.mutateAsync({ id: editing.id, input, photos });
+            onSubmit={async (input, photos, existingPhotoIds) => {
+              await updateVehicle.mutateAsync({ id: editing.id, input, photos, existingPhotoIds });
               toast.success('Vehicle updated.');
               setEditing(null);
             }}

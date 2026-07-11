@@ -123,6 +123,7 @@ export function DriverForm({
       <FileUploadField
         id="profileImage"
         label={defaultValues ? 'Replace profile image (optional)' : 'Profile image (optional)'}
+        hint="Square photo works best (e.g. 400×400px), max 5MB."
         accept="image/jpeg,image/png,image/webp"
         files={profileImage}
         onFilesChange={setProfileImage}

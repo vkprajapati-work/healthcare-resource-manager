@@ -17,4 +17,12 @@ describe('buildFormData', () => {
     expect(formData.has('blank')).toBe(false);
     expect(formData.getAll('photos')).toHaveLength(2);
   });
+
+  it('sends a string-array field as repeated entries, or a single empty entry when empty', () => {
+    const kept = buildFormData({ photos: ['id-1', 'id-2'] });
+    expect(kept.getAll('photos')).toEqual(['id-1', 'id-2']);
+
+    const cleared = buildFormData({ photos: [] });
+    expect(cleared.getAll('photos')).toEqual(['']);
+  });
 });
