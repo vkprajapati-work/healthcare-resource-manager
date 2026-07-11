@@ -1,28 +1,32 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { fieldAria } from '@/components/common/field-aria';
-import { FileUploadField } from '@/components/common/FileUploadField';
 import { FormField } from '@/components/common/FormField';
+import { ImageUploadField } from '@/components/common/ImageUploadField';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { toAbsoluteFileUrl } from '@/lib/file-url';
 import { ApiError } from '@/types/api';
+import { EMPTY_IMAGE_VALUE } from '@/types/image-field';
 
 import { doctorFormSchema } from '../schemas/doctor-form-schema';
 
 import type { DoctorFormInput } from '../schemas/doctor-form-schema';
+import type { FileRef } from '../types';
 
 interface DoctorFormProps {
-  onSubmit: (input: DoctorFormInput, profileImage: File[]) => Promise<void>;
+  onSubmit: (input: DoctorFormInput) => Promise<void>;
   onCancel: () => void;
   defaultValues?: DoctorFormInput;
+  /** The doctor's already-saved profile image, shown for context when editing. */
+  existingPhoto?: FileRef;
   submitLabel?: string;
 }
 
 interface TextFieldConfig {
-  name: keyof DoctorFormInput;
+  name: Exclude<keyof DoctorFormInput, 'profileImage'>;
   label: string;
   type?: 'text' | 'email' | 'date' | 'number';
 }
@@ -49,24 +53,28 @@ export function DoctorForm({
   onSubmit,
   onCancel,
   defaultValues,
+  existingPhoto,
   submitLabel = 'Create doctor',
 }: DoctorFormProps) {
-  const [profileImage, setProfileImage] = useState<File[]>([]);
   const {
     register,
+    control,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
   } = useForm<DoctorFormInput>({
     resolver: zodResolver(doctorFormSchema),
-    ...(defaultValues ? { defaultValues } : {}),
+    defaultValues: defaultValues ?? { profileImage: EMPTY_IMAGE_VALUE },
   });
 
   const submit = async (input: DoctorFormInput): Promise<void> => {
     try {
-      await onSubmit(input, profileImage);
+      await onSubmit(input);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Failed to create the doctor.';
+      const fallback = defaultValues
+        ? 'Failed to update the doctor.'
+        : 'Failed to create the doctor.';
+      const message = error instanceof ApiError ? error.message : fallback;
       setError('root', { message });
     }
   };
@@ -100,13 +108,20 @@ export function DoctorForm({
         </FormField>
       </div>
 
-      <FileUploadField
-        id="profileImage"
-        label={defaultValues ? 'Replace profile image (optional)' : 'Profile image (optional)'}
-        hint="Square photo works best (e.g. 400×400px), max 5MB."
-        accept="image/jpeg,image/png,image/webp"
-        files={profileImage}
-        onFilesChange={setProfileImage}
+      <Controller
+        control={control}
+        name="profileImage"
+        render={({ field }) => (
+          <ImageUploadField
+            id="profileImage"
+            label="Profile image"
+            hint="Square photo works best (e.g. 400×400px), max 5MB."
+            shape="circle"
+            existingImageUrl={existingPhoto ? toAbsoluteFileUrl(existingPhoto.fileUrl) : null}
+            value={field.value}
+            onChange={field.onChange}
+          />
+        )}
       />
 
       {errors.root ? (

@@ -244,10 +244,10 @@ export class DoctorsService {
     files: DoctorUploadedFiles | undefined,
     documentCategories: DocumentFileCategory[] | undefined,
     uploadedBy: string,
-  ): Promise<Pick<UpdateDoctorInput, 'profileImage' | 'documents'>> {
+  ): Promise<{ profileImage?: string; documents?: string[] }> {
     const profileImageFile = files?.profileImage?.[0];
     const documentFiles = files?.documents ?? [];
-    const result: Pick<UpdateDoctorInput, 'profileImage' | 'documents'> = {};
+    const result: { profileImage?: string; documents?: string[] } = {};
 
     if (profileImageFile) {
       const profileImage = await this.filesService.upload({

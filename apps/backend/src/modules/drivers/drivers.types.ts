@@ -156,7 +156,10 @@ export interface CreateDriverInput {
   isActive: boolean;
 }
 
-export type UpdateDriverInput = Partial<CreateDriverInput>;
+export type UpdateDriverInput = Partial<Omit<CreateDriverInput, 'profileImage'>> & {
+  /** null explicitly clears the profile image; undefined leaves it unchanged. */
+  profileImage?: string | null;
+};
 
 export interface DriverFormInput extends CreateDriverInput {
   documentCategories?: DocumentFileCategory[];

@@ -16,15 +16,8 @@ export function useDoctorsList(params: { page: number; search?: string | undefin
 export function useUpdateDoctor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      input,
-      profileImage,
-    }: {
-      id: string;
-      input: DoctorFormInput;
-      profileImage: File[];
-    }) => doctorsApi.update(id, input, profileImage),
+    mutationFn: ({ id, input }: { id: string; input: DoctorFormInput }) =>
+      doctorsApi.update(id, input),
     // The form renders failures inline — skip the global error toast.
     meta: { silenceErrorToast: true },
     onSuccess: () => {
@@ -37,13 +30,23 @@ export function useUpdateDoctor() {
 export function useCreateDoctor() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ input, profileImage }: { input: DoctorFormInput; profileImage: File[] }) =>
-      doctorsApi.create(input, profileImage),
+    mutationFn: (input: DoctorFormInput) => doctorsApi.create(input),
     // The form renders failures inline — skip the global error toast.
     meta: { silenceErrorToast: true },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: doctorKeys.all });
       // Doctors are bridged into the public resources list.
+      void queryClient.invalidateQueries({ queryKey: ['resources'] });
+    },
+  });
+}
+
+export function useDeleteDoctor() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => doctorsApi.delete(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: doctorKeys.all });
       void queryClient.invalidateQueries({ queryKey: ['resources'] });
     },
   });

@@ -1,6 +1,9 @@
+import { useState } from 'react';
+
 import { DetailList } from '@/components/common/DetailList';
 import { Badge } from '@/components/ui/Badge';
 import { toAbsoluteFileUrl } from '@/lib/file-url';
+import { isDegenerateImage } from '@/lib/image';
 import { formatEnumLabel } from '@/lib/utils';
 
 import { DOCTOR_STATUS_VARIANTS } from '../types';
@@ -12,13 +15,21 @@ interface DoctorDetailsProps {
 }
 
 export function DoctorDetails({ doctor }: DoctorDetailsProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-4">
-        {doctor.profileImage ? (
+        {doctor.profileImage && !imageFailed ? (
           <img
             src={toAbsoluteFileUrl(doctor.profileImage.fileUrl)}
             alt={`Dr. ${doctor.firstName} ${doctor.lastName}`}
+            onError={() => setImageFailed(true)}
+            onLoad={(event) => {
+              if (isDegenerateImage(event.currentTarget)) {
+                setImageFailed(true);
+              }
+            }}
             className="size-16 rounded-full object-cover ring-2 ring-primary-100"
           />
         ) : (

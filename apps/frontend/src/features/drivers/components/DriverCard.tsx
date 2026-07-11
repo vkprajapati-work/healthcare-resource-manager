@@ -14,9 +14,10 @@ interface DriverCardProps {
   driver: Driver;
   onView: () => void;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
-export function DriverCard({ driver, onView, onEdit }: DriverCardProps) {
+export function DriverCard({ driver, onView, onEdit, onDelete }: DriverCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
@@ -62,7 +63,7 @@ export function DriverCard({ driver, onView, onEdit }: DriverCardProps) {
         </span>
       </div>
 
-      <CardActions onView={onView} onEdit={onEdit} />
+      <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
     </article>
   );
 }

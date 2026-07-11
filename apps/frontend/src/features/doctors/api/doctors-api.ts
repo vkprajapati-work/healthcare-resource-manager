@@ -24,19 +24,31 @@ export const doctorsApi = {
     return { items: data.data, meta: data.meta };
   },
 
-  async create(input: DoctorFormInput, profileImage: File[]): Promise<DoctorCreateResult> {
+  async create(input: DoctorFormInput): Promise<DoctorCreateResult> {
+    const { profileImage, ...rest } = input;
     const { data } = await apiClient.post<ApiSuccessResponse<DoctorCreateResult>>(
       '/doctors',
-      buildFormData({ ...input }, { profileImage }),
+      buildFormData({ ...rest }, { profileImage: profileImage.file ? [profileImage.file] : [] }),
     );
     return data.data;
   },
 
-  async update(id: string, input: DoctorFormInput, profileImage: File[]): Promise<Doctor> {
+  async update(id: string, input: DoctorFormInput): Promise<Doctor> {
+    const { profileImage, ...rest } = input;
     const { data } = await apiClient.patch<ApiSuccessResponse<Doctor>>(
       `/doctors/${id}`,
-      buildFormData({ ...input }, { profileImage }),
+      buildFormData(
+        // An explicit empty-array marker clears the saved photo; omitting
+        // the field entirely (undefined) leaves it untouched.
+        { ...rest, profileImage: profileImage.removed ? [] : undefined },
+        { profileImage: profileImage.file ? [profileImage.file] : [] },
+      ),
     );
+    return data.data;
+  },
+
+  async delete(id: string): Promise<{ id: string }> {
+    const { data } = await apiClient.delete<ApiSuccessResponse<{ id: string }>>(`/doctors/${id}`);
     return data.data;
   },
 };

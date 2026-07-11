@@ -1,10 +1,19 @@
 import { z } from 'zod';
 
+import { EMPTY_IMAGE_VALUE } from '@/types/image-field';
+
+import type { ImageFieldValue } from '@/types/image-field';
 import type { Doctor } from '../types';
 
 const phoneRegex = /^\+?[1-9]\d{7,14}$/;
 
-/** Mirrors the backend's doctorBodySchema (required fields only). */
+/**
+ * Mirrors the backend's doctorBodySchema (required fields only), plus
+ * `profileImage` — an ImageUploadField value. It isn't meaningfully
+ * Zod-validatable (the component validates type/size itself before ever
+ * calling onChange), so it's a typed passthrough kept in the same form
+ * state as everything else rather than tracked separately.
+ */
 export const doctorFormSchema = z.object({
   firstName: z.string().trim().min(1, 'First name is required').max(100),
   lastName: z.string().trim().min(1, 'Last name is required').max(100),
@@ -28,6 +37,7 @@ export const doctorFormSchema = z.object({
   state: z.string().trim().min(1, 'State is required').max(100),
   country: z.string().trim().min(1, 'Country is required').max(100),
   postalCode: z.string().trim().min(1, 'Postal code is required').max(20),
+  profileImage: z.custom<ImageFieldValue>(),
 });
 
 export type DoctorFormInput = z.infer<typeof doctorFormSchema>;
@@ -51,5 +61,6 @@ export function doctorToFormDefaults(doctor: Doctor): DoctorFormInput {
     state: doctor.state,
     country: doctor.country,
     postalCode: doctor.postalCode,
+    profileImage: EMPTY_IMAGE_VALUE,
   };
 }

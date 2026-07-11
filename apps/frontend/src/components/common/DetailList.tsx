@@ -13,7 +13,7 @@ export function DetailList({ items }: DetailListProps) {
           <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">
             {item.label}
           </dt>
-          <dd className="text-slate-800">{item.value ?? '—'}</dd>
+          <dd className="break-words text-slate-800">{item.value ?? '—'}</dd>
         </div>
       ))}
     </dl>

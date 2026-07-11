@@ -1,10 +1,18 @@
 import { z } from 'zod';
 
+import { EMPTY_IMAGE_VALUE } from '@/types/image-field';
+
+import type { ImageFieldValue } from '@/types/image-field';
 import type { Driver } from '../types';
 
 const phoneRegex = /^\+?[1-9]\d{7,14}$/;
 
-/** Mirrors the backend's driverBodySchema (required fields only). */
+/**
+ * Mirrors the backend's driverBodySchema (required fields only), plus
+ * `profileImage` — an ImageUploadField value, kept in the same form state
+ * as everything else rather than tracked separately (see doctor-form-schema
+ * for why it's a typed passthrough rather than Zod-validated).
+ */
 export const driverFormSchema = z.object({
   firstName: z.string().trim().min(1, 'First name is required').max(100),
   lastName: z.string().trim().min(1, 'Last name is required').max(100),
@@ -29,6 +37,7 @@ export const driverFormSchema = z.object({
   state: z.string().trim().min(1, 'State is required').max(100),
   country: z.string().trim().min(1, 'Country is required').max(100),
   postalCode: z.string().trim().min(1, 'Postal code is required').max(20),
+  profileImage: z.custom<ImageFieldValue>(),
 });
 
 export type DriverFormInput = z.infer<typeof driverFormSchema>;
@@ -53,5 +62,6 @@ export function driverToFormDefaults(driver: Driver): DriverFormInput {
     state: driver.state,
     country: driver.country,
     postalCode: driver.postalCode,
+    profileImage: EMPTY_IMAGE_VALUE,
   };
 }

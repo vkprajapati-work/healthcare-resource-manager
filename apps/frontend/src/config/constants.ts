@@ -1,7 +1,7 @@
 /** Pagination defaults mirroring docs/API_GUIDELINES.md §4. */
 export const PAGINATION = {
   defaultPage: 1,
-  defaultLimit: 10,
+  defaultLimit: 12,
   maxLimit: 100,
 } as const;
 

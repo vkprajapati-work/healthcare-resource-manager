@@ -16,15 +16,8 @@ export function useDriversList(params: { page: number; search?: string | undefin
 export function useUpdateDriver() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      input,
-      profileImage,
-    }: {
-      id: string;
-      input: DriverFormInput;
-      profileImage: File[];
-    }) => driversApi.update(id, input, profileImage),
+    mutationFn: ({ id, input }: { id: string; input: DriverFormInput }) =>
+      driversApi.update(id, input),
     // The form renders failures inline — skip the global error toast.
     meta: { silenceErrorToast: true },
     onSuccess: () => {
@@ -37,13 +30,24 @@ export function useUpdateDriver() {
 export function useCreateDriver() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ input, profileImage }: { input: DriverFormInput; profileImage: File[] }) =>
-      driversApi.create(input, profileImage),
+    mutationFn: (input: DriverFormInput) => driversApi.create(input),
     // The form renders failures inline — skip the global error toast.
     meta: { silenceErrorToast: true },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: driverKeys.all });
       // Assigning a vehicle changes that vehicle's status/driver.
+      void queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+    },
+  });
+}
+
+export function useDeleteDriver() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => driversApi.delete(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: driverKeys.all });
+      // Deleting an assigned driver clears that vehicle's assignment.
       void queryClient.invalidateQueries({ queryKey: ['vehicles'] });
     },
   });

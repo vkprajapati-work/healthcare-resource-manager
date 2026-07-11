@@ -14,9 +14,10 @@ interface DoctorCardProps {
   doctor: Doctor;
   onView: () => void;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
-export function DoctorCard({ doctor, onView, onEdit }: DoctorCardProps) {
+export function DoctorCard({ doctor, onView, onEdit, onDelete }: DoctorCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
   return (
@@ -62,7 +63,7 @@ export function DoctorCard({ doctor, onView, onEdit }: DoctorCardProps) {
         </span>
       </div>
 
-      <CardActions onView={onView} onEdit={onEdit} />
+      <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
     </article>
   );
 }

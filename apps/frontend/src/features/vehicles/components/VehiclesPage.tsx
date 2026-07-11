@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ErrorState } from '@/components/common/ErrorState';
 import { Pagination } from '@/components/common/Pagination';
@@ -11,7 +12,12 @@ import { Dialog } from '@/components/ui/Dialog';
 import { useListSearch } from '@/hooks/use-list-search';
 import { usePaginationParams } from '@/hooks/use-pagination-params';
 
-import { useCreateVehicle, useUpdateVehicle, useVehiclesList } from '../hooks/use-vehicles';
+import {
+  useCreateVehicle,
+  useDeleteVehicle,
+  useUpdateVehicle,
+  useVehiclesList,
+} from '../hooks/use-vehicles';
 import { vehicleToFormDefaults } from '../schemas/vehicle-form-schema';
 import { VehicleCard } from './VehicleCard';
 import { VehicleDetails } from './VehicleDetails';
@@ -25,9 +31,11 @@ export function VehiclesPage() {
   const { data, isPending, isError, error, refetch } = useVehiclesList({ page, search });
   const createVehicle = useCreateVehicle();
   const updateVehicle = useUpdateVehicle();
+  const deleteVehicle = useDeleteVehicle();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [viewing, setViewing] = useState<Vehicle | null>(null);
   const [editing, setEditing] = useState<Vehicle | null>(null);
+  const [deleting, setDeleting] = useState<Vehicle | null>(null);
 
   return (
     <section>
@@ -86,6 +94,7 @@ export function VehiclesPage() {
                 vehicle={vehicle}
                 onView={() => setViewing(vehicle)}
                 onEdit={() => setEditing(vehicle)}
+                onDelete={() => setDeleting(vehicle)}
               />
             ))}
           </div>
@@ -101,8 +110,8 @@ export function VehiclesPage() {
       >
         <VehicleForm
           onCancel={() => setIsFormOpen(false)}
-          onSubmit={async (input, photos) => {
-            await createVehicle.mutateAsync({ input, photos });
+          onSubmit={async (input) => {
+            await createVehicle.mutateAsync(input);
             toast.success('Vehicle created.');
             setIsFormOpen(false);
           }}
@@ -131,14 +140,36 @@ export function VehiclesPage() {
             existingPhotos={editing.photos}
             submitLabel="Save changes"
             onCancel={() => setEditing(null)}
-            onSubmit={async (input, photos, existingPhotoIds) => {
-              await updateVehicle.mutateAsync({ id: editing.id, input, photos, existingPhotoIds });
+            onSubmit={async (input) => {
+              await updateVehicle.mutateAsync({ id: editing.id, input });
               toast.success('Vehicle updated.');
               setEditing(null);
             }}
           />
         ) : null}
       </Dialog>
+
+      <ConfirmDialog
+        open={deleting !== null}
+        title="Delete vehicle"
+        description={
+          deleting ? `Delete ${deleting.registrationNumber}? This cannot be undone.` : ''
+        }
+        confirmLabel="Delete"
+        isConfirming={deleteVehicle.isPending}
+        onCancel={() => setDeleting(null)}
+        onConfirm={async () => {
+          if (!deleting) return;
+          try {
+            await deleteVehicle.mutateAsync(deleting.id);
+            toast.success('Vehicle deleted.');
+            setDeleting(null);
+          } catch {
+            // The global mutation-error toast already surfaced this;
+            // keep the dialog open so the user can retry.
+          }
+        }}
+      />
     </section>
   );
 }

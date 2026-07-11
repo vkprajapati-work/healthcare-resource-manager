@@ -1,25 +1,22 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { fieldAria } from '@/components/common/field-aria';
-import { FileUploadField } from '@/components/common/FileUploadField';
 import { FormField } from '@/components/common/FormField';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
 import { Select } from '@/components/ui/Select';
-import { toAbsoluteFileUrl } from '@/lib/file-url';
 import { ApiError } from '@/types/api';
 
 import { vehicleFormSchema } from '../schemas/vehicle-form-schema';
-import { VEHICLE_TYPE_LABELS } from '../types';
+import { createInitialVehiclePhotosValue, VEHICLE_TYPE_LABELS } from '../types';
+import { VehiclePhotosField } from './VehiclePhotosField';
 
 import type { VehicleFormInput } from '../schemas/vehicle-form-schema';
 import type { FileRef } from '../types';
 
 interface VehicleFormProps {
-  onSubmit: (input: VehicleFormInput, photos: File[], existingPhotoIds?: string[]) => Promise<void>;
+  onSubmit: (input: VehicleFormInput) => Promise<void>;
   onCancel: () => void;
   defaultValues?: VehicleFormInput;
   /** The vehicle's already-saved photos; shown for context and removable when editing. */
@@ -34,33 +31,25 @@ export function VehicleForm({
   existingPhotos,
   submitLabel = 'Create vehicle',
 }: VehicleFormProps) {
-  const [photos, setPhotos] = useState<File[]>([]);
-  const [keptPhotoIds, setKeptPhotoIds] = useState<string[]>(
-    () => existingPhotos?.map((photo) => photo.id) ?? [],
-  );
   const {
     register,
+    control,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
   } = useForm<VehicleFormInput>({
     resolver: zodResolver(vehicleFormSchema),
-    ...(defaultValues ? { defaultValues } : {}),
+    defaultValues: defaultValues ?? { photos: createInitialVehiclePhotosValue() },
   });
 
-  const removeExistingPhoto = (id: string): void => {
-    setKeptPhotoIds((current) => current.filter((photoId) => photoId !== id));
-  };
-
   const submit = async (input: VehicleFormInput): Promise<void> => {
-    if (existingPhotos && keptPhotoIds.length === 0 && photos.length === 0) {
-      setError('root', { message: 'Add at least one photo — a vehicle needs at least one.' });
-      return;
-    }
     try {
-      await onSubmit(input, photos, existingPhotos ? keptPhotoIds : undefined);
+      await onSubmit(input);
     } catch (error) {
-      const message = error instanceof ApiError ? error.message : 'Failed to create the vehicle.';
+      const fallback = defaultValues
+        ? 'Failed to update the vehicle.'
+        : 'Failed to create the vehicle.';
+      const message = error instanceof ApiError ? error.message : fallback;
       setError('root', { message });
     }
   };
@@ -169,59 +158,17 @@ export function VehicleForm({
         </FormField>
       </div>
 
-      {existingPhotos && existingPhotos.length > 0 ? (
-        <div className="flex flex-col gap-2">
-          <Label>Current photos</Label>
-          <ul className="flex flex-wrap gap-3">
-            {existingPhotos
-              .filter((photo) => keptPhotoIds.includes(photo.id))
-              .map((photo) => (
-                <li key={photo.id} className="relative">
-                  <img
-                    src={toAbsoluteFileUrl(photo.fileUrl)}
-                    alt=""
-                    className="size-20 rounded-lg border border-slate-200 object-cover shadow-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeExistingPhoto(photo.id)}
-                    aria-label="Remove this photo"
-                    className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-white text-slate-500 shadow ring-1 ring-slate-200 transition-colors hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      aria-hidden="true"
-                      className="size-3"
-                    >
-                      <path strokeLinecap="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </li>
-              ))}
-          </ul>
-          {keptPhotoIds.length === 0 ? (
-            <p className="text-xs text-amber-600">
-              All current photos removed — add at least one below before saving.
-            </p>
-          ) : (
-            <p className="text-xs text-slate-500">
-              New photos you add below are kept alongside these.
-            </p>
-          )}
-        </div>
-      ) : null}
-
-      <FileUploadField
-        id="photos"
-        label={defaultValues ? 'Add more photos (optional)' : 'Photos (optional)'}
-        hint="Landscape photos work best (e.g. 1280×720px), max 5MB each."
-        accept="image/jpeg,image/png,image/webp"
-        multiple
-        files={photos}
-        onFilesChange={setPhotos}
+      <Controller
+        control={control}
+        name="photos"
+        render={({ field }) => (
+          <VehiclePhotosField
+            value={field.value}
+            onChange={field.onChange}
+            existingPhotos={existingPhotos}
+            error={errors.photos?.message}
+          />
+        )}
       />
 
       {errors.root ? (

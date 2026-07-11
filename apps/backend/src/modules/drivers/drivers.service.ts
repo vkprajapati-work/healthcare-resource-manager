@@ -312,10 +312,10 @@ export class DriversService {
     files: DriverUploadedFiles | undefined,
     documentCategories: DocumentFileCategory[] | undefined,
     uploadedBy: string,
-  ): Promise<Pick<UpdateDriverInput, 'profileImage' | 'documents'>> {
+  ): Promise<{ profileImage?: string; documents?: string[] }> {
     const profileImageFile = files?.profileImage?.[0];
     const documentFiles = files?.documents ?? [];
-    const result: Pick<UpdateDriverInput, 'profileImage' | 'documents'> = {};
+    const result: { profileImage?: string; documents?: string[] } = {};
 
     if (profileImageFile) {
       const profileImage = await this.filesService.upload({

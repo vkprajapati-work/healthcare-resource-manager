@@ -16,6 +16,19 @@ const optionalObjectIdSchema = z.preprocess((value) => {
   return value;
 }, objectIdSchema.optional());
 
+/**
+ * Like optionalObjectIdSchema, but an explicit empty string clears the
+ * reference (null) instead of being treated as "field not provided" — lets
+ * editors remove a profile image without uploading a replacement.
+ */
+const clearableObjectIdSchema = z.preprocess((value) => {
+  if (value === '') {
+    return null;
+  }
+
+  return value;
+}, objectIdSchema.nullable().optional());
+
 const documentsSchema = z.preprocess((value) => {
   if (value === '' || typeof value === 'undefined') {
     return [];
@@ -127,7 +140,7 @@ const doctorBodySchema = z
     state: z.string().trim().min(1).max(100),
     country: z.string().trim().min(1).max(100),
     postalCode: z.string().trim().min(1).max(20),
-    profileImage: optionalObjectIdSchema,
+    profileImage: clearableObjectIdSchema,
     documents: documentsSchema,
     documentCategories: documentCategoriesSchema,
     availabilityStatus: z.nativeEnum(AvailabilityStatus).default(AvailabilityStatus.AVAILABLE),

@@ -1,4 +1,7 @@
+import { EMPTY_IMAGE_VALUE } from '@/types/image-field';
+
 import type { PaginationMeta } from '@/types/api';
+import type { ImageFieldValue } from '@/types/image-field';
 
 export type VehicleType =
   'BASIC_AMBULANCE' | 'ADVANCED_AMBULANCE' | 'ICU_AMBULANCE' | 'NEONATAL_AMBULANCE';
@@ -51,3 +54,30 @@ export const VEHICLE_STATUS_VARIANTS: Record<
 };
 
 export type VehicleListMeta = PaginationMeta;
+
+/** One already-saved photo's edit state — composed N times by VehiclePhotosField. */
+export interface VehiclePhotoExistingSlot {
+  photoId: string;
+  value: ImageFieldValue;
+}
+
+/**
+ * Multi-photo form value: each already-saved photo gets its own slot (kept,
+ * replaced, or removed), plus a flat list of brand-new files. Kept as one
+ * RHF-registered field (see vehicle-form-schema) rather than parallel
+ * useState, so photos are genuinely part of the form like every other field.
+ */
+export interface VehiclePhotosValue {
+  existing: VehiclePhotoExistingSlot[];
+  newFiles: File[];
+}
+
+export function createInitialVehiclePhotosValue(existingPhotos?: FileRef[]): VehiclePhotosValue {
+  return {
+    existing: (existingPhotos ?? []).map((photo) => ({
+      photoId: photo.id,
+      value: EMPTY_IMAGE_VALUE,
+    })),
+    newFiles: [],
+  };
+}

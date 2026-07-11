@@ -12,9 +12,10 @@ interface VehicleCardProps {
   vehicle: Vehicle;
   onView: () => void;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
-export function VehicleCard({ vehicle, onView, onEdit }: VehicleCardProps) {
+export function VehicleCard({ vehicle, onView, onEdit, onDelete }: VehicleCardProps) {
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm ring-1 ring-transparent transition-all hover:-translate-y-1 hover:shadow-lg hover:ring-primary-100">
       <div className="relative">
@@ -50,7 +51,7 @@ export function VehicleCard({ vehicle, onView, onEdit }: VehicleCardProps) {
         </span>
       </div>
 
-      <CardActions onView={onView} onEdit={onEdit} />
+      <CardActions onView={onView} onEdit={onEdit} onDelete={onDelete} />
     </article>
   );
 }

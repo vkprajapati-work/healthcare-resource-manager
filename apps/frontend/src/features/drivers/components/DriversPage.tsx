@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ErrorState } from '@/components/common/ErrorState';
 import { Pagination } from '@/components/common/Pagination';
@@ -11,7 +12,12 @@ import { Dialog } from '@/components/ui/Dialog';
 import { useListSearch } from '@/hooks/use-list-search';
 import { usePaginationParams } from '@/hooks/use-pagination-params';
 
-import { useCreateDriver, useDriversList, useUpdateDriver } from '../hooks/use-drivers';
+import {
+  useCreateDriver,
+  useDeleteDriver,
+  useDriversList,
+  useUpdateDriver,
+} from '../hooks/use-drivers';
 import { driverToFormDefaults } from '../schemas/driver-form-schema';
 import { DriverCard } from './DriverCard';
 import { DriverDetails } from './DriverDetails';
@@ -25,9 +31,11 @@ export function DriversPage() {
   const { data, isPending, isError, error, refetch } = useDriversList({ page, search });
   const createDriver = useCreateDriver();
   const updateDriver = useUpdateDriver();
+  const deleteDriver = useDeleteDriver();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [viewing, setViewing] = useState<Driver | null>(null);
   const [editing, setEditing] = useState<Driver | null>(null);
+  const [deleting, setDeleting] = useState<Driver | null>(null);
   const [provisionedLogin, setProvisionedLogin] = useState<ProvisionedLogin | null>(null);
 
   return (
@@ -87,6 +95,7 @@ export function DriversPage() {
                 driver={driver}
                 onView={() => setViewing(driver)}
                 onEdit={() => setEditing(driver)}
+                onDelete={() => setDeleting(driver)}
               />
             ))}
           </div>
@@ -102,8 +111,8 @@ export function DriversPage() {
       >
         <DriverForm
           onCancel={() => setIsFormOpen(false)}
-          onSubmit={async (input, profileImage) => {
-            const result = await createDriver.mutateAsync({ input, profileImage });
+          onSubmit={async (input) => {
+            const result = await createDriver.mutateAsync(input);
             toast.success('Driver created.');
             setIsFormOpen(false);
             if (result.login) {
@@ -132,10 +141,11 @@ export function DriversPage() {
           <DriverForm
             key={editing.id}
             defaultValues={driverToFormDefaults(editing)}
+            existingPhoto={editing.profileImage}
             submitLabel="Save changes"
             onCancel={() => setEditing(null)}
-            onSubmit={async (input, profileImage) => {
-              await updateDriver.mutateAsync({ id: editing.id, input, profileImage });
+            onSubmit={async (input) => {
+              await updateDriver.mutateAsync({ id: editing.id, input });
               toast.success('Driver updated.');
               setEditing(null);
             }}
@@ -166,6 +176,30 @@ export function DriversPage() {
           <Button onClick={() => setProvisionedLogin(null)}>Done</Button>
         </div>
       </Dialog>
+
+      <ConfirmDialog
+        open={deleting !== null}
+        title="Delete driver"
+        description={
+          deleting
+            ? `Delete ${deleting.firstName} ${deleting.lastName}? This cannot be undone.`
+            : ''
+        }
+        confirmLabel="Delete"
+        isConfirming={deleteDriver.isPending}
+        onCancel={() => setDeleting(null)}
+        onConfirm={async () => {
+          if (!deleting) return;
+          try {
+            await deleteDriver.mutateAsync(deleting.id);
+            toast.success('Driver deleted.');
+            setDeleting(null);
+          } catch {
+            // The global mutation-error toast already surfaced this;
+            // keep the dialog open so the user can retry.
+          }
+        }}
+      />
     </section>
   );
 }

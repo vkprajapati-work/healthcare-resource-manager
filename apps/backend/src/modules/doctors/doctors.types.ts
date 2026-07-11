@@ -143,7 +143,10 @@ export interface CreateDoctorInput {
   isActive: boolean;
 }
 
-export type UpdateDoctorInput = Partial<CreateDoctorInput>;
+export type UpdateDoctorInput = Partial<Omit<CreateDoctorInput, 'profileImage'>> & {
+  /** null explicitly clears the profile image; undefined leaves it unchanged. */
+  profileImage?: string | null;
+};
 
 export interface DoctorFormInput extends CreateDoctorInput {
   documentCategories?: DocumentFileCategory[];

@@ -30,17 +30,8 @@ export function useVehicleOptions() {
 export function useUpdateVehicle() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      input,
-      photos,
-      existingPhotoIds,
-    }: {
-      id: string;
-      input: VehicleFormInput;
-      photos: File[];
-      existingPhotoIds?: string[];
-    }) => vehiclesApi.update(id, input, photos, existingPhotoIds),
+    mutationFn: ({ id, input }: { id: string; input: VehicleFormInput }) =>
+      vehiclesApi.update(id, input),
     // The form renders failures inline — skip the global error toast.
     meta: { silenceErrorToast: true },
     onSuccess: () => {
@@ -53,12 +44,24 @@ export function useUpdateVehicle() {
 export function useCreateVehicle() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ input, photos }: { input: VehicleFormInput; photos: File[] }) =>
-      vehiclesApi.create(input, photos),
+    mutationFn: (input: VehicleFormInput) => vehiclesApi.create(input),
     // The form renders failures inline — skip the global error toast.
     meta: { silenceErrorToast: true },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: vehicleKeys.all });
+    },
+  });
+}
+
+export function useDeleteVehicle() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => vehiclesApi.delete(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: vehicleKeys.all });
+      void queryClient.invalidateQueries({ queryKey: ['resources'] });
+      // Deleting an assigned vehicle clears that driver's assignment.
+      void queryClient.invalidateQueries({ queryKey: ['drivers'] });
     },
   });
 }

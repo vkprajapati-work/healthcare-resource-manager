@@ -53,7 +53,13 @@ export function Dialog({ open, onClose, title, children, className }: DialogProp
         <h2 id={titleId} className="mb-4 text-lg font-semibold">
           {title}
         </h2>
-        {children}
+        {/*
+         * Only mounted while open: keeps closed-but-rendered dialogs (e.g. a
+         * permanently-mounted "Add" dialog beside a conditionally-mounted
+         * "Edit" dialog) from holding duplicate field ids in the DOM at the
+         * same time, and gives every open a fresh, non-stale form instance.
+         */}
+        {open ? children : null}
       </div>
     </dialog>
   );

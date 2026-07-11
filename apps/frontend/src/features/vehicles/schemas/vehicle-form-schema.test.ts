@@ -13,6 +13,7 @@ const validVehicle = {
   insuranceExpiry: '2027-01-01',
   fitnessExpiry: '2027-01-01',
   pollutionExpiry: '2026-12-01',
+  photos: { existing: [], newFiles: [new File(['x'], 'photo.png', { type: 'image/png' })] },
 };
 
 describe('vehicleFormSchema', () => {
@@ -25,5 +26,16 @@ describe('vehicleFormSchema', () => {
   it('rejects a manufacture year before 1990', () => {
     const result = vehicleFormSchema.safeParse({ ...validVehicle, manufactureYear: '1980' });
     expect(result.success).toBe(false);
+  });
+
+  it('rejects a vehicle with no photos', () => {
+    const result = vehicleFormSchema.safeParse({
+      ...validVehicle,
+      photos: { existing: [], newFiles: [] },
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.map((issue) => issue.path[0])).toContain('photos');
+    }
   });
 });

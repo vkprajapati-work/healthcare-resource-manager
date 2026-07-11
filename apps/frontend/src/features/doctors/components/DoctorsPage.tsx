@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
+import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ErrorState } from '@/components/common/ErrorState';
 import { Pagination } from '@/components/common/Pagination';
@@ -11,7 +12,12 @@ import { Dialog } from '@/components/ui/Dialog';
 import { useListSearch } from '@/hooks/use-list-search';
 import { usePaginationParams } from '@/hooks/use-pagination-params';
 
-import { useCreateDoctor, useDoctorsList, useUpdateDoctor } from '../hooks/use-doctors';
+import {
+  useCreateDoctor,
+  useDeleteDoctor,
+  useDoctorsList,
+  useUpdateDoctor,
+} from '../hooks/use-doctors';
 import { doctorToFormDefaults } from '../schemas/doctor-form-schema';
 import { DoctorCard } from './DoctorCard';
 import { DoctorDetails } from './DoctorDetails';
@@ -25,9 +31,11 @@ export function DoctorsPage() {
   const { data, isPending, isError, error, refetch } = useDoctorsList({ page, search });
   const createDoctor = useCreateDoctor();
   const updateDoctor = useUpdateDoctor();
+  const deleteDoctor = useDeleteDoctor();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [viewing, setViewing] = useState<Doctor | null>(null);
   const [editing, setEditing] = useState<Doctor | null>(null);
+  const [deleting, setDeleting] = useState<Doctor | null>(null);
   const [provisionedLogin, setProvisionedLogin] = useState<ProvisionedLogin | null>(null);
 
   return (
@@ -87,6 +95,7 @@ export function DoctorsPage() {
                 doctor={doctor}
                 onView={() => setViewing(doctor)}
                 onEdit={() => setEditing(doctor)}
+                onDelete={() => setDeleting(doctor)}
               />
             ))}
           </div>
@@ -102,8 +111,8 @@ export function DoctorsPage() {
       >
         <DoctorForm
           onCancel={() => setIsFormOpen(false)}
-          onSubmit={async (input, profileImage) => {
-            const result = await createDoctor.mutateAsync({ input, profileImage });
+          onSubmit={async (input) => {
+            const result = await createDoctor.mutateAsync(input);
             toast.success('Doctor created.');
             setIsFormOpen(false);
             if (result.login) {
@@ -132,10 +141,11 @@ export function DoctorsPage() {
           <DoctorForm
             key={editing.id}
             defaultValues={doctorToFormDefaults(editing)}
+            existingPhoto={editing.profileImage}
             submitLabel="Save changes"
             onCancel={() => setEditing(null)}
-            onSubmit={async (input, profileImage) => {
-              await updateDoctor.mutateAsync({ id: editing.id, input, profileImage });
+            onSubmit={async (input) => {
+              await updateDoctor.mutateAsync({ id: editing.id, input });
               toast.success('Doctor updated.');
               setEditing(null);
             }}
@@ -166,6 +176,30 @@ export function DoctorsPage() {
           <Button onClick={() => setProvisionedLogin(null)}>Done</Button>
         </div>
       </Dialog>
+
+      <ConfirmDialog
+        open={deleting !== null}
+        title="Delete doctor"
+        description={
+          deleting
+            ? `Delete Dr. ${deleting.firstName} ${deleting.lastName}? This cannot be undone.`
+            : ''
+        }
+        confirmLabel="Delete"
+        isConfirming={deleteDoctor.isPending}
+        onCancel={() => setDeleting(null)}
+        onConfirm={async () => {
+          if (!deleting) return;
+          try {
+            await deleteDoctor.mutateAsync(deleting.id);
+            toast.success('Doctor deleted.');
+            setDeleting(null);
+          } catch {
+            // The global mutation-error toast already surfaced this;
+            // keep the dialog open so the user can retry.
+          }
+        }}
+      />
     </section>
   );
 }
