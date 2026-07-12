@@ -1,11 +1,9 @@
-name: Deploy to EC2
-
 on:
   push:
     branches:
       - main
 
-yconcurrency:
+concurrency:
   group: production-deploy
   cancel-in-progress: false
 
