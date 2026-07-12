@@ -14,7 +14,7 @@ A full-stack platform for finding and managing healthcare resources — ambulanc
 
 ## Contents
 
-- [Live demo](#live-demo)
+- [Live demo](http://54.235.96.72/)
 - [Features](#features)
 - [Tech stack](#tech-stack)
 - [Repository structure](#repository-structure)
