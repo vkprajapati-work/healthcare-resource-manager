@@ -5,7 +5,7 @@ const isProduction = env.NODE_ENV === 'production';
 
 export const getAuthCookieOptions = (): CookieOptions => ({
   httpOnly: true,
-  secure: env.COOKIE_SECURE || isProduction,
+  secure: env.COOKIE_SECURE
   sameSite: env.COOKIE_SAME_SITE,
   path: '/',
   maxAge: env.COOKIE_MAX_AGE,
