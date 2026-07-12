@@ -11,7 +11,18 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(5000),
   MONGODB_URI: z.string().trim().min(1),
-  CLIENT_URL: optionalString(z.string().trim().url()),
+  CLIENT_URL: optionalString(
+    z
+      .string()
+      .trim()
+      .transform((value) =>
+        value
+          .split(',')
+          .map((origin) => origin.trim())
+          .filter(Boolean),
+      )
+      .pipe(z.array(z.string().url()).min(1)),
+  ),
   ACCESS_TOKEN_SECRET: z.string().trim().min(1),
   ACCESS_TOKEN_EXPIRES_IN: z.string().trim().min(1).default('15m'),
   REFRESH_TOKEN_SECRET: z.string().trim().min(1),

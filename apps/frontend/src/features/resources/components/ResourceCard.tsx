@@ -22,7 +22,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm ring-1 ring-transparent transition-all hover:-translate-y-1 hover:shadow-lg hover:ring-primary-100">
-      <div className="aspect-video w-full overflow-hidden bg-slate-100">
+      <div className="aspect-video w-full overflow-hidden bg-[rgb(191_211_230_/_60%)]">
         {showImage ? (
           <img
             src={toAbsoluteFileUrl(resource.imageUrl as string)}
