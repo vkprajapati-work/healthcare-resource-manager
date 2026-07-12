@@ -1,0 +1,1788 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!-- frame-runtime --><!--<base href="/_f/1783876044-797a/">--><base href="."><script>window.__FRAME_PREAMBLE={"capabilities":{"downloads":"downloads.DUzXFHNF.js","mcp":"mcp.Djj5DQjZ.js","self":"self.DqF_PxOe.js"},"transforms":"_transforms.DYk1Ltlh.js"}</script><script>(function(){"use strict";const X="modulepreload",Y=function(e){return"/"+e},Z={},U=function(t,n,u){let o=Promise.resolve();function i(f){const a=new Event("vite:preloadError",{cancelable:!0});if(a.payload=f,window.dispatchEvent(a),!a.defaultPrevented)throw f}return o.then(f=>{for(const a of f||[])a.status==="rejected"&&i(a.reason);return t().catch(i)})},D=["light","dark","system"];function $(e){if(e==null||typeof e!="object")return!1;const t=e.__frame_init;return t!=null&&typeof t=="object"}function q(e){if(e==null||typeof e!="object")return!1;const t=e.__frame_theme;if(t==null||typeof t!="object")return!1;const n=t.theme;return typeof n=="string"&&D.includes(n)}function M(e){if(window===top||e.type==="auxclick"&&e.button!==1)return;const t=e.composedPath?e.composedPath():[e.target];let n=null;for(let f=0;f<t.length;f++){const a=t[f];if(a&&a.matches&&a.matches("a[href],area[href]")){n=a;break}}if(!n&&e.target&&e.target.closest&&(n=e.target.closest("a[href],area[href]")),!n)return;const u=n.getAttribute("href");if(!u)return;let o,i;try{o=new URL(u,document.baseURI),i=new URL(document.baseURI).origin}catch{return}(o.protocol==="http:"||o.protocol==="https:")&&o.origin!==i&&(e.preventDefault(),parent.postMessage({__frame_nav:!0,url:o.href},"*"))}const L={};function y(e){if(window===top)return;const t=Date.now();t-(L[e]||0)<500||(L[e]=t,parent.postMessage({__frame_engaged:!0,kind:e},"*"))}const F=2e3,T=["wheel","touchstart","touchmove","keydown","pointerdown"];let k=0;function B(e){e.isTrusted&&(k=Date.now())}function z(){addEventListener("click",M,!0),addEventListener("auxclick",M,!0)}function W(){for(let e=0;e<T.length;e++)addEventListener(T[e],B,{capture:!0,passive:!0});addEventListener("scroll",e=>{e.isTrusted&&Date.now()-k<F&&y("scroll")},{capture:!0,passive:!0}),addEventListener("pointermove",e=>{e.isTrusted&&y("pointer")},{capture:!0,passive:!0}),addEventListener("click",e=>{e.isTrusted&&y("click")},{capture:!0,passive:!0})}function x(e,t,n){const u=[...t.values()].filter(o=>o.targets.some(i=>i.startsWith(e+".")));return{wrap(o,i){const f=`${e}.${o}`,a=u.filter(s=>s.targets.includes(f));return a.length===0?(...s)=>{try{return i(...s)}catch(d){return Promise.reject(d)}}:(...s)=>{let d=s;for(const c of a){const l=c.module.parameters;if(l)try{d=l(d)}catch{return Promise.reject({code:"transform_error",id:c.id,scope:e,message:"parameters transform failed"})}}let m;try{m=i(...d)}catch(c){m=Promise.reject(c)}return m.then(c=>{for(let l=a.length-1;l>=0;l--){const h=a[l],p=h.module.returns;if(p)try{c=p(c)}catch{return n({id:h.id,scope:e,leg:"returns"}),c}}return c},c=>{for(let l=a.length-1;l>=0;l--){const h=a[l],p=h.module.throws;if(p)try{c=p(c)}catch{return n({id:h.id,scope:e,leg:"throws"}),Promise.reject(c)}}return Promise.reject(c)})}}}}function H(e,t,n,u=()=>{}){const o=new Set(e.changes??[]),i=new Map;for(const f of o){const a=t[f];a&&i.set(f,a)}return{contract:e.contract,changes:o,flags:new Set(e.flags??[]),capabilities:e.capabilities??{},transforms:i,shellOrigin:n.shellOrigin,mount:n.mount,pipe:f=>x(f,i,u)}}(function(){const e=Object.defineProperty,t=globalThis,n=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let u=0;for(let o=0;o<n.length;o++){const i=n[o];try{e(t,i,{value:void 0,writable:!1,configurable:!1})}catch{try{delete t[i]}catch{}try{e(t,i,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof t[i]=="function"&&u++}if(u&&window!==top)try{parent.postMessage({__frame_rtc_lockdown_failed:u},"*")}catch{}})();const K=1e4,G=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function J(e){for(const t of G)if(t.endsWith(":*"))try{const n=new URL(e);if(`${n.protocol}//${n.hostname}:*`===t)return!0}catch{}else if(e===t)return!0;return!1}const w=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities??{}}),E=window.__FRAME_PREAMBLE?.transforms,C=/^[\w.-]+\.js$/,V=/^[a-z][a-z0-9_-]{0,63}$/;let A=null,g=null;function P(e,t,n){try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!0,enumerable:!0})}catch{}}}let R=!1;function N(e){const t=document.documentElement;e==="light"||e==="dark"?(t.dataset.theme=e,t.style.colorScheme=e,R=!0):R&&(delete t.dataset.theme,t.style.colorScheme="",R=!1)}const _=new Map;function Q(e,t){const n=_.get(e);if(!n)return;Object.assign(n.impl,t),n.impl.__settled=()=>Promise.reject({code:"capability_removed",message:`${e}: method not in this runtime`});const u=n.queue;n.queue=[];for(const o of u){const i=t[o.method];i?i(...o.args).then(o.resolve,o.reject):o.reject({code:"capability_removed",message:`${e}.${o.method} is not in this runtime`})}}function O(e,t){const n=_.get(e);if(!n)return;n.impl.__settled=()=>Promise.reject(t);const u=n.queue;n.queue=[];for(const o of u)o.reject(t)}const j=Object.getOwnPropertyDescriptor(window,"claude");if(window!==top&&!(j&&j.writable===!1)){z(),W();const e=j?.value??{};P(window,"claude",e);const t=s=>{const d={impl:Object.create(null),queue:[]};_.set(s,d);const m=new Proxy(d.impl,{get:(c,l)=>{if(typeof l=="string"&&!(l==="then"||l==="toJSON"||l==="valueOf"))return l==="toString"?Object.prototype.toString:(...h)=>{const p=c[l]??c.__settled;return p?p(...h):new Promise((b,S)=>{d.queue.push({method:l,args:h,resolve:b,reject:S})})}},set:()=>!1});P(e,s,m)};for(const s of Object.keys(w)){if(e[s]!==void 0){P(e,s,e[s]);continue}t(s)}let n=null,u=null,o=0;const i=s=>{s.source!==parent||!J(s.origin)||$(s.data)&&(n=s.data.__frame_init,g=s.origin,removeEventListener("message",i),clearTimeout(o),u?.())};addEventListener("message",i),parent.postMessage({__frame_connect:!0},"*");const f=new Promise(s=>{u=s,o=setTimeout(()=>{removeEventListener("message",i),s()},K)}),a=document.readyState==="loading"?new Promise(s=>document.addEventListener("DOMContentLoaded",()=>s(),{once:!0})):Promise.resolve();f.then(async()=>{if(!n||!g){for(const r of _.keys())O(r,{code:"not_granted",message:"frame initialization did not arrive - capability unavailable"});return}N(n.theme);const s=g;addEventListener("message",r=>{r.source!==parent||r.origin!==s||q(r.data)&&N(r.data.__frame_theme.theme)});const d=r=>U(()=>import("/_runtime/"+r),void 0),m=Object.keys(n.capabilities??{});for(const r of m)Object.hasOwn(w,r)||V.test(r)&&e[r]===void 0&&(t(r),O(r,{code:"capability_disabled",message:"capability not in this runtime generation"}));const c=m.filter(r=>Object.hasOwn(w,r)).map(r=>[r,w[r]]).filter(r=>typeof r[1]=="string"&&C.test(r[1])),[l,...h]=await Promise.allSettled([E&&C.test(E)?d(E):Promise.resolve({}),...c.map(([,r])=>d(r))]),p=g;A=H(n,l.status==="fulfilled"&&l.value?.TRANSFORMS||{},{shellOrigin:p,mount:Q},r=>parent.postMessage({__frame_cap_telemetry:r},p));const b=r=>parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:r}},p),S=A;h.forEach((r,v)=>{const I=c[v][0];if(r.status!=="fulfilled"){b(I);return}try{r.value?.install?.(S)}catch{b(I)}});for(const[r,v]of _)v.queue.length===0&&Object.keys(v.impl).length>0||O(r,{code:m.includes(r)?"capability_disabled":"not_granted",message:"capability not available in this session"});await a,parent.postMessage({__frame_ready:!0},g)})}})();</script><!-- /frame-runtime --><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Healthcare Resource Manager — API Reference</title>
+<style>
+  :root {
+    --bg: #eef2f0;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #12191a;
+    --ink-muted: #55655f;
+    --ink-faint: #8a9a93;
+    --line: #d7e0da;
+    --line-soft: #e6ece8;
+    --accent: #0e6b63;
+    --accent-ink: #ffffff;
+    --accent-soft: #dcefea;
+    --accent-soft-line: #b8ddd3;
+    --code-bg: #0f1614;
+    --code-ink: #d9ede7;
+    --code-line: #26332f;
+    --code-key: #8ecdbf;
+    --code-str: #e0c88a;
+    --code-num: #7fb0e0;
+    --get: #2e7d4f;
+    --get-soft: #e3f1e7;
+    --post: #0e6b63;
+    --post-soft: #dcefea;
+    --patch: #a3690b;
+    --patch-soft: #f5e9d6;
+    --delete: #a5393a;
+    --delete-soft: #f6e2e2;
+    --warn-bg: #fbf1de;
+    --warn-line: #e8cf9c;
+    --warn-ink: #6b4a10;
+    --shadow: 0 1px 2px rgba(18, 25, 26, 0.04), 0 6px 20px -8px rgba(18, 25, 26, 0.12);
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0e1513;
+    --surface: #141c1a;
+    --surface-raised: #182120;
+    --ink: #e7ede9;
+    --ink-muted: #98aba3;
+    --ink-faint: #6c7f78;
+    --line: #263230;
+    --line-soft: #1c2725;
+    --accent: #55d3bf;
+    --accent-ink: #082220;
+    --accent-soft: #163330;
+    --accent-soft-line: #244f47;
+    --code-bg: #0a0f0e;
+    --code-ink: #dcede7;
+    --code-line: #212d29;
+    --code-key: #8ecdbf;
+    --code-str: #e6cd8e;
+    --code-num: #8fc0f0;
+    --get: #63c98a;
+    --get-soft: #142a1e;
+    --post: #55d3bf;
+    --post-soft: #123330;
+    --patch: #e6ac4d;
+    --patch-soft: #2e2312;
+    --delete: #e2807d;
+    --delete-soft: #331717;
+    --warn-bg: #2a2312;
+    --warn-line: #6b5220;
+    --warn-ink: #e8cf9c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1513;
+      --surface: #141c1a;
+      --surface-raised: #182120;
+      --ink: #e7ede9;
+      --ink-muted: #98aba3;
+      --ink-faint: #6c7f78;
+      --line: #263230;
+      --line-soft: #1c2725;
+      --accent: #55d3bf;
+      --accent-ink: #082220;
+      --accent-soft: #163330;
+      --accent-soft-line: #244f47;
+      --code-bg: #0a0f0e;
+      --code-ink: #dcede7;
+      --code-line: #212d29;
+      --code-key: #8ecdbf;
+      --code-str: #e6cd8e;
+      --code-num: #8fc0f0;
+      --get: #63c98a;
+      --get-soft: #142a1e;
+      --post: #55d3bf;
+      --post-soft: #123330;
+      --patch: #e6ac4d;
+      --patch-soft: #2e2312;
+      --delete: #e2807d;
+      --delete-soft: #331717;
+      --warn-bg: #2a2312;
+      --warn-line: #6b5220;
+      --warn-ink: #e8cf9c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* Masthead */
+  .masthead {
+    padding: 56px 0 32px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .masthead .eyebrow {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--get);
+    box-shadow: 0 0 0 3px var(--get-soft);
+  }
+  .masthead h1 {
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4vw, 44px);
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  .masthead p.lede {
+    max-width: 62ch;
+    color: var(--ink-muted);
+    font-size: 16px;
+    margin: 0;
+  }
+
+  /* Facts strip */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+  .fact {
+    background: var(--surface);
+    padding: 16px 20px;
+  }
+  .fact .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .fact .value {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  /* Alert */
+  .alert {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-line);
+    color: var(--warn-ink);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 24px 0 36px;
+    font-size: 14.5px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .alert strong { font-weight: 700; }
+  .alert .glyph {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1;
+    margin-top: 1px;
+  }
+
+  /* Layout: nav + content */
+  .layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  nav.toc {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 8px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  nav.toc::-webkit-scrollbar { width: 6px; }
+  nav.toc::-webkit-scrollbar-track { background: transparent; }
+  nav.toc::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+  nav.toc .group-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    font-weight: 700;
+    margin: 18px 0 6px;
+  }
+  nav.toc .group-label:first-child { margin-top: 0; }
+  nav.toc a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-family: "SFMono-Regular", Consolas, monospace;
+  }
+  nav.toc a:hover { background: var(--surface); color: var(--ink); }
+  nav.toc a .m {
+    font-size: 10px;
+    font-weight: 700;
+    width: 40px;
+    flex: none;
+  }
+
+  main { min-width: 0; }
+
+  section.group { margin-bottom: 56px; }
+  section.group > h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  section.group > p.desc {
+    color: var(--ink-muted);
+    margin: 0 0 24px;
+    font-size: 14.5px;
+    max-width: 68ch;
+  }
+
+  .endpoint {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    scroll-margin-top: 20px;
+  }
+  .endpoint-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    flex-wrap: wrap;
+  }
+  .method {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 5px;
+    letter-spacing: 0.03em;
+    flex: none;
+  }
+  .method.get { color: var(--get); background: var(--get-soft); }
+  .method.post { color: var(--post); background: var(--post-soft); }
+  .method.patch { color: var(--patch); background: var(--patch-soft); }
+  .method.delete { color: var(--delete); background: var(--delete-soft); }
+
+  .path {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 14.5px;
+    color: var(--ink);
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .auth-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    flex: none;
+  }
+  .auth-badge.public { color: var(--get); background: var(--get-soft); }
+  .auth-badge.admin { color: var(--delete); background: var(--delete-soft); }
+  .auth-badge.session { color: var(--patch); background: var(--patch-soft); }
+
+  .endpoint-body { padding: 18px 20px 20px; }
+  .endpoint-body > p.purpose {
+    margin: 0 0 16px;
+    color: var(--ink-muted);
+    font-size: 14.5px;
+  }
+
+  .blocks { display: grid; gap: 14px; }
+  @media (min-width: 760px) {
+    .blocks.two { grid-template-columns: 1fr 1fr; }
+  }
+
+  .block { min-width: 0; }
+  .block .block-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .block .block-label.status-ok { color: var(--get); }
+  .block .block-label.status-err { color: var(--delete); }
+
+  pre {
+    margin: 0;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border: 1px solid var(--code-line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  pre .k { color: var(--code-key); }
+  pre .s { color: var(--code-str); }
+  pre .n { color: var(--code-num); }
+  pre .c { color: var(--ink-faint); }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-muted);
+    font-size: 13.5px;
+  }
+  footer h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin: 0 0 10px;
+  }
+  footer .modules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  footer .modules span {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12.5px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static; flex-direction: row; flex-wrap: wrap; max-height: none; overflow-y: visible; }
+    nav.toc .group-label { display: none; }
+  }
+
+  /* Flow diagrams */
+  .flows { margin: 40px 0 44px; }
+  .flows > h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .flows > p.desc {
+    color: var(--ink-muted);
+    margin: 0 0 24px;
+    font-size: 14.5px;
+    max-width: 72ch;
+  }
+  .flow {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 18px 20px 20px;
+    margin-bottom: 16px;
+  }
+  .flow-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .flow-title .swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex: none;
+  }
+  .flow-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .step {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    background: var(--line-soft);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .step.gate {
+    background: var(--delete-soft);
+    border-color: var(--delete);
+    color: var(--delete);
+    font-weight: 700;
+  }
+  .step.gate.admin-gate { background: var(--delete-soft); border-color: var(--delete); color: var(--delete); }
+  .step.terminus {
+    background: var(--accent-soft);
+    border-color: var(--accent-soft-line);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .step-arrow {
+    color: var(--ink-faint);
+    font-size: 13px;
+    flex: none;
+  }
+  .flow-note {
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+</style>
+
+<div class="page">
+
+  <div class="masthead">
+    <div class="eyebrow"><span class="dot"></span>Verified live against the deployed instance — 54.235.96.72, 2026-07-12</div>
+    <h1>Healthcare Resource Manager — API Reference</h1>
+    <p class="lede">Every request and response below was captured from an actual run of the backend, not written from memory. Read-only calls were re-verified against this deployment directly; mutating examples (create/update/delete) are carried over from an earlier local capture and marked as such, rather than re-run against this instance's real data. Base path for every route is <code class="mono">/api/v1</code>.</p>
+  </div>
+
+  <div class="facts">
+    <div class="fact">
+      <div class="label">Base URL</div>
+      <div class="value">http://54.235.96.72/api/v1</div>
+    </div>
+    <div class="fact">
+      <div class="label">Auth model</div>
+      <div class="value">Reads public · writes need ADMIN</div>
+    </div>
+    <div class="fact">
+      <div class="label">Session</div>
+      <div class="value">httpOnly cookies (accessToken / refreshToken)</div>
+    </div>
+    <div class="fact">
+      <div class="label">Envelope</div>
+      <div class="value">{ success, data | error }</div>
+    </div>
+  </div>
+
+  <div class="alert">
+    <span class="glyph">!</span>
+    <div><strong>This is now a public, internet-reachable deployment, and the admin account still has its pre-fix password.</strong> Re-verified live today — <code class="mono">admin@healthcare.local</code> / <code class="mono">Admin@123</code> still logs in below, exactly as it did against the old local instance. Log in and call <code class="mono">POST /auth/change-password</code> to rotate it before sharing this URL any wider — that's exactly the hole the default-credential fix closed for every <em>new</em> deployment, but it doesn't retroactively rotate accounts that already existed.</div>
+  </div>
+
+  <section class="flows">
+    <h2>How a request flows</h2>
+    <p class="desc">Every request passes through the same Express pipeline first — <code class="mono">helmet → cors → rate-limit → mongo-sanitize → hpp → body-parser → request-logger</code> — then branches by route. Three shapes cover everything below.</p>
+
+    <div class="flow">
+      <div class="flow-title"><span class="swatch" style="background:var(--get)"></span>Public read — GET /resources, GET /resources/:id, GET /health</div>
+      <div class="flow-row">
+        <span class="step">Client</span><span class="step-arrow">→</span>
+        <span class="step">validateRequest (Zod)</span><span class="step-arrow">→</span>
+        <span class="step">controller</span><span class="step-arrow">→</span>
+        <span class="step">service</span><span class="step-arrow">→</span>
+        <span class="step">repository</span><span class="step-arrow">→</span>
+        <span class="step">Mongoose / MongoDB</span><span class="step-arrow">→</span>
+        <span class="step terminus">DTO → envelope → 200</span>
+      </div>
+      <p class="flow-note">No auth middleware in this chain at all — matches the "find nearby, one click" requirement that reads need no login.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-title"><span class="swatch" style="background:var(--delete)"></span>Admin write — PATCH / DELETE /resources <span style="font-weight:400;color:var(--ink-faint)">(POST is currently disabled)</span></div>
+      <div class="flow-row">
+        <span class="step">Client + cookie</span><span class="step-arrow">→</span>
+        <span class="step gate">authenticate</span><span class="step-arrow">→</span>
+        <span class="step gate admin-gate">authorize(ADMIN)</span><span class="step-arrow">→</span>
+        <span class="step">validateRequest (Zod)</span><span class="step-arrow">→</span>
+        <span class="step">controller</span><span class="step-arrow">→</span>
+        <span class="step">service</span><span class="step-arrow">→</span>
+        <span class="step">repository</span><span class="step-arrow">→</span>
+        <span class="step">Mongoose / MongoDB</span><span class="step-arrow">→</span>
+        <span class="step terminus">DTO → envelope → 200</span>
+      </div>
+      <p class="flow-note"><code class="mono">authenticate</code> verifies the JWT, loads the user, and rejects with <code class="mono">PASSWORD_CHANGE_REQUIRED</code> if <code class="mono">mustChangePassword</code> is set. <code class="mono">authorize(ADMIN)</code> then checks the role. Either gate failing short-circuits before Zod ever runs.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-title"><span class="swatch" style="background:var(--post)"></span>Login — POST /auth/login</div>
+      <div class="flow-row">
+        <span class="step">Client (email + password)</span><span class="step-arrow">→</span>
+        <span class="step">Zod validate</span><span class="step-arrow">→</span>
+        <span class="step">AuthRepository.findByEmailWithPassword</span><span class="step-arrow">→</span>
+        <span class="step">bcrypt.compare</span><span class="step-arrow">→</span>
+        <span class="step">sign access + refresh JWT</span><span class="step-arrow">→</span>
+        <span class="step terminus">set httpOnly cookies → 200</span>
+      </div>
+      <p class="flow-note">The password hash is <code class="mono">select: false</code> on the schema — only this explicit lookup can see it; every other query gets the user without it.</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-title"><span class="swatch" style="background:var(--patch)"></span>Any failure, anywhere in the chain above</div>
+      <div class="flow-row">
+        <span class="step">thrown AppError subclass</span><span class="step-arrow">→</span>
+        <span class="step">asyncHandler catches</span><span class="step-arrow">→</span>
+        <span class="step">central error middleware</span><span class="step-arrow">→</span>
+        <span class="step">mapErrorToHttpResponse</span><span class="step-arrow">→</span>
+        <span class="step terminus">{ success:false, error:{code,message,details?} }</span>
+      </div>
+      <p class="flow-note">Same envelope for a 400, 401, 403, 404, or 500 — the frontend only ever needs one error-handling code path.</p>
+    </div>
+  </section>
+
+  <div class="layout">
+    <nav class="toc">
+      <div class="group-label">Health</div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#health-check"><span class="m" style="color:var(--get)">GET</span>/health</a>
+
+      <div class="group-label">Auth</div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#auth-login"><span class="m" style="color:var(--post)">POST</span>/login</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#auth-me"><span class="m" style="color:var(--get)">GET</span>/me</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#auth-refresh"><span class="m" style="color:var(--post)">POST</span>/refresh</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#auth-change-password"><span class="m" style="color:var(--post)">POST</span>/change-pw</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#auth-logout"><span class="m" style="color:var(--post)">POST</span>/logout</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#auth-admin-check"><span class="m" style="color:var(--get)">GET</span>/admin-check</a>
+
+      <div class="group-label">Resources</div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#res-list"><span class="m" style="color:var(--get)">GET</span>/resources</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#res-get"><span class="m" style="color:var(--get)">GET</span>/resources/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#res-create"><span class="m" style="color:var(--post)">POST</span>/resources</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#res-update"><span class="m" style="color:var(--patch)">PATCH</span>/resources/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#res-delete"><span class="m" style="color:var(--delete)">DELETE</span>/resources/:id</a>
+
+      <div class="group-label">Doctors</div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#doc-list"><span class="m" style="color:var(--get)">GET</span>/doctors</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#doc-me"><span class="m" style="color:var(--get)">GET</span>/doctors/me</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#doc-get"><span class="m" style="color:var(--get)">GET</span>/doctors/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#doc-create"><span class="m" style="color:var(--post)">POST</span>/doctors</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#doc-update"><span class="m" style="color:var(--patch)">PATCH</span>/doctors/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#doc-delete"><span class="m" style="color:var(--delete)">DELETE</span>/doctors/:id</a>
+
+      <div class="group-label">Drivers</div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#drv-list"><span class="m" style="color:var(--get)">GET</span>/drivers</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#drv-me"><span class="m" style="color:var(--get)">GET</span>/drivers/me</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#drv-get"><span class="m" style="color:var(--get)">GET</span>/drivers/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#drv-create"><span class="m" style="color:var(--post)">POST</span>/drivers</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#drv-update"><span class="m" style="color:var(--patch)">PATCH</span>/drivers/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#drv-delete"><span class="m" style="color:var(--delete)">DELETE</span>/drivers/:id</a>
+
+      <div class="group-label">Vehicles</div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#veh-list"><span class="m" style="color:var(--get)">GET</span>/vehicles</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#veh-me"><span class="m" style="color:var(--get)">GET</span>/vehicles/me</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#veh-get"><span class="m" style="color:var(--get)">GET</span>/vehicles/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#veh-create"><span class="m" style="color:var(--post)">POST</span>/vehicles</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#veh-update"><span class="m" style="color:var(--patch)">PATCH</span>/vehicles/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#veh-delete"><span class="m" style="color:var(--delete)">DELETE</span>/vehicles/:id</a>
+
+      <div class="group-label">Files</div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#file-upload"><span class="m" style="color:var(--post)">POST</span>/files/upload</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#file-list"><span class="m" style="color:var(--get)">GET</span>/files</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#file-get"><span class="m" style="color:var(--get)">GET</span>/files/:id</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#file-download"><span class="m" style="color:var(--get)">GET</span>/files/:id/download</a>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#file-delete"><span class="m" style="color:var(--delete)">DELETE</span>/files/:id</a>
+
+      <div class="group-label">Seed <span style="text-transform:none;font-weight:400;color:var(--ink-faint)">(dev only)</span></div>
+      <a href="https://3bb9fb8f-b72b-4988-803f-00832927eb96.frame.claudeusercontent.com/_f/1783876044-797a/#seed-demo-data"><span class="m" style="color:var(--post)">POST</span>/seed/demo-data</a>
+    </nav>
+
+    <main>
+
+      <section class="group">
+        <h2>Health</h2>
+        <p class="desc">Liveness/readiness check. No auth, no side effects.</p>
+
+        <article class="endpoint" id="health-check">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/health</span>
+            <span class="auth-badge public">Public</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Reports process uptime, DB connection state, and memory usage.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl <span class="s">http://54.235.96.72/api/v1/health</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"status"</span>: <span class="s">"OK"</span>,
+    <span class="k">"timestamp"</span>: <span class="s">"2026-07-12T16:54:58.522Z"</span>,
+    <span class="k">"uptime"</span>: <span class="n">1282.76</span>,
+    <span class="k">"environment"</span>: <span class="s">"production"</span>,
+    <span class="k">"version"</span>: <span class="s">"0.1.0"</span>,
+    <span class="k">"application"</span>: { <span class="k">"name"</span>: <span class="s">"healthcare-resource-manager-backend"</span>, <span class="k">"status"</span>: <span class="s">"running"</span> },
+    <span class="k">"database"</span>: { <span class="k">"status"</span>: <span class="s">"connected"</span> },
+    <span class="k">"memory"</span>: { <span class="k">"rss"</span>: <span class="n">105783296</span>, <span class="k">"heapUsed"</span>: <span class="n">34405160</span>, <span class="k">"heapTotal"</span>: <span class="n">41811968</span>, <span class="k">"external"</span>: <span class="n">21060523</span> }
+  }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="group">
+        <h2>Auth</h2>
+        <p class="desc">Cookie-based JWT session. <code class="mono">login</code> sets <code class="mono">httpOnly</code> access + refresh cookies — pass <code class="mono">-c cookies.txt -b cookies.txt</code> in curl to carry them across requests.</p>
+
+        <article class="endpoint" id="auth-login">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/auth/login</span>
+            <span class="auth-badge public">Public</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Exchanges credentials for a session. Sets <code class="mono">accessToken</code> / <code class="mono">refreshToken</code> cookies.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -c cookies.txt \
+  -X POST http://54.235.96.72/api/v1/auth/login \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"email":"admin@healthcare.local","password":"Admin@123"}'</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"user"</span>: {
+      <span class="k">"id"</span>: <span class="s">"6a50b173331adb584378d00a"</span>,
+      <span class="k">"email"</span>: <span class="s">"admin@healthcare.local"</span>,
+      <span class="k">"role"</span>: <span class="s">"ADMIN"</span>,
+      <span class="k">"firstName"</span>: <span class="s">"System"</span>,
+      <span class="k">"lastName"</span>: <span class="s">"Admin"</span>
+    }
+  }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">This deployment has no TLS in front of it yet, so both cookies are set with <code class="mono">HttpOnly; SameSite=Lax</code> and deliberately <em>no</em> <code class="mono">Secure</code> flag (<code class="mono">COOKIE_SECURE=false</code>) — a browser drops a <code class="mono">Secure</code> cookie on plain HTTP, which would silently break every authenticated request after login. Flip <code class="mono">COOKIE_SECURE=true</code> once this sits behind HTTPS.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="auth-me">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/auth/me</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Returns the identity behind the current session cookie.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt <span class="s">http://54.235.96.72/api/v1/auth/me</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"user"</span>: {
+      <span class="k">"id"</span>: <span class="s">"6a50b173331adb584378d00a"</span>,
+      <span class="k">"email"</span>: <span class="s">"admin@healthcare.local"</span>,
+      <span class="k">"role"</span>: <span class="s">"ADMIN"</span>,
+      <span class="k">"firstName"</span>: <span class="s">"System"</span>,
+      <span class="k">"lastName"</span>: <span class="s">"Admin"</span>
+    }
+  }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="auth-refresh">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/auth/refresh</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Trades a valid <code class="mono">refreshToken</code> cookie for a fresh access token, and re-sets the cookie.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -c cookies.txt \
+  -X POST http://54.235.96.72/api/v1/auth/refresh</pre>
+              </div>
+              <div class="block">
+                <div class="block-label">200 · from source</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: { <span class="k">"accessToken"</span>: <span class="s">"eyJhbGciOi..."</span> }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="auth-change-password">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/auth/change-password</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Rotates the current user's password. New password needs 8+ chars, an uppercase, a lowercase, and a digit.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt \
+  -X POST http://54.235.96.72/api/v1/auth/change-password \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"currentPassword":"Admin@123","newPassword":"NewStrongPass1"}'</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label">200 · from source</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: { <span class="k">"message"</span>: <span class="s">"Password changed successfully"</span> }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="auth-logout">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/auth/logout</span>
+            <span class="auth-badge public">Public</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Clears the session cookies.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -X POST <span class="s">http://54.235.96.72/api/v1/auth/logout</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: { <span class="k">"message"</span>: <span class="s">"Logged out successfully"</span> }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="auth-admin-check">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/auth/admin-check</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Smoke-test that a session actually has the ADMIN role.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt <span class="s">http://54.235.96.72/api/v1/auth/admin-check</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"message"</span>: <span class="s">"Authorized"</span> }</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">⚠ This one route replies with <code class="mono">message</code> at the top level and no <code class="mono">data</code> key — it bypasses the shared envelope helper. Every other endpoint in this reference follows <code class="mono">{success, data}</code> / <code class="mono">{success, error}</code>; treat this one route as the exception, not the pattern.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="group">
+        <h2>Resources</h2>
+        <p class="desc">Ambulances and doctors — the module aligned with the product requirement. Reads are public; create/update/delete require an <code class="mono">ADMIN</code> session. <strong><code class="mono">GET /resources</code> and <code class="mono">GET /resources/:id</code> now bridge in the <code class="mono">doctors</code> and <code class="mono">vehicles</code> collections, read-only</strong> — anything created through those modules' own rich CRUD APIs shows up here too, mapped into this same shape, without a duplicate entry ever being created. Writing through <code class="mono">/resources</code> still only touches its own native collection.</p>
+
+        <article class="endpoint" id="res-list">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/resources?page=1&amp;limit=10&amp;type=&amp;search=</span>
+            <span class="auth-badge public">Public</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Paginated list. <code class="mono">type</code> (<code class="mono">ambulance</code>|<code class="mono">doctor</code>) and <code class="mono">search</code> are optional filters.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl <span class="s">"http://54.235.96.72/api/v1/resources?page=1&amp;limit=10"</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12 (all bridged records)</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: [
+    {
+      <span class="k">"id"</span>: <span class="s">"6a51cca20530cba751789e17"</span>,
+      <span class="k">"type"</span>: <span class="s">"doctor"</span>,
+      <span class="c">// ↑ bridged from the doctors collection, not a native resources doc</span>
+      <span class="k">"title"</span>: <span class="s">"Dr. John Snow"</span>,
+      <span class="k">"description"</span>: <span class="s">"Cardiology • MBBS, MS Ortho • 20 yrs experience"</span>,
+      <span class="k">"location"</span>: <span class="s">"Dewas, Madhya Pradesh"</span>,
+      <span class="k">"createdAt"</span>: <span class="s">"2026-07-11T04:54:58.050Z"</span>,
+      <span class="k">"updatedAt"</span>: <span class="s">"2026-07-12T14:35:56.995Z"</span>,
+      <span class="k">"imageUrl"</span>: <span class="s">"/uploads/profile_image/3ae25d34-5f17-46f1-9f2a-3534d4522650.png"</span>
+    },
+    {
+      <span class="k">"id"</span>: <span class="s">"6a51b9d80530cba751789d6c"</span>,
+      <span class="k">"type"</span>: <span class="s">"ambulance"</span>,
+      <span class="c">// ↑ bridged from the vehicles collection</span>
+      <span class="k">"title"</span>: <span class="s">"Tata Winger (FE-AMB-9001-U)"</span>,
+      <span class="k">"description"</span>: <span class="s">"Icu Ambulance • Seats 5 • 2 patient capacity"</span>,
+      <span class="k">"location"</span>: <span class="s">"Pune, Maharashtra"</span>,
+      <span class="k">"createdAt"</span>: <span class="s">"2026-07-11T03:34:48.070Z"</span>,
+      <span class="k">"updatedAt"</span>: <span class="s">"2026-07-12T14:38:01.625Z"</span>,
+      <span class="k">"imageUrl"</span>: <span class="s">"/uploads/vehicle_photo/336d8407-6db3-41b2-b1cd-bdc9ed5ecccb.png"</span>
+    }
+    <span class="c">// … 80 more</span>
+  ],
+  <span class="k">"meta"</span>: {
+    <span class="k">"page"</span>: <span class="n">1</span>, <span class="k">"limit"</span>: <span class="n">2</span>, <span class="k">"totalItems"</span>: <span class="n">82</span>, <span class="k">"totalPages"</span>: <span class="n">41</span>,
+    <span class="k">"counts"</span>: { <span class="k">"ambulance"</span>: <span class="n">11</span>, <span class="k">"doctor"</span>: <span class="n">71</span> }
+  }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">One list, all sources merged and sorted by <code class="mono">createdAt</code> — <code class="mono">meta.counts</code> gives the FR-4 total across native + bridged records, unaffected by any <code class="mono">type</code>/<code class="mono">search</code> filter on the list itself. Every record on this deployment is bridged — <code class="mono">POST /resources</code> has been disabled since before this instance was seeded, so no native <code class="mono">resources</code> documents exist here at all; see <code class="mono">res-create</code> below.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="res-get">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/resources/:id</span>
+            <span class="auth-badge public">Public</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Single record by id. Tries the native <code class="mono">resources</code> collection first, then falls through to <code class="mono">doctors</code>, then <code class="mono">vehicles</code> — so a doctor's or vehicle's own real <code class="mono">_id</code> resolves here too.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request (a doctor's real <code class="mono">_id</code>, bridged)</div>
+                <pre>curl <span class="s">http://54.235.96.72/api/v1/resources/6a51cca20530cba751789e17</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="s">"6a51cca20530cba751789e17"</span>,
+    <span class="k">"type"</span>: <span class="s">"doctor"</span>,
+    <span class="k">"title"</span>: <span class="s">"Dr. John Snow"</span>,
+    <span class="k">"description"</span>: <span class="s">"Cardiology • MBBS, MS Ortho • 20 yrs experience"</span>,
+    <span class="k">"location"</span>: <span class="s">"Dewas, Madhya Pradesh"</span>,
+    <span class="k">"createdAt"</span>: <span class="s">"2026-07-11T04:54:58.050Z"</span>,
+    <span class="k">"updatedAt"</span>: <span class="s">"2026-07-12T14:35:56.995Z"</span>,
+    <span class="k">"imageUrl"</span>: <span class="s">"/uploads/profile_image/3ae25d34-5f17-46f1-9f2a-3534d4522650.png"</span>
+  }
+}</pre>
+              </div>
+            </div>
+            <div class="blocks two" style="margin-top:14px">
+              <div class="block">
+                <div class="block-label">Unknown id (in neither bridged source)</div>
+                <pre>curl <span class="s">http://54.235.96.72/api/v1/resources/665f1c2e8b3e2a0012345678</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">404 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">false</span>,
+  <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"NOT_FOUND"</span>, <span class="k">"message"</span>: <span class="s">"Resource not found"</span> }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">This is a read-only bridge. <code class="mono">PATCH</code>/<code class="mono">DELETE /resources/:id</code> only ever look in the native collection — to edit this doctor you still need <code class="mono">PATCH /doctors/6a51cca20530cba751789e17</code>. A native-collection example (id resolving directly in <code class="mono">resources</code>, not bridged) isn't shown here — <code class="mono">POST /resources</code> is disabled on this deployment, so no native document exists to fetch.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="res-create">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/resources</span>
+            <span class="auth-badge admin">Disabled — see note</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose"><strong>Temporarily disabled for every caller, including ADMIN.</strong> Create rich doctor/vehicle records via <code class="mono">POST /doctors</code> or <code class="mono">POST /vehicles</code> instead — both already show up in <code class="mono">GET /resources</code> through the read bridge above. The route, auth gate, and body validation are all still wired up underneath; a single guard (<code class="mono">blockResourceCreation</code> in <code class="mono">resources.routes.ts</code>) short-circuits every request right after the ADMIN check.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request (as ADMIN)</div>
+                <pre>curl -b cookies.txt \
+  -X POST http://54.235.96.72/api/v1/resources \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "type":"ambulance",
+    "title":"City Ambulance Service",
+    "description":"24/7 emergency ambulance response",
+    "location":"Berlin, DE"
+  }'</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">403 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">false</span>,
+  <span class="k">"error"</span>: {
+    <span class="k">"code"</span>: <span class="s">"FEATURE_DISABLED"</span>,
+    <span class="k">"message"</span>: <span class="s">"Creating resources directly is temporarily disabled - use POST /api/v1/doctors or POST /api/v1/vehicles instead."</span>
+  }
+}</pre>
+              </div>
+            </div>
+            <div class="blocks two" style="margin-top:14px">
+              <div class="block">
+                <div class="block-label">No session cookie</div>
+                <pre>curl -X POST <span class="s">http://54.235.96.72/api/v1/resources</span> \
+  -d <span class="s">'{"type":"ambulance"}'</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">401 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">false</span>,
+  <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"AUTHENTICATION_ERROR"</span>, <span class="k">"message"</span>: <span class="s">"Authentication required"</span> }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">Auth still runs first: an unauthenticated caller gets <code class="mono">401</code>, a non-admin gets <code class="mono">403 AUTHORIZATION_ERROR</code>, and only an actual ADMIN reaches the new guard to get <code class="mono">403 FEATURE_DISABLED</code> — so the distinction between "you can't" and "no one can right now" stays visible in the error code.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="res-update">
+          <div class="endpoint-head">
+            <span class="method patch">PATCH</span>
+            <span class="path">/resources/:id</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Partial update — send only the fields that change.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt \
+  -X PATCH http://54.235.96.72/api/v1/resources/6a513b05260af2b660de039b \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"description":"24/7 emergency ambulance response - updated"}'</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label">200 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="s">"6a513b05260af2b660de039b"</span>,
+    <span class="k">"type"</span>: <span class="s">"ambulance"</span>,
+    <span class="k">"title"</span>: <span class="s">"City Ambulance Service"</span>,
+    <span class="k">"description"</span>: <span class="s">"24/7 emergency ambulance response - updated"</span>,
+    <span class="k">"location"</span>: <span class="s">"Berlin, DE"</span>,
+    <span class="k">"createdAt"</span>: <span class="s">"2026-07-10T18:33:41.972Z"</span>,
+    <span class="k">"updatedAt"</span>: <span class="s">"2026-07-10T18:34:01.659Z"</span>,
+    <span class="k">"imageUrl"</span>: <span class="s">"https://example.com/ambulance.jpg"</span>
+  }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">This example (and <code class="mono">res-delete</code> below) predates the write-disable and isn't re-runnable here: <code class="mono">POST /resources</code> is off on this deployment, so no native document exists on id <code class="mono">6a513b05260af2b660de039b</code> to update or delete. The shape and status code are still accurate for the day <code class="mono">POST /resources</code> is re-enabled.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="res-delete">
+          <div class="endpoint-head">
+            <span class="method delete">DELETE</span>
+            <span class="path">/resources/:id</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Deletes the record.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt \
+  -X DELETE http://54.235.96.72/api/v1/resources/6a513b05260af2b660de039b</pre>
+              </div>
+              <div class="block">
+                <div class="block-label">200 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a513b05260af2b660de039b"</span> }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="group">
+        <h2>Doctors <span style="font-weight:400;color:var(--ink-faint);font-size:14px">— extended platform, separate from Resources</span></h2>
+        <p class="desc">Rich doctor profiles (license, specialization, consultation fee, uploaded documents) in their own <code class="mono">Doctor</code> collection — not the same records as <code class="mono">resources</code> where <code class="mono">type=doctor</code>. Every route needs a session; only ADMIN can list/create/delete/manage others' records. Creating one auto-provisions a login if <code class="mono">userId</code> is omitted.</p>
+
+        <article class="endpoint" id="doc-list">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/doctors?page=1&amp;limit=10&amp;sortBy=createdAt&amp;sortOrder=desc</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Paginated, filterable, sortable list. Filters: <code class="mono">search</code>, <code class="mono">specialization</code>, <code class="mono">department</code>, <code class="mono">city</code>, <code class="mono">state</code>, <code class="mono">availabilityStatus</code>, <code class="mono">isActive</code>.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt <span class="s">"http://54.235.96.72/api/v1/doctors?page=1&amp;limit=1"</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: [{
+    <span class="k">"id"</span>: <span class="s">"6a51cca20530cba751789e17"</span>,
+    <span class="k">"firstName"</span>: <span class="s">"John"</span>, <span class="k">"lastName"</span>: <span class="s">"Snow"</span>,
+    <span class="k">"email"</span>: <span class="s">"john.snow@yopmail.com"</span>,
+    <span class="k">"specialization"</span>: <span class="s">"Cardiology"</span>, <span class="k">"licenseNumber"</span>: <span class="s">"MED-SEED-1783714234077-B"</span>,
+    <span class="k">"yearsOfExperience"</span>: <span class="n">20</span>, <span class="k">"department"</span>: <span class="s">"Orthopedics"</span>,
+    <span class="k">"city"</span>: <span class="s">"Dewas"</span>, <span class="k">"availabilityStatus"</span>: <span class="s">"AVAILABLE"</span>,
+    <span class="k">"documents"</span>: [], <span class="k">"isActive"</span>: <span class="n">true</span>,
+    <span class="k">"profileImage"</span>: { <span class="k">"id"</span>: <span class="s">"..."</span>, <span class="k">"fileUrl"</span>: <span class="s">"/uploads/profile_image/3ae25d34-5f17-46f1-9f2a-3534d4522650.png"</span>, <span class="k">"mimeType"</span>: <span class="s">"image/png"</span> }
+    <span class="c">// … full record</span>
+  }],
+  <span class="k">"meta"</span>: { <span class="k">"page"</span>: <span class="n">1</span>, <span class="k">"limit"</span>: <span class="n">1</span>, <span class="k">"totalItems"</span>: <span class="n">71</span>, <span class="k">"totalPages"</span>: <span class="n">71</span> }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="doc-me">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/doctors/me</span>
+            <span class="auth-badge session">Session (DOCTOR)</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">The logged-in doctor's own profile — no id needed. Blocked with <code class="mono">PASSWORD_CHANGE_REQUIRED</code> until a freshly-provisioned account rotates its password.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b doctor-cookies.txt <span class="s">http://54.235.96.72/api/v1/doctors/me</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="s">"6a513eab260af2b660de03e7"</span>,
+    <span class="k">"firstName"</span>: <span class="s">"Priya"</span>, <span class="k">"lastName"</span>: <span class="s">"Nair"</span>,
+    <span class="k">"specialization"</span>: <span class="s">"Emergency Medicine"</span>,
+    <span class="k">"userId"</span>: <span class="s">"6a513eab260af2b660de03e5"</span>
+    <span class="c">// … full record</span>
+  }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="doc-get">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/doctors/:id</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">ADMIN can fetch any doctor; a DOCTOR can only fetch their own record (else <code class="mono">403 AUTHORIZATION_ERROR</code>).</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt <span class="s">http://54.235.96.72/api/v1/doctors/6a510abad9f84caca4ad2770</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a510abad9f84caca4ad2770"</span>, <span class="k">"firstName"</span>: <span class="s">"Aarav"</span><span class="c">, …</span> } }</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="doc-create">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/doctors</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose"><code class="mono">multipart/form-data</code>. Required: <code class="mono">firstName lastName email phoneNumber gender dateOfBirth specialization qualification licenseNumber yearsOfExperience department address city state country postalCode</code>. Optional: <code class="mono">userId</code> (reuse an existing account), <code class="mono">consultationFee</code>, file fields <code class="mono">profileImage</code> (1) and <code class="mono">documents</code> (up to 10, paired with <code class="mono">documentCategories</code>).</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -X POST .../doctors \
+  -F firstName=Priya -F lastName=Nair \
+  -F email=priya.nair@example.com \
+  -F phoneNumber=+919876500001 -F gender=FEMALE \
+  -F dateOfBirth=1988-09-20 \
+  -F specialization="Emergency Medicine" \
+  -F qualification="MBBS, MD" \
+  -F licenseNumber=MED-990011 \
+  -F yearsOfExperience=9 -F department=Emergency \
+  -F address="45 Residency Road" -F city=Bengaluru \
+  -F state=Karnataka -F country=India -F postalCode=560025 \
+  -F profileImage=@photo.png<span class="c">;type=image/png</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">201 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"doctor"</span>: { <span class="k">"id"</span>: <span class="s">"6a513eab260af2b660de03e7"</span>, <span class="k">"firstName"</span>: <span class="s">"Priya"</span><span class="c">, …, </span><span class="k">"profileImage"</span>: {<span class="k">"fileUrl"</span>: <span class="s">"/uploads/profile_image/4d644f75-....png"</span>} },
+    <span class="k">"login"</span>: {
+      <span class="k">"email"</span>: <span class="s">"priya.nair@example.com"</span>,
+      <span class="k">"defaultPassword"</span>: <span class="s">"A3e&amp;9FA2Th*YSyG#"</span>,
+      <span class="k">"mustChangePassword"</span>: <span class="n">true</span>
+    }
+  }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">That <code class="mono">defaultPassword</code> is a real, CSPRNG-generated 16-character password — direct proof the predictable-password fix works. Log in with it and everything except <code class="mono">/auth/me</code>, <code class="mono">/auth/logout</code>, and <code class="mono">/auth/change-password</code> returns <code class="mono">403 PASSWORD_CHANGE_REQUIRED</code> until it's rotated.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="doc-update">
+          <div class="endpoint-head">
+            <span class="method patch">PATCH</span>
+            <span class="path">/doctors/:id</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Partial update, same field set as create (multipart). A DOCTOR may edit their own soft fields; only ADMIN may touch <code class="mono">userId</code>, <code class="mono">isActive</code>, <code class="mono">licenseNumber</code>, <code class="mono">documents</code>, <code class="mono">profileImage</code>.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">The doctor tries to change their own license</div>
+                <pre>curl -b doctor-cookies.txt -X PATCH \
+  .../doctors/6a513eab260af2b660de03e7 \
+  -F licenseNumber=HACKED-000</pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">403 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">false</span>,
+  <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"AUTHORIZATION_ERROR"</span>, <span class="k">"message"</span>: <span class="s">"Doctors cannot update managed profile fields"</span> }
+}</pre>
+              </div>
+            </div>
+            <div class="blocks two" style="margin-top:14px">
+              <div class="block">
+                <div class="block-label">ADMIN sets consultationFee (allowed)</div>
+                <pre>curl -b cookies.txt -X PATCH \
+  .../doctors/6a513eab260af2b660de03e7 \
+  -F consultationFee=75</pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a513eab260af2b660de03e7"</span>, <span class="k">"consultationFee"</span>: <span class="n">75</span><span class="c">, …</span> } }</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="doc-delete">
+          <div class="endpoint-head">
+            <span class="method delete">DELETE</span>
+            <span class="path">/doctors/:id</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Soft delete — sets <code class="mono">deletedAt</code>/<code class="mono">isActive:false</code>, doesn't remove the document.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -X DELETE \
+  http://54.235.96.72/api/v1/doctors/6a513eab260af2b660de03e7</pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a513eab260af2b660de03e7"</span> } }</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="group">
+        <h2>Drivers <span style="font-weight:400;color:var(--ink-faint);font-size:14px">— extended platform</span></h2>
+        <p class="desc">Same shape and rules as Doctors, plus an <code class="mono">assignedVehicle</code> relationship kept in sync both directions on create/update/delete.</p>
+
+        <article class="endpoint" id="drv-list">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/drivers</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Paginated list, same filter/sort pattern as doctors.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt <span class="s">"http://54.235.96.72/api/v1/drivers?page=1&amp;limit=1"</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: [{
+    <span class="k">"id"</span>: <span class="s">"6a52478416acbc77ba4900d3"</span>,
+    <span class="k">"firstName"</span>: <span class="s">"Arya"</span>, <span class="k">"lastName"</span>: <span class="s">"Stark"</span>,
+    <span class="k">"employeeId"</span>: <span class="s">"ARY-1"</span>, <span class="k">"licenseNumber"</span>: <span class="s">"ARY-1234"</span>,
+    <span class="k">"availabilityStatus"</span>: <span class="s">"AVAILABLE"</span>, <span class="k">"isActive"</span>: <span class="n">true</span>,
+    <span class="k">"profileImage"</span>: { <span class="k">"fileUrl"</span>: <span class="s">"/uploads/profile_image/ed061dcb-597e-4404-a855-7cbbac408104.png"</span> }
+    <span class="c">// … full record — this particular driver has no assignedVehicle right now</span>
+  }],
+  <span class="k">"meta"</span>: { <span class="k">"page"</span>: <span class="n">1</span>, <span class="k">"limit"</span>: <span class="n">1</span>, <span class="k">"totalItems"</span>: <span class="n">23</span>, <span class="k">"totalPages"</span>: <span class="n">23</span> }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">When a driver does have a vehicle, <code class="mono">assignedVehicle</code> embeds the full record, not just its id — see the live <code class="mono">assignedDriver</code> example under <code class="mono">veh-list</code> below for the reverse direction, captured from a driver/vehicle pair that <em>are</em> linked on this deployment. Both directions come from the same Mongoose <code class="mono">.populate()</code> call the repository already runs; the DTO layer used to throw that data away and keep only the id string.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="drv-me">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/drivers/me</span>
+            <span class="auth-badge session">Session (EVOC_DRIVER)</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">The logged-in driver's own profile.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b driver-cookies.txt <span class="s">http://54.235.96.72/api/v1/drivers/me</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label">200 · same shape as doctors/me</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"..."</span>, <span class="k">"employeeId"</span>: <span class="s">"DRV-100"</span><span class="c">, …</span> } }</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="drv-get">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/drivers/:id</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">ADMIN → any driver; EVOC_DRIVER → only themselves.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt <span class="s">.../drivers/6a50d33db622829009517284</span></pre></div>
+              <div class="block"><div class="block-label status-ok">200</div><pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"firstName"</span>: <span class="s">"Ravi"</span><span class="c">, …</span> } }</pre></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="drv-create">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/drivers</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Required: <code class="mono">firstName lastName email phoneNumber gender dateOfBirth employeeId joiningDate licenseNumber licenseExpiry yearsOfExperience address city state country postalCode</code>. Optional: <code class="mono">assignedVehicle</code> (ObjectId — rejected with <code class="mono">409</code> if that vehicle already has a different active driver), file fields <code class="mono">profileImage</code>/<code class="mono">documents</code>.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -X POST .../drivers \
+  -F firstName=Suresh -F lastName=Patel \
+  -F email=suresh.patel@example.com \
+  -F phoneNumber=+919876500002 -F gender=MALE \
+  -F dateOfBirth=1992-05-10 -F employeeId=DRV-100 \
+  -F joiningDate=2025-01-01 -F licenseNumber=DL-990011 \
+  -F licenseExpiry=2031-01-01 -F yearsOfExperience=5 \
+  -F assignedVehicle=6a513e8c260af2b660de03cc \
+  -F address="10 Church Street" -F city=Bengaluru \
+  -F state=Karnataka -F country=India -F postalCode=560001</pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">201 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"driver"</span>: { <span class="k">"id"</span>: <span class="s">"6a513ee0260af2b660de040d"</span>, <span class="k">"employeeId"</span>: <span class="s">"DRV-100"</span>, <span class="k">"assignedVehicle"</span>: { <span class="k">"id"</span>: <span class="s">"6a513e8c260af2b660de03cc"</span>, <span class="k">"vehicleNumber"</span>: <span class="s">"AMB-002"</span>, <span class="k">"brand"</span>: <span class="s">"Mercedes-Benz"</span><span class="c">, …</span> }<span class="c">, …</span> },
+    <span class="k">"login"</span>: { <span class="k">"email"</span>: <span class="s">"suresh.patel@example.com"</span>, <span class="k">"defaultPassword"</span>: <span class="s">"oQMzAT*K4xewmzuQ"</span>, <span class="k">"mustChangePassword"</span>: <span class="n">true</span> }
+  }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="drv-update">
+          <div class="endpoint-head">
+            <span class="method patch">PATCH</span>
+            <span class="path">/drivers/:id</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Reassigning <code class="mono">assignedVehicle</code> (ADMIN only) automatically clears the old vehicle's <code class="mono">assignedDriver</code> and sets the new one's.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt -X PATCH .../drivers/:id \
+  -F availabilityStatus=OFF_DUTY</pre></div>
+              <div class="block"><div class="block-label">200</div><pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"availabilityStatus"</span>: <span class="s">"OFF_DUTY"</span><span class="c">, …</span> } }</pre></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="drv-delete">
+          <div class="endpoint-head">
+            <span class="method delete">DELETE</span>
+            <span class="path">/drivers/:id</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Soft delete; if a vehicle was assigned, its <code class="mono">assignedDriver</code> is cleared too.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt -X DELETE .../drivers/6a513ee0260af2b660de040d</pre></div>
+              <div class="block"><div class="block-label status-ok">200 · illustrative, from local capture</div><pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a513ee0260af2b660de040d"</span> } }</pre></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="group">
+        <h2>Vehicles <span style="font-weight:400;color:var(--ink-faint);font-size:14px">— extended platform</span></h2>
+        <p class="desc">Ambulance fleet records. Readable by ADMIN and DOCTOR roles; only ADMIN writes. <strong>At least one photo is required to create a vehicle</strong> — the only hard business-rule gate in this reference beyond field validation.</p>
+
+        <article class="endpoint" id="veh-list">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/vehicles</span>
+            <span class="auth-badge session">Session (ADMIN/DOCTOR)</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Filters: <code class="mono">vehicleType</code>, <code class="mono">status</code>, <code class="mono">brand</code>, <code class="mono">isActive</code>, <code class="mono">search</code>.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt <span class="s">"http://54.235.96.72/api/v1/vehicles?page=1&amp;limit=1"</span></pre></div>
+              <div class="block">
+                <div class="block-label status-ok">200 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: [{
+    <span class="k">"id"</span>: <span class="s">"6a51b9d80530cba751789d6c"</span>,
+    <span class="k">"registrationNumber"</span>: <span class="s">"FE01TEST9001-1"</span>, <span class="k">"vehicleNumber"</span>: <span class="s">"FE-AMB-9001-U"</span>,
+    <span class="k">"vehicleType"</span>: <span class="s">"ICU_AMBULANCE"</span>, <span class="k">"brand"</span>: <span class="s">"Tata"</span>, <span class="k">"model"</span>: <span class="s">"Winger"</span>,
+    <span class="k">"status"</span>: <span class="s">"AVAILABLE"</span>, <span class="k">"isActive"</span>: <span class="n">true</span>,
+    <span class="k">"photos"</span>: [{ <span class="k">"fileUrl"</span>: <span class="s">"/uploads/vehicle_photo/336d8407-6db3-41b2-b1cd-bdc9ed5ecccb.png"</span> }<span class="c">, …5 more</span>],
+    <span class="k">"assignedDriver"</span>: {
+      <span class="k">"id"</span>: <span class="s">"6a51b9d80530cba751789d7e"</span>, <span class="k">"firstName"</span>: <span class="s">"Frontend"</span>, <span class="k">"lastName"</span>: <span class="s">"Testdriver"</span>,
+      <span class="k">"phoneNumber"</span>: <span class="s">"+919812345672"</span>, <span class="k">"employeeId"</span>: <span class="s">"FE-EMP-9001"</span>,
+      <span class="k">"availabilityStatus"</span>: <span class="s">"AVAILABLE"</span>, <span class="k">"isActive"</span>: <span class="n">true</span>
+    }
+    <span class="c">// … full record</span>
+  }],
+  <span class="k">"meta"</span>: { <span class="k">"page"</span>: <span class="n">1</span>, <span class="k">"limit"</span>: <span class="n">1</span>, <span class="k">"totalItems"</span>: <span class="n">11</span>, <span class="k">"totalPages"</span>: <span class="n">11</span> }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">This vehicle and its driver are linked both ways — this record's <code class="mono">assignedDriver</code> is the reverse of the <code class="mono">assignedVehicle</code> field documented under <code class="mono">drv-list</code> above.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="veh-me">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/vehicles/me</span>
+            <span class="auth-badge session">Session (EVOC_DRIVER)</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">The logged-in driver's currently assigned vehicle.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b driver-cookies.txt <span class="s">http://54.235.96.72/api/v1/vehicles/me</span></pre></div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="s">"6a513e8c260af2b660de03cc"</span>, <span class="k">"vehicleNumber"</span>: <span class="s">"AMB-002"</span>,
+    <span class="k">"brand"</span>: <span class="s">"Mercedes-Benz"</span>, <span class="k">"model"</span>: <span class="s">"Sprinter"</span>,
+    <span class="k">"assignedDriver"</span>: {
+      <span class="k">"id"</span>: <span class="s">"6a513ee0260af2b660de040d"</span>, <span class="k">"firstName"</span>: <span class="s">"Suresh"</span>, <span class="k">"lastName"</span>: <span class="s">"Patel"</span>,
+      <span class="k">"phoneNumber"</span>: <span class="s">"+919876500002"</span>, <span class="k">"employeeId"</span>: <span class="s">"DRV-100"</span>,
+      <span class="k">"availabilityStatus"</span>: <span class="s">"AVAILABLE"</span>, <span class="k">"isActive"</span>: <span class="n">true</span>
+    },
+    <span class="k">"photos"</span>: [{ <span class="k">"fileUrl"</span>: <span class="s">"/uploads/vehicle_photo/eba5c647-....png"</span> }]
+  }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="veh-get">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/vehicles/:id</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">ADMIN/DOCTOR → any vehicle; EVOC_DRIVER → only their assigned one.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt <span class="s">.../vehicles/6a513e8c260af2b660de03cc</span></pre></div>
+              <div class="block"><div class="block-label status-ok">200</div><pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"vehicleNumber"</span>: <span class="s">"AMB-002"</span><span class="c">, …</span> } }</pre></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="veh-create">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/vehicles</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Required: <code class="mono">registrationNumber vehicleNumber vehicleType brand model manufactureYear color seatingCapacity patientCapacity insuranceExpiry fitnessExpiry pollutionExpiry</code> + at least one <code class="mono">photos</code> file.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -X POST .../vehicles \
+  -F registrationNumber=B-AM-5678 -F vehicleNumber=AMB-002 \
+  -F vehicleType=ADVANCED_AMBULANCE \
+  -F brand=Mercedes-Benz -F model=Sprinter \
+  -F manufactureYear=2022 -F color=White \
+  -F seatingCapacity=3 -F patientCapacity=2 \
+  -F insuranceExpiry=2027-01-01 -F fitnessExpiry=2027-01-01 \
+  -F pollutionExpiry=2027-01-01 \
+  -F photos=@ambulance.png<span class="c">;type=image/png</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">201 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="s">"6a513e8c260af2b660de03cc"</span>, <span class="k">"vehicleNumber"</span>: <span class="s">"AMB-002"</span>,
+    <span class="k">"photos"</span>: [{ <span class="k">"fileUrl"</span>: <span class="s">"/uploads/vehicle_photo/eba5c647-....png"</span>, <span class="k">"category"</span>: <span class="s">"VEHICLE_PHOTO"</span> }],
+    <span class="k">"status"</span>: <span class="s">"AVAILABLE"</span>
+    <span class="c">// … full record</span>
+  }
+}</pre>
+              </div>
+            </div>
+            <div class="blocks two" style="margin-top:14px">
+              <div class="block">
+                <div class="block-label">No photo attached</div>
+                <pre>curl -b cookies.txt -X POST .../vehicles \
+  -F vehicleNumber=AMB-999 <span class="c">(…required fields, no photos)</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">400 · from source</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">false</span>,
+  <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"BAD_REQUEST"</span>, <span class="k">"message"</span>: <span class="s">"At least one vehicle photo is required"</span> }
+}</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="veh-update">
+          <div class="endpoint-head">
+            <span class="method patch">PATCH</span>
+            <span class="path">/vehicles/:id</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Same fields as create, all optional.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt -X PATCH .../vehicles/:id \
+  -F status=MAINTENANCE</pre></div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"status"</span>: <span class="s">"MAINTENANCE"</span><span class="c">, …</span> } }</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="veh-delete">
+          <div class="endpoint-head">
+            <span class="method delete">DELETE</span>
+            <span class="path">/vehicles/:id</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Soft delete; clears the assigned driver's <code class="mono">assignedVehicle</code> too.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt -X DELETE .../vehicles/6a513e8c260af2b660de03cc</pre></div>
+              <div class="block"><div class="block-label status-ok">200 · illustrative, from local capture</div><pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a513e8c260af2b660de03cc"</span> } }</pre></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="group">
+        <h2>Files</h2>
+        <p class="desc">Standalone upload/list/download for any of the 17 categories (2 image, 15 document). Listing and reads are scoped to the uploader unless the caller is ADMIN. Document categories are never served by the public static route — only image categories (<code class="mono">PROFILE_IMAGE</code>, <code class="mono">VEHICLE_PHOTO</code>) are.</p>
+
+        <article class="endpoint" id="file-upload">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/files/upload</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Single-file multipart upload. <code class="mono">category</code> must be one of the <code class="mono">FileCategory</code> enum values; the allowed MIME type set depends on whether it's an image or document category.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -X POST .../files/upload \
+  -F category=PROFILE_IMAGE \
+  -F file=@photo.png<span class="c">;type=image/png</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">201 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="s">"6a513efe260af2b660de0427"</span>,
+    <span class="k">"originalName"</span>: <span class="s">"photo.png"</span>,
+    <span class="k">"fileUrl"</span>: <span class="s">"/uploads/profile_image/300e2994-....png"</span>,
+    <span class="k">"mimeType"</span>: <span class="s">"image/png"</span>, <span class="k">"category"</span>: <span class="s">"PROFILE_IMAGE"</span>,
+    <span class="k">"size"</span>: <span class="n">1214805</span>, <span class="k">"uploadedBy"</span>: <span class="s">"6a50b173331adb584378d00a"</span>
+  }
+}</pre>
+              </div>
+            </div>
+            <div class="blocks two" style="margin-top:14px">
+              <div class="block">
+                <div class="block-label">Wrong MIME for the category</div>
+                <pre>curl -b cookies.txt -X POST .../files/upload \
+  -F category=GOVERNMENT_ID \
+  -F file=@photo.png<span class="c">;type=image/png</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">400 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">false</span>,
+  <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"BAD_REQUEST"</span>, <span class="k">"message"</span>: <span class="s">"File type is not allowed for this category"</span> }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px"><code class="mono">GOVERNMENT_ID</code> is a document category (PDF only by default); a PNG correctly gets rejected. Document categories default to <code class="mono">application/pdf</code>; image categories to <code class="mono">image/jpeg,image/png,image/webp</code> — configurable via <code class="mono">ALLOWED_DOCUMENT_MIME_TYPES</code> / <code class="mono">ALLOWED_IMAGE_MIME_TYPES</code>.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="file-list">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/files?page=1&amp;limit=10&amp;category=</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Non-admins only ever see their <em>own</em> uploads — the query is silently scoped to <code class="mono">uploadedBy = caller.id</code> regardless of what's asked for.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">A driver with zero uploads of their own</div>
+                <pre>curl -b driver-cookies.txt <span class="s">http://54.235.96.72/api/v1/files</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: [],
+  <span class="k">"meta"</span>: { <span class="k">"page"</span>: <span class="n">1</span>, <span class="k">"limit"</span>: <span class="n">10</span>, <span class="k">"totalItems"</span>: <span class="n">0</span>, <span class="k">"totalPages"</span>: <span class="n">0</span> }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">Even though the admin has uploaded files, this driver's own list is empty — the files exist, they just aren't <em>theirs</em>. This is the fix for the "any authenticated user can enumerate everyone's documents" vulnerability.</p>
+          </div>
+        </article>
+
+        <article class="endpoint" id="file-get">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/files/:id</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Metadata only. Owner or ADMIN; anyone else gets <code class="mono">403</code>.</p>
+            <div class="blocks two">
+              <div class="block"><div class="block-label">Request</div><pre>curl -b cookies.txt <span class="s">.../files/6a513efe260af2b660de0427</span></pre></div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a513efe260af2b660de0427"</span>, <span class="k">"originalName"</span>: <span class="s">"photo.png"</span><span class="c">, …</span> } }</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="file-download">
+          <div class="endpoint-head">
+            <span class="method get">GET</span>
+            <span class="path">/files/:id/download</span>
+            <span class="auth-badge session">Session</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Streams the actual bytes with <code class="mono">Content-Disposition: attachment</code> — the safe path for document categories that the public static route deliberately can't reach.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request</div>
+                <pre>curl -b cookies.txt -o downloaded.png \
+  .../files/6a513efe260af2b660de0427/download</pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-ok">200 · illustrative, from local capture (headers)</div>
+                <pre>HTTP/1.1 200 OK
+<span class="k">Content-Disposition</span>: attachment; filename=<span class="s">"photo.png"</span>
+<span class="k">Content-Type</span>: application/octet-stream
+<span class="k">X-Content-Type-Options</span>: nosniff</pre>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="endpoint" id="file-delete">
+          <div class="endpoint-head">
+            <span class="method delete">DELETE</span>
+            <span class="path">/files/:id</span>
+            <span class="auth-badge admin">Admin</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose">Removes both the DB record and the on-disk file. Owner-or-admin does <em>not</em> apply here — deletion is ADMIN-only, full stop.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">A driver tries to delete a file</div>
+                <pre>curl -b driver-cookies.txt -X DELETE .../files/:id</pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">403 · illustrative, from local capture</div>
+                <pre>{ <span class="k">"success"</span>: <span class="n">false</span>, <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"AUTHORIZATION_ERROR"</span>, <span class="k">"message"</span>: <span class="s">"Forbidden"</span> } }</pre>
+              </div>
+            </div>
+            <div class="blocks two" style="margin-top:14px">
+              <div class="block"><div class="block-label">ADMIN deletes it</div><pre>curl -b cookies.txt -X DELETE .../files/6a513efe260af2b660de0427</pre></div>
+              <div class="block"><div class="block-label status-ok">200 · illustrative, from local capture</div><pre>{ <span class="k">"success"</span>: <span class="n">true</span>, <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="s">"6a513efe260af2b660de0427"</span> } }</pre></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="group">
+        <h2>Seed <span style="font-weight:400;color:var(--ink-faint);font-size:14px">— dev-only utility, not part of the product API</span></h2>
+        <p class="desc">Generates mock doctors, then vehicles, then drivers (in that order, so drivers can be assigned to an already-created vehicle) by calling the exact same service methods a real admin request uses — same uniqueness checks, same auto-provisioned logins, same "vehicle needs ≥1 photo" rule. <strong>Hard-blocked when <code class="mono">NODE_ENV=production</code></strong> — the route 404s outright rather than just refusing auth, so it isn't reachable in a real deployment at all.</p>
+
+        <article class="endpoint" id="seed-demo-data">
+          <div class="endpoint-head">
+            <span class="method post">POST</span>
+            <span class="path">/seed/demo-data?count=20</span>
+            <span class="auth-badge admin">Admin (dev/test only)</span>
+          </div>
+          <div class="endpoint-body">
+            <p class="purpose"><code class="mono">count</code> is optional — defaults to <strong>20</strong>, min 1, max 50. Creates exactly <code class="mono">count</code> of each type (so the default call produces 20 doctors + 20 vehicles + 20 drivers = 60 records). Names/specialties/cities are drawn from small pools and combined by index so records look distinct; every unique field (email, license number, employee ID, registration/vehicle number, phone) gets a timestamp+index suffix, so repeated calls never collide.</p>
+            <div class="blocks two">
+              <div class="block">
+                <div class="block-label">Request, against this deployment</div>
+                <pre>curl -b cookies.txt -X POST \
+  <span class="s">http://54.235.96.72/api/v1/seed/demo-data</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label status-err">404 · re-verified 2026-07-12</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">false</span>,
+  <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"NOT_FOUND"</span>, <span class="k">"message"</span>: <span class="s">"Route not found"</span> }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">Confirmed: this deployment runs <code class="mono">NODE_ENV=production</code>, so the block described above is in effect — the route doesn't exist here at all. The example below shows the same request succeeding on a local dev instance, for reference.</p>
+            <div class="blocks two" style="margin-top:14px">
+              <div class="block">
+                <div class="block-label">Request, on a local dev instance</div>
+                <pre>curl -b cookies.txt -X POST \
+  <span class="s">http://localhost:5000/api/v1/seed/demo-data</span>
+<span class="c"># or: .../seed/demo-data?count=10</span></pre>
+              </div>
+              <div class="block">
+                <div class="block-label">201 · illustrative, from local capture (~29s for the default 60 records)</div>
+                <pre>{
+  <span class="k">"success"</span>: <span class="n">true</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"doctors"</span>: [
+      { <span class="k">"id"</span>: <span class="s">"6a5147dedaa594d82e60c315"</span>, <span class="k">"name"</span>: <span class="s">"Meera Iyer"</span>, <span class="k">"email"</span>: <span class="s">"dr.meera.iyer.1783711709799.0@example.com"</span>, <span class="k">"defaultPassword"</span>: <span class="s">"yGEwV^NYnaNUrgo5"</span> }
+      <span class="c">// … 19 more</span>
+    ],
+    <span class="k">"vehicles"</span>: [
+      { <span class="k">"id"</span>: <span class="s">"6a5147e9daa594d82e60c401"</span>, <span class="k">"vehicleNumber"</span>: <span class="s">"AMB-SEED-1783711709799-0"</span>, <span class="k">"vehicleType"</span>: <span class="s">"BASIC_AMBULANCE"</span> }
+      <span class="c">// … 19 more</span>
+    ],
+    <span class="k">"drivers"</span>: [
+      { <span class="k">"id"</span>: <span class="s">"6a5147eddaa594d82e60c4d0"</span>, <span class="k">"name"</span>: <span class="s">"Meera Iyer"</span>, <span class="k">"email"</span>: <span class="s">"drv.meera.iyer.1783711709799.0@example.com"</span>, <span class="k">"defaultPassword"</span>: <span class="s">"W4U*Fs2p39PT!8LL"</span>, <span class="k">"assignedVehicle"</span>: <span class="s">"6a5147e9daa594d82e60c401"</span> }
+      <span class="c">// … 19 more</span>
+    ]
+  }
+}</pre>
+              </div>
+            </div>
+            <p class="flow-note" style="margin-top:12px">Every <code class="mono">defaultPassword</code> is a real CSPRNG-generated password, same as a real provisioning create — log in with any of them to explore the app as that doctor/driver. Profile/vehicle photos are a real uploaded file too: a 1×1 placeholder PNG embedded in the seed code itself (no fixture images shipped, no network dependency), pushed through the identical upload pipeline a multipart request would use.</p>
+          </div>
+        </article>
+      </section>
+
+      <footer>
+        <h3>One thing worth remembering</h3>
+        <p>Doctors and vehicles are bridged into <code class="mono">GET /resources</code> read-only, but the bridge is one-directional and read-only. Creating/editing a doctor or vehicle still only happens through <code class="mono">/doctors</code> or <code class="mono">/vehicles</code> — <code class="mono">/resources</code>'s own write endpoints never touch those collections. <code class="mono">/drivers</code> isn't bridged at all: a driver isn't an "ambulance or doctor." See <code class="mono">PROJECT_CONTEXT.md</code> §8a for the full design and its known scale limit (all three sources are fetched unpaginated and merged in application code - fine for this app's size, not meant for a large fleet).</p>
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+</body></html>
